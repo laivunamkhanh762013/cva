@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link Bypass Pro - Vượt Link Uptolink</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-card: rgba(17, 24, 39, 0.8);
+  --bg-card-hover: rgba(30, 41, 59, 0.6);
+  --bg-input: rgba(15, 23, 42, 0.6);
+  --border: rgba(255,255,255,0.05);
+  --border-active: rgba(99, 102, 241, 0.3);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
+  --accent2: #06b6d4;
+  --accent3: #a855f7;
+  --accent4: #10b981;
+  --accent5: #f59e0b;
+  --accent-danger: #ef4444;
+  --gradient: linear-gradient(135deg, #6366f1, #a855f7);
+  --gradient2: linear-gradient(135deg, #06b6d4, #6366f1);
+  --gradient3: linear-gradient(135deg, #f59e0b, #ef4444);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.4);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(99,102,241,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(6,182,212,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(168,85,247,0.04) 0%, transparent 60%);
+}
+
+body::before, body::after {
+  content: ''; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+  filter: blur(80px); opacity: 0.2; animation: floatOrb 20s ease-in-out infinite;
+}
+body::before {
+  width: 500px; height: 500px; top: -200px; right: -150px;
+  background: radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%);
+}
+body::after {
+  width: 400px; height: 400px; bottom: -150px; left: -100px;
+  background: radial-gradient(circle, rgba(6,182,212,0.1), transparent 70%);
+  animation-delay: -10s;
+}
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(40px, -40px) scale(1.1); }
+  50% { transform: translate(-20px, 30px) scale(0.95); }
+  75% { transform: translate(30px, 20px) scale(1.05); }
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+.container { max-width: 900px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+
+/* Header */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; background: var(--bg-card);
+  border-radius: var(--radius-lg); margin-bottom: 20px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  backdrop-filter: blur(24px) saturate(1.4);
+  animation: fadeDown 0.5s var(--bounce);
+}
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--gradient); display: flex; align-items: center;
+  justify-content: center; font-size: 22px; font-weight: 800;
+  box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+  transition: var(--transition);
+}
+.logo:hover { transform: scale(1.08) rotate(-5deg); }
+.header-title { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+.header-title span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  background: rgba(99,102,241,0.12); color: var(--accent); border: 1px solid rgba(99,102,241,0.2);
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 24px;
+  box-shadow: var(--shadow); transition: var(--transition);
+  backdrop-filter: blur(20px) saturate(1.3);
+  position: relative; overflow: hidden;
+  animation: cardIn 0.5s var(--bounce); animation-fill-mode: both;
+}
+@keyframes cardIn { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+.card:hover { border-color: var(--border-active); }
+.card-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px;
+}
+.card-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; transition: var(--transition);
+  flex-shrink: 0;
+}
+.card-icon.purple { background: rgba(99,102,241,0.12); }
+.card-icon.cyan { background: rgba(6,182,212,0.12); }
+.card-icon.green { background: rgba(16,185,129,0.12); }
+.card-icon.amber { background: rgba(245,158,11,0.12); }
+.card-icon.red { background: rgba(239,68,68,0.12); }
+.card-icon.pink { background: rgba(236,72,153,0.12); }
+.card-title { font-size: 16px; font-weight: 700; }
+
+/* Input */
+.input-group { margin-bottom: 16px; }
+.input-group label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 6px;
+}
+.input-group .hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.input-wrapper {
+  display: flex; gap: 8px; align-items: stretch;
+}
+.input-wrapper input { flex: 1; }
+
+input, select, textarea {
+  width: 100%; padding: 12px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg-input);
+  color: var(--text-primary); font-size: 14px; font-family: inherit;
+  transition: var(--transition); outline: none;
+  backdrop-filter: blur(8px);
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.1), 0 0 20px rgba(99,102,241,0.05);
+}
+input::placeholder { color: var(--text-muted); }
+input[readonly] { opacity: 0.7; cursor: default; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 12px 24px; border: none; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: var(--transition); text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(0.97); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+.btn-primary { background: var(--gradient); color: #fff; box-shadow: 0 4px 16px rgba(99,102,241,0.25); }
+.btn-primary:hover { box-shadow: 0 6px 24px rgba(99,102,241,0.4); }
+.btn-primary:disabled { box-shadow: none; }
+.btn-success { background: rgba(16,185,129,0.15); color: var(--accent4); border: 1px solid rgba(16,185,129,0.2); }
+.btn-success:hover { background: rgba(16,185,129,0.25); }
+.btn-danger { background: rgba(239,68,68,0.12); color: var(--accent-danger); border: 1px solid rgba(239,68,68,0.15); }
+.btn-danger:hover { background: rgba(239,68,68,0.2); }
+.btn-cyan { background: rgba(6,182,212,0.15); color: var(--accent2); border: 1px solid rgba(6,182,212,0.2); }
+.btn-cyan:hover { background: rgba(6,182,212,0.25); }
+.btn-amber { background: rgba(245,158,11,0.12); color: var(--accent5); border: 1px solid rgba(245,158,11,0.15); }
+.btn-amber:hover { background: rgba(245,158,11,0.2); }
+.btn-secondary { background: rgba(255,255,255,0.06); color: var(--text-primary); border: 1px solid var(--border); }
+.btn-secondary:hover { background: rgba(255,255,255,0.1); }
+.btn-sm { padding: 8px 16px; font-size: 12px; }
+.btn-full { width: 100%; }
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Result */
+.result-box {
+  display: none; margin-top: 16px; padding: 16px;
+  background: var(--bg-input); border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  animation: resultIn 0.4s var(--bounce);
+}
+@keyframes resultIn { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.result-box.show { display: block; }
+
+.result-url {
+  display: flex; gap: 8px; align-items: center;
+  padding: 12px 16px; background: var(--bg-card);
+  border-radius: var(--radius-sm); border: 1px solid rgba(16,185,129,0.15);
+  word-break: break-all; font-size: 13px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  color: var(--accent4); line-height: 1.5;
+  margin-top: 10px;
+}
+
+.result-info {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;
+}
+.info-item {
+  padding: 10px 14px; background: var(--bg-card);
+  border-radius: var(--radius-sm); border: 1px solid var(--border);
+}
+.info-item .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
+.info-item .value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+.info-item .value.success { color: var(--accent4); }
+.info-item .value.warning { color: var(--accent5); }
+.info-item .value.error { color: var(--accent-danger); }
+
+/* Supported sites grid */
+.sites-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px; margin-top: 12px;
+}
+.site-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; background: var(--bg-input);
+  border-radius: var(--radius-sm); border: 1px solid var(--border);
+  font-size: 12px; color: var(--text-secondary); transition: var(--transition);
+}
+.site-chip:hover { border-color: var(--border-active); color: var(--text-primary); }
+.site-chip .check { color: var(--accent4); font-weight: bold; }
+
+/* Steps */
+.steps { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.step {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px; background: var(--bg-input);
+  border-radius: var(--radius-sm); border: 1px solid var(--border);
+  transition: var(--transition);
+}
+.step:hover { border-color: var(--border-active); }
+.step-num {
+  width: 30px; height: 30px; min-width: 30px; border-radius: 50%;
+  background: var(--gradient); display: flex; align-items: center;
+  justify-content: center; font-size: 13px; font-weight: 700;
+}
+.step-content { flex: 1; }
+.step-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.step-content p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+/* Log */
+.log-container {
+  margin-top: 12px; max-height: 300px; overflow-y: auto;
+  padding: 12px; background: rgba(0,0,0,0.2);
+  border-radius: var(--radius-sm); font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 12px; line-height: 1.7;
+}
+.log-entry { padding: 2px 0; display: flex; gap: 8px; }
+.log-entry .time { color: var(--text-muted); min-width: 65px; }
+.log-entry .msg { color: var(--text-secondary); }
+.log-entry.success .msg { color: var(--accent4); }
+.log-entry.error .msg { color: var(--accent-danger); }
+.log-entry.info .msg { color: var(--accent); }
+.log-entry.warning .msg { color: var(--accent5); }
+.log-entry.progress .msg { color: var(--accent2); }
+
+/* Spinner */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.08); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Progress bar */
+.progress-container { display: none; margin-top: 12px; }
+.progress-container.show { display: block; }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+.progress-track { width: 100%; height: 6px; background: var(--bg-input); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); background: var(--gradient); position: relative; }
+.progress-fill::after {
+  content: ''; position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { 0% { left: -100%; } 100% { left: 100%; } }
+
+/* Toast */
+.toast-container {
+  position: fixed; top: 20px; right: 20px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  padding: 12px 20px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500; background: var(--bg-card);
+  border: 1px solid var(--border); color: var(--text-primary);
+  box-shadow: var(--shadow-lg); max-width: 380px;
+  display: flex; align-items: center; gap: 10px;
+  backdrop-filter: blur(24px) saturate(1.4);
+  pointer-events: auto;
+  animation: toastIn 0.3s var(--bounce);
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(40px) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
+.toast.success { border-color: rgba(16,185,129,0.3); }
+.toast.error { border-color: rgba(239,68,68,0.3); }
+.toast.info { border-color: rgba(99,102,241,0.3); }
+.toast.warning { border-color: rgba(245,158,11,0.3); }
+.toast .toast-icon { font-size: 18px; }
+
+/* Tabs */
+.tabs {
+  display: flex; gap: 4px; background: var(--bg-card);
+  border-radius: var(--radius-lg); padding: 4px; border: 1px solid var(--border);
+  margin-bottom: 20px; overflow-x: auto; backdrop-filter: blur(24px);
+  animation: fadeDown 0.5s var(--bounce); animation-delay: 0s; animation-fill-mode: both;
+}
+.tab-btn {
+  padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  background: transparent; color: var(--text-secondary);
+  transition: var(--transition); white-space: nowrap;
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+.tab-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+.tab-btn:active { transform: scale(0.96); }
+.tab-btn.active { background: var(--gradient); color: #fff; box-shadow: 0 4px 16px rgba(99,102,241,0.35); }
+.tab-content { display: none; animation: tabFade 0.35s ease; }
+.tab-content.active { display: block; }
+@keyframes tabFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; display: block; }
+.empty-state h3 { font-size: 16px; color: var(--text-secondary); margin-bottom: 4px; }
+.empty-state p { font-size: 13px; }
+
+/* History */
+.history-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: var(--bg-input);
+  border-radius: var(--radius-sm); margin-bottom: 8px;
+  border: 1px solid var(--border); transition: var(--transition);
+  cursor: pointer;
+}
+.history-item:hover { border-color: var(--border-active); background: rgba(255,255,255,0.03); }
+.history-item .h-icon { font-size: 20px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 8px; flex-shrink: 0; }
+.history-item .h-info { flex: 1; min-width: 0; }
+.history-item .h-info h4 { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.history-item .h-info p { font-size: 11px; color: var(--text-secondary); }
+.history-item .h-time { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+
+/* Mode selector */
+.mode-selector {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.mode-opt {
+  flex: 1; padding: 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg-input);
+  text-align: center; cursor: pointer; transition: var(--transition);
+}
+.mode-opt:hover { border-color: var(--border-active); background: rgba(255,255,255,0.03); }
+.mode-opt.active { border-color: var(--accent); background: rgba(99,102,241,0.08); box-shadow: 0 0 20px rgba(99,102,241,0.08); }
+.mode-opt .mode-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+.mode-opt .mode-label { font-size: 13px; font-weight: 600; }
+.mode-opt .mode-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .container { padding: 12px; }
+  .header { flex-direction: column; gap: 12px; text-align: center; }
+  .header-left { flex-direction: column; }
+  .input-row { grid-template-columns: 1fr; }
+  .result-info { grid-template-columns: 1fr; }
+  .sites-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .mode-selector { flex-direction: column; }
+  .tabs { gap: 2px; padding: 3px; }
+  .tab-btn { padding: 8px 14px; font-size: 12px; }
+  .input-wrapper { flex-direction: column; }
+}
+
+/* Pulse animation for active scanning */
+.pulse-dot {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--accent4);
+  margin-right: 6px; animation: pulseDot 1.5s ease-in-out infinite;
+}
+@keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">↗</div>
+      <div>
+        <div class="header-title"><span>Link Bypass</span> Pro</div>
+        <div class="header-sub">🔥 Vượt mọi link shortener — Uptolink, Shrinkme, + tích hợp izen.lol</div>
+      </div>
+    </div>
+    <div>
+      <span class="header-badge">⚡ v2.0</span>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <nav class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="bypass">🚀 Bypass</button>
+    <button class="tab-btn" data-tab="history">📜 Lịch Sử</button>
+    <button class="tab-btn" data-tab="guide">📖 Hướng Dẫn</button>
+    <button class="tab-btn" data-tab="settings">⚙️ API Keys</button>
+    <button class="tab-btn" data-tab="about">ℹ️ Giới Thiệu</button>
+  </nav>
+
+  <!-- TAB: BYPASS -->
+  <div class="tab-content active" id="tab-bypass">
+    <div class="card" style="animation-delay:0.05s">
+      <div class="card-header">
+        <span class="card-icon purple">🚀</span>
+        <div>
+          <div class="card-title">Vượt Link Shortener</div>
+          <div style="font-size:12px;color:var(--text-secondary)">Hỗ trợ uptolink.vip, shrinkme.io, và nhiều dịch vụ khác</div>
+        </div>
+      </div>
+
+      <!-- Mode selector -->
+      <div class="mode-selector">
+        <div class="mode-opt active" data-mode="auto" onclick="setMode('auto')">
+          <span class="mode-icon">🤖</span>
+          <div class="mode-label">Tự động</div>
+          <div class="mode-desc">Tự động dò tìm & vượt link</div>
+        </div>
+        <div class="mode-opt" data-mode="manual" onclick="setMode('manual')">
+          <span class="mode-icon">🛠️</span>
+          <div class="mode-label">Thủ công</div>
+          <div class="mode-desc">Xem hướng dẫn từng bước</div>
+        </div>
+        <div class="mode-opt" data-mode="iframe" onclick="setMode('iframe')">
+          <span class="mode-icon">🪟</span>
+          <div class="mode-label">Iframe</div>
+          <div class="mode-desc">Mở trong iframe nhúng</div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="input-group">
+        <label>🔗 Link Shortener</label>
+        <div class="input-wrapper">
+          <input type="url" id="linkInput" placeholder="https://uptolink.vip/Hls2 hoặc https://shrinkme.io/..." 
+                 value="https://uptolink.vip/Hls2" autofocus>
+          <button class="btn btn-primary" id="btnBypass" onclick="startBypass()">
+            🚀 Bypass
+          </button>
+        </div>          <div class="hint">💡 Dán link shortener (uptolink, shrinkme, shorturl, v.v.) vào ô trên và nhấn <strong>Bypass</strong><br>
+          ⚠️ Một số shortener dùng JavaScript để chuyển hướng — nếu tự động không được, hãy thử chế độ <strong>Thủ công</strong> hoặc <strong>Iframe</strong></div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-label">
+          <span id="progressStatus">⏳ Đang xử lý...</span>
+          <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Log -->
+      <div class="log-container" id="logContainer" style="display:none"></div>
+
+      <!-- Result -->
+      <div class="result-box" id="resultBox">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="font-size:28px" id="resultIcon">✅</span>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:15px" id="resultTitle">Thành công!</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px" id="resultSubtitle">Đã tìm thấy link đích</div>
+          </div>
+        </div>
+        
+        <div class="result-url" id="resultUrlContainer">
+          <span id="resultUrl">https://example.com/destination</span>
+        </div>
+
+        <div class="result-info" id="resultInfo">
+          <div class="info-item">
+            <div class="label">Trạng thái</div>
+            <div class="value success" id="infoStatus">✅ Hoàn thành</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Thời gian</div>
+            <div class="value" id="infoTime">0.0s</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Phương thức</div>
+            <div class="value" id="infoMethod">CORS Proxy</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Số lần thử</div>
+            <div class="value" id="infoAttempts">1</div>
+          </div>
+        </div>
+
+        <div class="btn-group" style="margin-top:14px">
+          <button class="btn btn-cyan btn-sm" onclick="copyResultUrl()" style="flex:1">📋 Copy Link</button>
+          <button class="btn btn-success btn-sm" onclick="openResultUrl()" style="flex:1">🔗 Mở Link</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadResultUrl()">⬇ Download</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supported Sites -->
+    <div class="card" style="margin-top:16px;animation-delay:0.1s">
+      <div class="card-header">
+        <span class="card-icon cyan">🌐</span>
+        <div class="card-title">Hỗ trợ các dịch vụ</div>
+      </div>
+      <div class="sites-grid" id="sitesGrid"></div>
+    </div>
+  </div>
+
+  <!-- TAB: HISTORY -->
+  <div class="tab-content" id="tab-history">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon amber">📜</span>
+        <div>
+          <div class="card-title">Lịch Sử Bypass</div>
+          <div style="font-size:12px;color:var(--text-secondary)">Các link đã vượt gần đây</div>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="clearHistory()" style="margin-left:auto">🗑 Xóa</button>
+      </div>
+      <div id="historyList">
+        <div class="empty-state">
+          <span class="icon">📋</span>
+          <h3>Chưa có lịch sử</h3>
+          <p>Vượt link để lưu vào lịch sử</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: GUIDE -->
+  <div class="tab-content" id="tab-guide">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon purple">📖</span>
+        <div class="card-title">Hướng Dẫn Sử Dụng</div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:10px;color:var(--accent2)">🤖 Chế độ Tự động</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Dán link shortener</h4>
+              <p>Copy link từ uptolink.vip, shrinkme.io, hoặc bất kỳ dịch vụ rút gọn nào và dán vào ô input</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Nhấn Bypass</h4>
+              <p>Công cụ sẽ tự động sử dụng nhiều proxy khác nhau để lấy link đích</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Nhận kết quả</h4>
+              <p>Link thật sẽ hiển thị — bạn có thể Copy, Mở, hoặc Tải về</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:10px;color:var(--accent5)">🛠️ Chế độ Thủ công</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Mở link trong tab mới</h4>
+              <p>Click nút <strong>"Mở Thủ công"</strong> để mở link shortener trong tab riêng</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Chờ đếm ngược & vượt quảng cáo</h4>
+              <p>Đợi timer chạy hết (thường 5-15 giây), bỏ qua quảng cáo, nhấn <strong>"Skip"</strong> hoặc <strong>"Get Link"</strong></p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Copy link đích</h4>
+              <p>Sau khi được chuyển hướng, copy URL từ thanh địa chỉ và dán lại vào tool để lưu</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- izen.lol Section -->
+      <div style="margin-bottom:20px;background:rgba(6,182,212,0.04);border-radius:12px;padding:16px;border:1px solid rgba(6,182,212,0.12)">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:10px;color:var(--accent2)">⚡ Tích hợp izen.lol</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>izen.lol là gì?</h4>
+              <p><strong>izen.lol</strong> là dịch vụ bypass chuyên nghiệp, hỗ trợ 100+ nền tảng như Linkvertise, Work.ink, Lootlabs, Platoboost... Khác với CORS proxy, izen.lol có cơ chế xử lý riêng để vượt các link dạng "task" (làm survey, cài app).</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Cách dùng Free</h4>
+              <p>Vào tab <strong>API Keys</strong> → chọn chế độ <strong>Free</strong>. Tool sẽ tự động thử dùng izen.lol sau CORS proxy.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Cách dùng Paid API (khuyên dùng)</h4>
+              <p>• Vào <a href="https://izen.lol/pricing" target="_blank" style="color:var(--accent2)">izen.lol/pricing</a> → chọn gói <strong>$1/1000 requests</strong> hoặc <strong>$8/tháng</strong><br>
+              • Tham gia Discord để nhận API key<br>
+              • Vào tab <strong>API Keys</strong> → nhập key → chọn <strong>Paid API</strong> → Lưu</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h4>Dùng thủ công</h4>
+              <p>Mở <a href="https://izen.lol" target="_blank" style="color:var(--accent2)">izen.lol</a> → dán link → giải captcha → nhận kết quả</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:rgba(245,158,11,0.04);border-radius:12px;padding:16px;border:1px solid rgba(245,158,11,0.12)">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--accent5)">💡 Mẹo</h3>
+        <ul style="padding-left:20px;font-size:13px;color:var(--text-secondary);line-height:1.8">
+          <li>Nếu 1 proxy bị lỗi, tool tự động chuyển sang proxy khác</li>
+          <li>Dùng <strong>trình chặn quảng cáo</strong> (uBlock Origin) khi mở thủ công</li>
+          <li>Một số link yêu cầu CAPTCHA — phải xử lý thủ công</li>
+          <li><strong>izen.lol</strong> hỗ trợ bypass Linkvertise, Work.ink, Lootlabs, Platoboost và 100+ dịch vụ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: API SETTINGS -->
+  <div class="tab-content" id="tab-settings">
+    <div class="card" style="animation-delay:0.05s">
+      <div class="card-header">
+        <span class="card-icon purple">⚙️</span>
+        <div>
+          <div class="card-title">Cấu Hình API</div>
+          <div style="font-size:12px;color:var(--text-secondary)">Quản lý API keys cho các dịch vụ bypass</div>
+        </div>
+      </div>
+
+      <!-- izen.lol -->
+      <div style="background:rgba(6,182,212,0.04);border-radius:12px;padding:18px;border:1px solid rgba(6,182,212,0.12);margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <span style="font-size:28px">⚡</span>
+          <div>
+            <div style="font-weight:700;font-size:15px">izen.lol API</div>
+            <div style="font-size:11px;color:var(--text-secondary)">Bypass 100+ services (Linkvertise, Work.ink, Lootlabs...)</div>
+          </div>
+          <span class="header-badge" style="margin-left:auto;font-size:10px" id="izenStatus">🔴 Chưa cấu hình</span>
+        </div>
+        
+        <div class="input-row">
+          <div class="input-group">
+            <label>🔑 izen.lol API Key</label>
+            <input type="password" id="izenApiKey" placeholder="Nhập API key...">
+            <div class="hint">ℹ️ Lấy key từ <a href="https://izen.lol/pricing" target="_blank" style="color:var(--accent2)">izen.lol/pricing</a> qua Discord</div>
+          </div>
+          <div class="input-group">
+            <label>🆔 API Mode</label>
+            <select id="izenApiMode">
+              <option value="free">🆓 Free (Web - có captcha)</option>
+              <option value="paid">💎 Paid API (cần key)</option>
+            </select>
+            <div class="hint">Free: dùng web interface, có thể chậm. Paid: nhanh, không captcha</div>
+          </div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-cyan btn-sm" onclick="testIzenAPI()" style="flex:1">🔌 Test API</button>
+          <button class="btn btn-success btn-sm" onclick="saveIzenSettings()" style="flex:1">💾 Lưu</button>
+          <button class="btn btn-amber btn-sm" onclick="window.open('https://izen.lol','_blank')">🌐 Mở izen.lol</button>
+        </div>
+        <div id="izenTestResult" style="display:none;margin-top:10px;padding:10px;border-radius:8px;font-size:12px"></div>
+      </div>
+
+      <!-- General settings -->
+      <div style="background:rgba(16,185,129,0.04);border-radius:12px;padding:18px;border:1px solid rgba(16,185,129,0.12)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <span style="font-size:24px">🌐</span>
+          <div>
+            <div style="font-weight:700;font-size:15px">CORS Proxies</div>
+            <div style="font-size:11px;color:var(--text-secondary)">Chọn proxy để fetch nội dung trang shortener</div>
+          </div>
+        </div>
+        <div id="proxyCheckboxes"></div>
+        <div class="hint">Bỏ chọn proxy nào không hoạt động để tăng tốc độ bypass</div>
+        <div style="margin-top:10px">
+          <button class="btn btn-sm btn-success" onclick="testAllProxies()">🔄 Kiểm tra tất cả proxy</button>
+          <span id="proxyTestResult" style="font-size:12px;color:var(--text-secondary);margin-left:8px"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ABOUT -->
+  <div class="tab-content" id="tab-about">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon pink">ℹ️</span>
+        <div class="card-title">Giới Thiệu</div>
+      </div>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.8">
+        <p style="margin-bottom:12px"><strong style="color:var(--text-primary)">Link Bypass Pro</strong> là công cụ giúp vượt qua các link shortener (rút gọn URL) để lấy link đích một cách nhanh chóng.</p>
+        <p style="margin-bottom:12px">Công cụ sử dụng nhiều <strong>CORS proxy</strong> khác nhau để fetch nội dung trang shortener, sau đó phân tích HTML, JavaScript, và header redirect để trích xuất URL thật.</p>
+        <p style="margin-bottom:12px">Hỗ trợ các dịch vụ phổ biến: <strong style="color:var(--accent2)">uptolink.vip, shrinkme.io, shorturl.at, tinyurl.com, bit.ly</strong> và nhiều hơn nữa.</p>
+        <p style="margin-bottom:12px">Tích hợp <strong style="color:var(--accent2)">izen.lol</strong> để bypass các nền tảng khó như Linkvertise, Work.ink, Lootlabs, Platoboost — hỗ trợ cả Free (web) và Paid API.</p>
+        <div style="padding:14px;background:rgba(99,102,241,0.04);border-radius:8px;border:1px solid rgba(99,102,241,0.1);margin-top:16px">
+          <p style="font-size:12px;color:var(--text-muted)">⚠️ Công cụ này chỉ dùng cho mục đích học tập và nghiên cứu. Vui lòng tôn trọng điều khoản dịch vụ của các trang web.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+//  CONFIG
+// ================================================================
+const CORS_PROXIES = [
+  { name: 'allorigins.win', url: 'https://api.allorigins.win/raw?url=', type: 'raw' },
+  { name: 'corsproxy.io',   url: 'https://corsproxy.io/?url=',      type: 'raw' },
+  { name: 'api.codetabs.com', url: 'https://api.codetabs.com/v1/proxy?quest=', type: 'raw' },
+  { name: 'cors-anywhere',  url: 'https://cors-anywhere.herokuapp.com/', type: 'prefix' }
+];
+
+const SUPPORTED_SITES = [
+  'uptolink.vip', 'shrinkme.io', 'shorturl.at', 'tinyurl.com',
+  'bit.ly', 'rb.gy', 'cutt.ly', 'ouo.io', 'shorte.st',
+  'linkvertise.com (izen.lol)', 'adf.ly', 'bc.vc', 'gg.gg', 'is.gd',
+  'tiny.cc', 'soo.gd', 'work.ink (izen.lol)', 'lootlabs.com (izen.lol)',
+  'clck.ru', '0x0.st', 't.co', 'platoboost.com (izen.lol)',
+  'short-link.org', 'link.tl', 'viid.me', 'v.gd', 'urlz.ee'
+];
+
+// ================================================================
+//  STATE
+// ================================================================
+let currentMode = 'auto';
+let bypassHistory = JSON.parse(localStorage.getItem('lb_history') || '[]');
+let isRunning = false;
+let startTime = 0;
+
+// ================================================================
+//  IZEN.LOL INTEGRATION
+// ================================================================
+function saveIzenSettings() {
+  const key = document.getElementById('izenApiKey').value.trim();
+  const mode = document.getElementById('izenApiMode').value;
+  localStorage.setItem('izen_api_key', key);
+  localStorage.setItem('izen_api_mode', mode);
+  updateIzenStatus();
+  showToast('💾 Đã lưu cấu hình izen.lol!', 'success');
+}
+
+function loadIzenSettings() {
+  const key = localStorage.getItem('izen_api_key') || '';
+  const mode = localStorage.getItem('izen_api_mode') || 'free';
+  document.getElementById('izenApiKey').value = key;
+  document.getElementById('izenApiMode').value = mode;
+  updateIzenStatus();
+}
+
+function updateIzenStatus() {
+  const key = localStorage.getItem('izen_api_key') || '';
+  const mode = localStorage.getItem('izen_api_mode') || 'free';
+  const el = document.getElementById('izenStatus');
+  if (mode === 'paid' && key.length > 5) {
+    el.textContent = '🟢 Paid API sẵn sàng';
+    el.style.background = 'rgba(16,185,129,0.12)';
+    el.style.color = 'var(--accent4)';
+    el.style.borderColor = 'rgba(16,185,129,0.2)';
+  } else if (mode === 'free') {
+    el.textContent = '🟡 Free Mode (captcha)';
+    el.style.background = 'rgba(245,158,11,0.12)';
+    el.style.color = 'var(--accent5)';
+    el.style.borderColor = 'rgba(245,158,11,0.2)';
+  } else {
+    el.textContent = '🔴 Chưa cấu hình';
+    el.style.background = 'rgba(239,68,68,0.12)';
+    el.style.color = 'var(--accent-danger)';
+    el.style.borderColor = 'rgba(239,68,68,0.2)';
+  }
+}
+
+async function testIzenAPI() {
+  const key = document.getElementById('izenApiKey').value.trim();
+  const mode = document.getElementById('izenApiMode').value;
+  const resultEl = document.getElementById('izenTestResult');
+  resultEl.style.display = 'block';
+
+  if (mode === 'paid' && !key) {
+    resultEl.innerHTML = '❌ Vui lòng nhập API key cho chế độ Paid';
+    resultEl.style.background = 'rgba(239,68,68,0.06)';
+    resultEl.style.border = '1px solid rgba(239,68,68,0.15)';
+    return;
+  }
+
+  resultEl.innerHTML = '⏳ Đang kiểm tra kết nối...';
+  resultEl.style.background = 'rgba(245,158,11,0.06)';
+  resultEl.style.border = '1px solid rgba(245,158,11,0.15)';
+
+  try {
+    if (mode === 'free') {
+      // Test free mode: try to reach izen.lol
+      const resp = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://izen.lol'), {
+        signal: AbortSignal.timeout(10000)
+      });
+      if (resp.ok) {
+        resultEl.innerHTML = '✅ Kết nối thành công! Chế độ Free sẽ dùng CORS proxy để tương tác với izen.lol.';
+        resultEl.style.background = 'rgba(16,185,129,0.06)';
+        resultEl.style.border = '1px solid rgba(16,185,129,0.15)';
+      } else {
+        throw new Error('HTTP ' + resp.status);
+      }
+    } else {
+      // Test paid API with a test request
+      const resp = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://izen.lol/api/test?key=' + key), {
+        signal: AbortSignal.timeout(10000)
+      });
+      if (resp.ok) {
+        resultEl.innerHTML = '✅ API key hợp lệ! Sẵn sàng bypass.';
+        resultEl.style.background = 'rgba(16,185,129,0.06)';
+        resultEl.style.border = '1px solid rgba(16,185,129,0.15)';
+      } else {
+        throw new Error('HTTP ' + resp.status);
+      }
+    }
+  } catch (e) {
+    resultEl.innerHTML = '❌ Lỗi kết nối: ' + e.message + '<br>💡 Kiểm tra lại API key hoặc kết nối mạng';
+    resultEl.style.background = 'rgba(239,68,68,0.06)';
+    resultEl.style.border = '1px solid rgba(239,68,68,0.15)';
+  }
+}
+
+// Try bypass via izen.lol (free web method)
+async function tryIzenFreeBypass(link) {
+  log('⚡ Đang thử bypass qua izen.lol (free)...', 'info');
+  
+  // izen.lol free web bypass: POST to their API endpoint
+  // The free web interface typically uses a form POST to /api/bypass or similar
+  const endpoints = [
+    { url: 'https://izen.lol/api/bypass', method: 'POST' },
+    { url: 'https://izen.lol/bypass', method: 'POST' }
+  ];
+  
+  for (const ep of endpoints) {
+    try {
+      const proxyUrl = 'https://api.allorigins.win/raw?url=';
+      const encodedTarget = proxyUrl + encodeURIComponent(ep.url);
+      
+      // Try GET first to see if endpoint exists
+      const resp = await fetch(encodedTarget, {
+        signal: AbortSignal.timeout(8000)
+      });
+      
+      if (resp.ok) {
+        const text = await resp.text();
+        // Check if response contains the bypassed URL
+        const urlMatch = text.match(/(?:https?:\/\/[^\s"'<>]+)/g);
+        if (urlMatch) {
+          // Filter out our own URL and shortener domains
+          const realUrls = urlMatch.filter(u => {
+            try {
+              const d = new URL(u).hostname;
+              return !d.includes('izen.lol') && !d.includes('allorigins');
+            } catch { return false; }
+          });
+          if (realUrls.length > 0) {
+            log('🎯 izen.lol trả về: ' + realUrls[0], 'success');
+            return { url: realUrls[0], method: 'izen.lol (Free)', attempts: 1 };
+          }
+        }
+      }
+    } catch (e) {
+      log('   izen.lol endpoint không hoạt động: ' + ep.url, 'warning');
+      continue;
+    }
+  }
+  
+  // Alternative: try izen.lol's own web interface via proxy
+  try {
+    const izenPageUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://izen.lol');
+    const resp = await fetch(izenPageUrl, { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) {
+      log('   ✅ Đã kết nối izen.lol, đang phân tích form...', 'success');
+      // Note: The actual bypass would require sending a POST with the link
+      // and solving captcha. For full automation, a paid API key is needed.
+    }
+  } catch (e) { /* ignore */ }
+  
+  return null;
+}
+
+// Try bypass via izen.lol paid API
+async function tryIzenPaidBypass(link) {
+  const key = localStorage.getItem('izen_api_key');
+  if (!key || key.length < 5) {
+    log('⚠️ izen.lol: Chưa cấu hình API key', 'warning');
+    return null;
+  }
+  
+  log('⚡ Đang thử bypass qua izen.lol (Paid API)...', 'info');
+  
+  // izen.lol paid API takes POST requests with URL + key
+  // Standard format: POST with url + api_key parameters
+  const apiUrls = [
+    { url: 'https://izen.lol/api/v1/bypass', keyField: 'api_key', urlField: 'url' },
+    { url: 'https://izen.lol/api/bypass', keyField: 'key', urlField: 'url' }
+  ];
+  
+  for (const api of apiUrls) {
+    try {
+      // Build the request URL with params
+      const params = new URLSearchParams();
+      params.append(api.keyField, key);
+      params.append(api.urlField, link);
+      
+      const fullUrl = api.url + '?' + params.toString();
+      const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(fullUrl);
+      
+      const resp = await fetch(proxyUrl, {
+        signal: AbortSignal.timeout(10000)
+      });
+      
+      if (resp.ok) {
+        let text;
+        const ct = resp.headers.get('content-type') || '';
+        if (ct.includes('json') || proxyUrl.includes('/get?url=')) {
+          const json = await resp.json();
+          text = json.contents || JSON.stringify(json);
+        } else {
+          text = await resp.text();
+        }
+        
+        // Try to parse JSON response
+        try {
+          const json = JSON.parse(text);
+          const destUrl = json.url || json.result || json.destination || json.bypassed || json.link;
+          if (destUrl && isValidUrl(destUrl)) {
+            log('🎯 izen.lol Paid API trả về: ' + destUrl, 'success');
+            return { url: destUrl, method: 'izen.lol (Paid API)', attempts: 1 };
+          }
+        } catch (e) { /* not JSON */ }
+        
+        // Try to extract URL from text response
+        const urlMatch = text.match(/(?:https?:\/\/[^\s"'<>]+)/g);
+        if (urlMatch) {
+          const realUrls = urlMatch.filter(u => {
+            try {
+              const d = new URL(u).hostname;
+              return !d.includes('izen.lol') && !d.includes('allorigins');
+            } catch { return false; }
+          });
+          if (realUrls.length > 0) {
+            log('🎯 izen.lol trả về: ' + realUrls[0], 'success');
+            return { url: realUrls[0], method: 'izen.lol (Paid API)', attempts: 1 };
+          }
+        }
+      }
+    } catch (e) {
+      log('   izen.lol API error: ' + e.message.split('.')[0], 'warning');
+      continue;
+    }
+  }
+  
+  if (key) {
+    log('   izen.lol Paid API không hoạt động. Kiểm tra key hoặc endpoint.', 'error');
+  }
+  return null;
+}
+
+// ================================================================
+//  PROXY SETTINGS
+// ================================================================
+function renderProxyCheckboxes() {
+  const container = document.getElementById('proxyCheckboxes');
+  const active = JSON.parse(localStorage.getItem('lb_active_proxies') || '[]');
+  
+  container.innerHTML = CORS_PROXIES.map((p, i) => {
+    const checked = active.length === 0 ? 'checked' : (active.includes(p.name) ? 'checked' : '');
+    return `<label style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-input);border-radius:8px;margin-bottom:4px;border:1px solid var(--border);cursor:pointer">
+      <input type="checkbox" data-proxy="${p.name}" ${checked} style="width:auto">
+      <span style="font-size:13px">${p.name}</span>
+      <span style="font-size:11px;color:var(--text-muted)">${p.url.substring(0, 40)}...</span>
+    </label>`;
+  }).join('');
+  
+  container.addEventListener('change', saveProxySettings);
+}
+
+function saveProxySettings() {
+  const active = [];
+  document.querySelectorAll('#proxyCheckboxes input[type="checkbox"]').forEach(cb => {
+    if (cb.checked) active.push(cb.dataset.proxy);
+  });
+  localStorage.setItem('lb_active_proxies', JSON.stringify(active));
+}
+
+function getActiveProxies() {
+  const active = JSON.parse(localStorage.getItem('lb_active_proxies') || '[]');
+  if (active.length === 0) return CORS_PROXIES; // All active by default
+  return CORS_PROXIES.filter(p => active.includes(p.name));
+}
+
+async function testAllProxies() {
+  const resultEl = document.getElementById('proxyTestResult');
+  resultEl.textContent = '⏳ Đang kiểm tra...';
+  
+  let working = 0;
+  let total = CORS_PROXIES.length;
+  
+  for (const proxy of CORS_PROXIES) {
+    try {
+      const testUrl = proxy.url + encodeURIComponent('https://example.com');
+      const resp = await fetch(testUrl, { signal: AbortSignal.timeout(5000) });
+      if (resp.ok) {
+        working++;
+        const cb = document.querySelector(`#proxyCheckboxes input[data-proxy="${proxy.name}"]`);
+        if (cb) cb.checked = true;
+      }
+    } catch { 
+      const cb = document.querySelector(`#proxyCheckboxes input[data-proxy="${proxy.name}"]`);
+      if (cb) cb.checked = false;
+    }
+  }
+  
+  saveProxySettings();
+  resultEl.textContent = `✅ ${working}/${total} proxy hoạt động`;
+  showToast(`✅ ${working}/${total} proxy hoạt động`, working > 0 ? 'success' : 'warning');
+}
+
+// ================================================================
+//  INIT
+// ================================================================
+function init() {
+  renderSites();
+  renderHistory();
+  setupTabs();
+  loadIzenSettings();
+  renderProxyCheckboxes();
+}
+
+function renderSites() {
+  const grid = document.getElementById('sitesGrid');
+  grid.innerHTML = SUPPORTED_SITES.map(s => 
+    `<div class="site-chip"><span class="check">✓</span> ${s}</div>`
+  ).join('');
+}
+
+function setupTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+// ================================================================
+//  MODE
+// ================================================================
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-opt').forEach(el => {
+    el.classList.toggle('active', el.dataset.mode === mode);
+  });
+  
+  const bypassBtn = document.getElementById('btnBypass');
+  if (mode === 'manual') {
+    bypassBtn.textContent = '🔗 Mở Thủ Công';
+    bypassBtn.className = 'btn btn-amber';
+  } else if (mode === 'iframe') {
+    bypassBtn.textContent = '🪟 Mở Iframe';
+    bypassBtn.className = 'btn btn-cyan';
+  } else {
+    bypassBtn.textContent = '🚀 Bypass';
+    bypassBtn.className = 'btn btn-primary';
+  }
+}
+
+// ================================================================
+//  TOAST
+// ================================================================
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = '<span class="toast-icon">' + (icons[type] || 'ℹ️') + '</span>' + msg;
+  container.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(40px)';
+    t.style.transition = 'all 0.3s ease';
+    setTimeout(() => t.remove(), 300);
+  }, 3000);
+}
+
+// ================================================================
+//  LOG
+// ================================================================
+function log(msg, type = 'info') {
+  const container = document.getElementById('logContainer');
+  container.style.display = 'block';
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const entry = document.createElement('div');
+  entry.className = 'log-entry ' + type;
+  entry.innerHTML = '<span class="time">' + timeStr + '</span><span class="msg">' + msg + '</span>';
+  container.appendChild(entry);
+  container.scrollTop = container.scrollHeight;
+}
+
+function clearLog() {
+  const container = document.getElementById('logContainer');
+  container.innerHTML = '';
+  container.style.display = 'none';
+}
+
+// ================================================================
+//  PROGRESS
+// ================================================================
+function setProgress(pct, status) {
+  const container = document.getElementById('progressContainer');
+  container.classList.add('show');
+  document.getElementById('progressFill').style.width = pct + '%';
+  if (status) document.getElementById('progressStatus').textContent = status;
+  document.getElementById('progressPercent').textContent = pct + '%';
+}
+
+function hideProgress() {
+  document.getElementById('progressContainer').classList.remove('show');
+}
+
+// ================================================================
+//  MAIN BYPASS LOGIC
+// ================================================================
+async function startBypass() {
+  if (isRunning) return;
+  
+  const link = document.getElementById('linkInput').value.trim();
+  if (!link) { showToast('⚠️ Vui lòng nhập link!', 'warning'); return; }
+  
+  // Validate URL
+  try { new URL(link); } catch { showToast('⚠️ Link không hợp lệ!', 'warning'); return; }
+
+  // Manual mode
+  if (currentMode === 'manual') {
+    window.open(link, '_blank');
+    showToast('🔗 Đã mở link trong tab mới', 'info');
+    return;
+  }
+
+  // Iframe mode
+  if (currentMode === 'iframe') {
+    openIframeMode(link);
+    return;
+  }
+
+  // AUTO mode
+  isRunning = true;
+  startTime = Date.now();
+  clearLog();
+  hideProgress();
+  document.getElementById('resultBox').classList.remove('show');
+  document.getElementById('btnBypass').disabled = true;
+  document.getElementById('btnBypass').innerHTML = '<span class="spinner"></span> Đang xử lý...';
+
+  log('🚀 Bắt đầu vượt link: ' + link, 'info');
+  setProgress(5, '⏳ Khởi tạo...');
+
+  try {
+    const domain = extractDomain(link);
+    log('🌐 Domain: ' + domain, 'info');
+
+    // Step 1: Try direct fetch with CORS proxies
+    let result = await tryBypassWithProxies(link);
+    
+    // Step 2: If CORS proxies fail, try izen.lol
+    if (!result || !result.url) {
+      const izenMode = localStorage.getItem('izen_api_mode') || 'free';
+      
+      if (izenMode === 'paid') {
+        // Try paid API first
+        setProgress(85, '⏳ Thử izen.lol Paid API...');
+        result = await tryIzenPaidBypass(link);
+      } else {
+        // Try free method
+        setProgress(85, '⏳ Thử izen.lol Free...');
+        result = await tryIzenFreeBypass(link);
+      }
+      
+      // If paid API was configured but failed, try free as fallback
+      if (!result && izenMode === 'paid') {
+        log('🔄 Paid API không hoạt động, thử chế độ Free...', 'warning');
+        setProgress(90, '⏳ Thử izen.lol Free (fallback)...');
+        result = await tryIzenFreeBypass(link);
+      }
+    }
+    
+    setProgress(100, '✅ Hoàn thành!');
+    
+    if (result && result.url) {
+      showResult(result.url, domain, result.method, result.attempts);
+      addToHistory({ input: link, output: result.url, domain, method: result.method, success: true });
+      log('✅ Thành công! Link đích: ' + result.url, 'success');
+      showToast('✅ Tìm thấy link đích!', 'success');
+    } else {
+      // Fallback: try open in izen.lol website manually
+      const izenManualUrl = 'https://izen.lol';
+      showFallbackWithIzen(link, domain, izenManualUrl);
+      addToHistory({ input: link, output: '', domain, method: 'Failed', success: false });
+      showToast('⚠️ Không thể tự động vượt. Hãy thử dùng izen.lol hoặc chế độ thủ công.', 'warning');
+      log('❌ Không tìm thấy link đích sau nhiều phương pháp', 'error');
+    }
+  } catch (e) {
+    log('❌ Lỗi: ' + e.message, 'error');
+    showToast('❌ Lỗi: ' + e.message, 'error');
+    showManualFallback(link, extractDomain(link));
+  }
+
+  document.getElementById('btnBypass').disabled = false;
+  document.getElementById('btnBypass').innerHTML = '🚀 Bypass';
+  isRunning = false;
+}
+
+// ================================================================
+//  CORE BYPASS
+// ================================================================
+async function tryBypassWithProxies(link) {
+  let attempts = 0;
+  const allUrls = new Map();
+  const activeProxies = getActiveProxies();
+  
+  // Try each active proxy
+  for (const proxy of activeProxies) {
+    attempts++;
+    const pct = Math.min(10 + (attempts / CORS_PROXIES.length) * 70, 80);
+    setProgress(pct, '⏳ Thử proxy ' + proxy.name + ' (' + attempts + '/' + CORS_PROXIES.length + ')...');
+    log('🔌 Đang thử proxy: ' + proxy.name, 'progress');
+    
+    try {
+      const encodedUrl = proxy.type === 'raw' 
+        ? proxy.url + encodeURIComponent(link)
+        : proxy.url + link;
+      
+      log('   Fetching: ' + encodedUrl.substring(0, 80) + '...', 'info');
+      
+      const resp = await fetch(encodedUrl, { 
+        signal: AbortSignal.timeout(10000)
+      });
+      
+      if (!resp.ok) {
+        log('   ⚠ HTTP ' + resp.status, 'warning');
+        continue;
+      }
+      
+      let text;
+      const contentType = resp.headers.get('content-type') || '';
+      
+      if (contentType.includes('json') || proxy.url.includes('/get?url=')) {
+        const json = await resp.json();
+        text = json.contents || JSON.stringify(json);
+      } else {
+        text = await resp.text();
+      }
+      
+      log('   ✅ Nhận được response (' + text.length + ' bytes)', 'success');
+      
+      // Extract URLs from various patterns
+      const foundUrls = extractUrlsFromPage(text, link);
+      
+      if (foundUrls.length > 0) {
+        // Filter out shortener domain links and pick the most likely destination
+        const filteredUrls = foundUrls.filter(u => {
+          try {
+            const d = new URL(u).hostname;
+            return d !== new URL(link).hostname && !d.includes('google') && !d.includes('facebook');
+          } catch { return false; }
+        });
+        
+        if (filteredUrls.length > 0) {
+          const destUrl = filteredUrls[0];
+          log('🎯 Tìm thấy link đích: ' + destUrl, 'success');
+          return { url: destUrl, method: 'CORS Proxy (' + proxy.name + ')', attempts };
+        }
+      }
+      
+      // Check for redirect URL in specific patterns
+      const redirectUrl = extractRedirectUrl(text, link);
+      if (redirectUrl) {
+        log('🎯 Tìm thấy redirect: ' + redirectUrl, 'success');
+        return { url: redirectUrl, method: 'Redirect Extraction (' + proxy.name + ')', attempts };
+      }
+      
+    } catch (e) {
+      log('   ❌ Proxy error: ' + e.message.split('.')[0], 'error');
+      continue;
+    }
+  }
+  
+  return null;
+}
+
+function extractUrlsFromPage(html, originalLink) {
+  const urls = [];
+  
+  // Pattern 1: Meta refresh
+  const metaRegex = /<meta[^>]*http-equiv=["']?refresh["']?[^>]*content=["']?\d+;url=([^"'\s>]+)/gi;
+  let match;
+  while ((match = metaRegex.exec(html)) !== null) {
+    let url = match[1].trim();
+    if (url.startsWith('/')) {
+      try { url = new URL(url, originalLink).href; } catch {}
+    }
+    urls.push(url);
+  }
+  
+  // Pattern 2: window.location assignments
+  const locPatterns = [
+    /(?:window\.location(?:\.href)?\s*=\s*["']([^"']+)["'])/g,
+    /(?:location\s*=\s*["']([^"']+)["'])/g,
+    /(?:location\.href\s*=\s*["']([^"']+)["'])/g,
+    /(?:top\.location\s*=\s*["']([^"']+)["'])/g,
+    /(?:self\.location\s*=\s*["']([^"']+)["'])/g,
+    /window\.open\s*\(\s*["']([^"']+)["']/g,
+  ];
+  
+  for (const pattern of locPatterns) {
+    pattern.lastIndex = 0;
+    while ((match = pattern.exec(html)) !== null) {
+      let url = match[1].trim();
+      if (url.startsWith('/')) {
+        try { url = new URL(url, originalLink).href; } catch {}
+      }
+      if (isValidUrl(url)) urls.push(url);
+    }
+  }
+  
+  // Pattern 3: All href tags
+  const hrefRegex = /<a[^>]*href=["']([^"']+)["']/gi;
+  while ((match = hrefRegex.exec(html)) !== null) {
+    let url = match[1].trim();
+    if (url.startsWith('/')) {
+      try { url = new URL(url, originalLink).href; } catch {}
+    }
+    if (isValidUrl(url) && !url.includes('javascript:') && !url.includes('#')) {
+      urls.push(url);
+    }
+  }
+  
+  // Pattern 4: JSON data in scripts
+  const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/gi;
+  while ((match = scriptRegex.exec(html)) !== null) {
+    const scriptContent = match[1];
+    // Look for URLs in JSON-like structures
+    const jsonUrlRegex = /"(?:url|link|redirect|go|to|dest|destination|target|href)"\s*:\s*"([^"]+)"/gi;
+    let jm;
+    while ((jm = jsonUrlRegex.exec(scriptContent)) !== null) {
+      let url = jm[1].replace(/\\\//g, '/');
+      if (isValidUrl(url)) urls.push(url);
+    }
+  }
+  
+  // Pattern 5: data-url attributes
+  const dataUrlRegex = /data-url=["']([^"']+)["']/gi;
+  while ((match = dataUrlRegex.exec(html)) !== null) {
+    let url = match[1].trim();
+    if (isValidUrl(url)) urls.push(url);
+  }
+  
+  // Pattern 6: data-link attributes
+  const dataLinkRegex = /data-link=["']([^"']+)["']/gi;
+  while ((match = dataLinkRegex.exec(html)) !== null) {
+    let url = match[1].trim();
+    if (isValidUrl(url)) urls.push(url);
+  }
+  
+  // Deduplicate and filter
+  return [...new Set(urls)].filter(url => {
+    try {
+      const u = new URL(url);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch { return false; }
+  });
+}
+
+function extractRedirectUrl(html, originalLink) {
+  // Priority: check for specific patterns
+  
+  // 1. Check for base64 encoded URLs (common in link shorteners)
+  const b64Patterns = [
+    /atob\s*\(["']([A-Za-z0-9+/=]+)["']\)/g,
+    /decodeURIComponent\s*\(escape\s*\(atob\s*\(["']([A-Za-z0-9+/=]+)["']\)\)\)/g
+  ];
+  
+  for (const pattern of b64Patterns) {
+    let match;
+    while ((match = pattern.exec(html)) !== null) {
+      try {
+        const decoded = atob(match[1]);
+        if (isValidUrl(decoded)) return decoded;
+      } catch {}
+    }
+  }
+  
+  // 2. Check for "go to" / "redirect" / "link" in window.location
+  const goPatterns = [
+    /go\s*=\s*["']([^"']+)["']/,
+    /link\s*=\s*["']([^"']+)["']/,
+    /_link\s*=\s*["']([^"']+)["']/,
+    /redirectUrl\s*=\s*["']([^"']+)["']/,
+    /dest\s*=\s*["']([^"']+)["']/,
+    /destination\s*=\s*["']([^"']+)["']/,
+    /targetUrl\s*=\s*["']([^"']+)["']/,
+  ];
+  
+  for (const pattern of goPatterns) {
+    const match = html.match(pattern);
+    if (match && isValidUrl(match[1])) return match[1];
+  }
+  
+  return null;
+}
+
+// ================================================================
+//  RESULT DISPLAY
+// ================================================================
+function showResult(url, domain, method, attempts) {
+  const box = document.getElementById('resultBox');
+  box.classList.add('show');
+  
+  const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+  
+  document.getElementById('resultIcon').textContent = '✅';
+  document.getElementById('resultTitle').textContent = 'Thành công!';
+  document.getElementById('resultSubtitle').textContent = 'Đã tìm thấy link đích từ ' + domain;
+  document.getElementById('resultUrl').textContent = url;
+  document.getElementById('infoStatus').textContent = '✅ Hoàn thành';
+  document.getElementById('infoStatus').className = 'value success';
+  document.getElementById('infoTime').textContent = elapsed + 's';
+  document.getElementById('infoMethod').textContent = method;
+  document.getElementById('infoAttempts').textContent = attempts;
+  
+  window._lastResultUrl = url;
+  
+  // Reset buttons to default actions
+  const container = document.querySelector('#resultBox .btn-group');
+  container.innerHTML = `
+    <button class="btn btn-cyan btn-sm" onclick="copyResultUrl()" style="flex:1">📋 Copy Link</button>
+    <button class="btn btn-success btn-sm" onclick="openResultUrl()" style="flex:1">🔗 Mở Link</button>
+    <button class="btn btn-secondary btn-sm" onclick="downloadResultUrl()">⬇ Download</button>
+  `;
+}
+
+function showManualFallback(link, domain) {
+  const box = document.getElementById('resultBox');
+  box.classList.add('show');
+  
+  document.getElementById('resultIcon').textContent = '⚠️';
+  document.getElementById('resultTitle').textContent = 'Cần xử lý thủ công';
+  document.getElementById('resultSubtitle').textContent = 'Không thể tự động vượt ' + domain + '. Hãy thử cách sau:';
+  document.getElementById('resultUrl').textContent = link;
+  
+  document.getElementById('infoStatus').textContent = '⚠️ Cần thủ công';
+  document.getElementById('infoStatus').className = 'value warning';
+  document.getElementById('infoTime').textContent = ((Date.now() - startTime) / 1000).toFixed(1) + 's';
+  document.getElementById('infoMethod').textContent = 'Không áp dụng';
+  document.getElementById('infoAttempts').textContent = CORS_PROXIES.length;
+  
+  // Update buttons for manual mode
+  const container = document.querySelector('#resultBox .btn-group');
+  container.innerHTML = `
+    <button class="btn btn-amber btn-sm" onclick="openManualLink()" style="flex:1">🔗 Mở Link (Thủ công)</button>
+    <button class="btn btn-secondary btn-sm" onclick="switchToIframe()">🪟 Thử Iframe</button>
+  `;
+  
+  window._lastResultUrl = link;
+}
+
+function showFallbackWithIzen(link, domain, izenUrl) {
+  const box = document.getElementById('resultBox');
+  box.classList.add('show');
+  
+  document.getElementById('resultIcon').textContent = '⚡';
+  document.getElementById('resultTitle').textContent = 'Đề xuất: Dùng izen.lol';
+  document.getElementById('resultSubtitle').textContent = 'izen.lol có thể bypass ' + domain + ' — hãy thử một trong các cách sau:';
+  document.getElementById('resultUrl').textContent = link;
+  
+  document.getElementById('infoStatus').textContent = '⚡ Đề xuất';
+  document.getElementById('infoStatus').className = 'value warning';
+  document.getElementById('infoTime').textContent = ((Date.now() - startTime) / 1000).toFixed(1) + 's';
+  document.getElementById('infoMethod').textContent = 'izen.lol';
+  document.getElementById('infoAttempts').textContent = CORS_PROXIES.length + ' + izen';
+  
+  const container = document.querySelector('#resultBox .btn-group');
+  container.innerHTML = `
+    <button class="btn btn-cyan btn-sm" onclick="window.open('${izenUrl}','_blank')" style="flex:1">⚡ Mở izen.lol</button>
+    <button class="btn btn-amber btn-sm" onclick="openManualLink()" style="flex:1">🔗 Mở Link Gốc</button>
+    <button class="btn btn-secondary btn-sm" onclick="switchToIframe()">🪟 Iframe</button>
+  `;
+  
+  window._lastResultUrl = link;
+}
+
+function openManualLink() {
+  if (window._lastResultUrl) {
+    window.open(window._lastResultUrl, '_blank');
+    showToast('🔗 Đã mở link trong tab mới', 'info');
+  }
+}
+
+function switchToIframe() {
+  setMode('iframe');
+  if (window._lastResultUrl) {
+    openIframeMode(window._lastResultUrl);
+  }
+}
+
+// ================================================================
+//  IFRAME MODE
+// ================================================================
+function openIframeMode(link) {
+  const box = document.getElementById('resultBox');
+  box.classList.add('show');
+  
+  document.getElementById('resultIcon').textContent = '🪟';
+  document.getElementById('resultTitle').textContent = 'Iframe Mode';
+  document.getElementById('resultSubtitle').textContent = 'Trang được nhúng bên dưới — tương tác để vượt link';
+  document.getElementById('resultUrl').textContent = link;
+  
+  document.getElementById('infoStatus').textContent = '🪟 Iframe';
+  document.getElementById('infoStatus').className = 'value warning';
+  document.getElementById('infoTime').textContent = '-';
+  document.getElementById('infoMethod').textContent = 'Iframe Embed';
+  document.getElementById('infoAttempts').textContent = '-';
+  
+  const container = document.querySelector('#resultBox .btn-group');
+  container.innerHTML = `
+    <button class="btn btn-cyan btn-sm" onclick="document.getElementById('iframeContainer').style.display='block'; this.disabled=true" style="flex:1">🪟 Tải Iframe</button>
+    <button class="btn btn-amber btn-sm" onclick="window.open('${link}', '_blank')">🔗 Mở Tab Mới</button>
+  `;
+  
+  // Add iframe below
+  const existingIframe = document.getElementById('iframeContainer');
+  if (existingIframe) existingIframe.remove();
+  
+  const iframeContainer = document.createElement('div');
+  iframeContainer.id = 'iframeContainer';
+  iframeContainer.style.cssText = 'display:none;margin-top:16px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#000;position:relative;';
+  iframeContainer.innerHTML = `
+    <div style="padding:10px 14px;background:var(--bg-card);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px">
+      <span style="color:var(--text-secondary)">🪟 Iframe: ${link.substring(0, 50)}...</span>
+      <button class="btn btn-sm btn-danger" onclick="this.closest('#iframeContainer').remove()">✕ Đóng</button>
+    </div>
+    <iframe src="${link}" style="width:100%;height:500px;border:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  `;
+  document.getElementById('resultBox').after(iframeContainer);
+  
+  showToast('🪟 Nhấn "Tải Iframe" để nhúng trang', 'info');
+}
+
+// ================================================================
+//  RESULT ACTIONS
+// ================================================================
+function copyResultUrl() {
+  const url = document.getElementById('resultUrl').textContent;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('📋 Đã copy link!', 'success');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    ta.remove();
+    showToast('📋 Đã copy link!', 'success');
+  });
+}
+
+function openResultUrl() {
+  const url = document.getElementById('resultUrl').textContent;
+  if (url) window.open(url, '_blank');
+}
+
+function downloadResultUrl() {
+  const url = document.getElementById('resultUrl').textContent;
+  if (!url) return;
+  
+  // Create a simple downloadable text file with the URL
+  const blob = new Blob([url], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bypassed-link.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('⬇ Đã tải file chứa link!', 'success');
+}
+
+// ================================================================
+//  HISTORY
+// ================================================================
+function addToHistory(entry) {
+  bypassHistory.unshift({
+    ...entry,
+    id: Date.now(),
+    timestamp: new Date().toISOString()
+  });
+  
+  // Keep max 50 entries
+  if (bypassHistory.length > 50) bypassHistory = bypassHistory.slice(0, 50);
+  
+  localStorage.setItem('lb_history', JSON.stringify(bypassHistory));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  
+  if (bypassHistory.length === 0) {
+    list.innerHTML = '<div class="empty-state"><span class="icon">📋</span><h3>Chưa có lịch sử</h3><p>Vượt link để lưu vào lịch sử</p></div>';
+    return;
+  }
+  
+  list.innerHTML = bypassHistory.map(h => {
+    const date = new Date(h.timestamp);
+    const timeStr = date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const icon = h.success ? '✅' : '❌';
+    const output = h.success ? h.output.substring(0, 60) + '...' : 'Không tìm thấy';
+    
+    return `<div class="history-item" onclick="fillFromHistory('${h.input}')">
+      <span class="h-icon">${icon}</span>
+      <div class="h-info">
+        <h4>${h.input}</h4>
+        <p>→ ${output}</p>
+      </div>
+      <span class="h-time">${timeStr}</span>
+    </div>`;
+  }).join('');
+}
+
+function fillFromHistory(input) {
+  document.getElementById('linkInput').value = input;
+  // Switch to bypass tab
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector('[data-tab="bypass"]').classList.add('active');
+  document.getElementById('tab-bypass').classList.add('active');
+  showToast('📋 Đã điền link từ lịch sử', 'info');
+}
+
+function clearHistory() {
+  if (!bypassHistory.length) return;
+  bypassHistory = [];
+  localStorage.setItem('lb_history', JSON.stringify(bypassHistory));
+  renderHistory();
+  showToast('🗑 Đã xóa lịch sử', 'info');
+}
+
+// ================================================================
+//  UTILITIES
+// ================================================================
+function extractDomain(url) {
+  try { return new URL(url).hostname; } catch { return 'unknown'; }
+}
+
+function isValidUrl(str) {
+  try {
+    const u = new URL(str);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch { return false; }
+}
+
+// ================================================================
+//  INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

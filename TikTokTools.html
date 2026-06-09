@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Tools Pro 🚀</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0f0f1a;
+  --bg-card: rgba(26, 26, 46, 0.75);
+  --bg-card-hover: rgba(34, 34, 64, 0.85);
+  --bg-input: rgba(22, 22, 37, 0.7);
+  --border: rgba(255,255,255,0.06);
+  --border-active: rgba(255,255,255,0.15);
+  --text-primary: #f0f0f5;
+  --text-secondary: #8888a0;
+  --text-muted: #555570;
+  --accent: #fe2c55;
+  --accent-hover: #ff4d7a;
+  --accent2: #25f4ee;
+  --accent3: #7c3aed;
+  --accent4: #10b981;
+  --accent5: #f59e0b;
+  --gradient: linear-gradient(135deg, #fe2c55, #7c3aed);
+  --gradient2: linear-gradient(135deg, #25f4ee, #7c3aed);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.5);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh; overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse at 15% 0%, rgba(254,44,85,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 100%, rgba(37,244,238,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(124,58,237,0.06) 0%, transparent 60%);
+}
+
+/* Animated floating orbs */
+body::before, body::after {
+  content: ''; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+  filter: blur(60px); opacity: 0.3; animation: floatOrb 20s ease-in-out infinite;
+}
+body::before {
+  width: 600px; height: 600px; top: -200px; right: -200px;
+  background: radial-gradient(circle, rgba(254,44,85,0.15), transparent 70%);
+  animation-delay: 0s;
+}
+body::after {
+  width: 500px; height: 500px; bottom: -200px; left: -150px;
+  background: radial-gradient(circle, rgba(37,244,238,0.1), transparent 70%);
+  animation-delay: -10s;
+}
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(50px, -50px) scale(1.1); }
+  50% { transform: translate(-30px, 30px) scale(0.95); }
+  75% { transform: translate(40px, 20px) scale(1.05); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+/* Layout */
+.app-container { max-width: 1200px; margin: 0 auto; padding: 20px 20px 80px; position: relative; z-index: 1; }
+
+/* Header */
+.header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px; background: var(--bg-card);
+  border-radius: var(--radius-lg); margin-bottom: 20px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  backdrop-filter: blur(24px) saturate(1.4);
+  animation: fadeDown 0.5s var(--bounce);
+}
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--gradient); display: flex; align-items: center;
+  justify-content: center; font-size: 20px; font-weight: 800;
+  box-shadow: 0 4px 16px rgba(254,44,85,0.35);
+  transition: var(--transition);
+}
+.logo:hover { transform: scale(1.08) rotate(-5deg); }
+.header-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.header-title span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  background: rgba(254,44,85,0.12); color: var(--accent); border: 1px solid rgba(254,44,85,0.2);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.6; }
+}
+.header-right { display: flex; align-items: center; gap: 12px; }
+
+/* Nav Tabs Desktop */
+.nav-tabs {
+  display: flex; gap: 4px; background: var(--bg-card);
+  border-radius: var(--radius-lg); padding: 4px; border: 1px solid var(--border);
+  margin-bottom: 20px; overflow-x: auto; backdrop-filter: blur(24px);
+  animation: fadeDown 0.5s var(--bounce); animation-delay: 0.1s; animation-fill-mode: both;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  background: transparent; color: var(--text-secondary);
+  transition: var(--transition); white-space: nowrap;
+  display: flex; align-items: center; gap: 8px; position: relative;
+  flex-shrink: 0;
+}
+.nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+.nav-tab:active { transform: scale(0.96); }
+.nav-tab.active {
+  background: var(--gradient); color: #fff;
+  box-shadow: 0 4px 16px rgba(254,44,85,0.35);
+}
+
+/* Tab Content with transition */
+.tab-content {
+  display: none; animation: fadeInTab 0.35s ease;
+}
+.tab-content.active { display: block; }
+@keyframes fadeInTab { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Stagger cards animation */
+.card, .service-card, .stat-card {
+  animation: cardIn 0.5s var(--bounce); animation-fill-mode: both;
+}
+@keyframes cardIn { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.stats-row .stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stats-row .stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stats-row .stat-card:nth-child(3) { animation-delay: 0.15s; }
+.stats-row .stat-card:nth-child(4) { animation-delay: 0.2s; }
+.grid-4 .service-card:nth-child(1) { animation-delay: 0.05s; }
+.grid-4 .service-card:nth-child(2) { animation-delay: 0.1s; }
+.grid-4 .service-card:nth-child(3) { animation-delay: 0.15s; }
+.grid-4 .service-card:nth-child(4) { animation-delay: 0.2s; }
+
+/* Grid */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+/* Glass Cards */
+.card {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 20px;
+  box-shadow: var(--shadow); transition: var(--transition);
+  backdrop-filter: blur(16px) saturate(1.2);
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+.card:hover {
+  border-color: var(--border-active);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.card-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.card-subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; transition: var(--transition);
+}
+.card:hover .card-icon { transform: scale(1.1); }
+.card-icon.red { background: rgba(254,44,85,0.12); }
+.card-icon.cyan { background: rgba(37,244,238,0.12); }
+.card-icon.purple { background: rgba(124,58,237,0.12); }
+.card-icon.green { background: rgba(16,185,129,0.12); }
+.card-icon.amber { background: rgba(245,158,11,0.12); }
+
+/* Service Cards */
+.service-card {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 20px;
+  transition: var(--transition); cursor: default;
+  position: relative; overflow: hidden;
+  backdrop-filter: blur(16px) saturate(1.2);
+}
+.service-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.service-card.views::before { background: var(--accent); box-shadow: 0 0 20px rgba(254,44,85,0.4); }
+.service-card.followers::before { background: var(--accent2); box-shadow: 0 0 20px rgba(37,244,238,0.4); }
+.service-card.likes::before { background: var(--accent3); box-shadow: 0 0 20px rgba(124,58,237,0.4); }
+.service-card.comments::before { background: var(--accent4); box-shadow: 0 0 20px rgba(16,185,129,0.4); }
+.service-card:hover {
+  border-color: var(--border-active); transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.service-card .icon { font-size: 32px; margin-bottom: 10px; display: block; transition: var(--transition); }
+.service-card:hover .icon { transform: scale(1.15) rotate(-5deg); }
+.service-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.service-card p { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4; }
+.service-card .price { font-weight: 800; font-size: 20px; color: var(--accent2); }
+.service-card .price span { font-size: 12px; color: var(--text-secondary); font-weight: 400; }
+
+/* Inputs */
+.input-group { margin-bottom: 14px; }
+.input-group label {
+  display: block; font-size: 11px; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.input-group .hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+input, select, textarea {
+  width: 100%; padding: 11px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg-input);
+  color: var(--text-primary); font-size: 14px;
+  transition: var(--transition); outline: none;
+  font-family: inherit; backdrop-filter: blur(8px);
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(254,44,85,0.1), 0 0 20px rgba(254,44,85,0.05);
+}
+input::placeholder, textarea::placeholder { color: var(--text-muted); }
+select {
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238888a0' d='M6 8.5L1.5 4h9z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px;
+}
+textarea { resize: vertical; min-height: 80px; }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: var(--transition); text-decoration: none;
+  position: relative; overflow: hidden;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0);
+  transition: var(--transition);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:hover::after { background: rgba(255,255,255,0.04); }
+.btn:active { transform: translateY(0) scale(0.97); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+.btn-primary { background: var(--gradient); color: #fff; box-shadow: 0 4px 16px rgba(254,44,85,0.25); }
+.btn-primary:hover { box-shadow: 0 6px 24px rgba(254,44,85,0.4); transform: translateY(-2px); }
+.btn-secondary { background: rgba(255,255,255,0.06); color: var(--text-primary); border: 1px solid var(--border); }
+.btn-secondary:hover { background: rgba(255,255,255,0.1); }
+.btn-success { background: rgba(16,185,129,0.15); color: var(--accent4); border: 1px solid rgba(16,185,129,0.2); }
+.btn-success:hover { background: rgba(16,185,129,0.25); }
+.btn-danger { background: rgba(254,44,85,0.12); color: var(--accent); border: 1px solid rgba(254,44,85,0.15); }
+.btn-warning { background: rgba(245,158,11,0.12); color: var(--accent5); border: 1px solid rgba(245,158,11,0.15); }
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+.btn-full { width: 100%; }
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Profile Result */
+.profile-result {
+  display: none; margin-top: 16px; padding: 16px;
+  background: var(--bg-input); border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  animation: fadeInTab 0.3s ease;
+}
+.profile-result.show { display: block; }
+.profile-header { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+.profile-avatar {
+  width: 70px; height: 70px; border-radius: 50%; object-fit: cover;
+  border: 3px solid var(--accent); background: var(--bg-card);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; flex-shrink: 0; overflow: hidden;
+  box-shadow: 0 0 20px rgba(254,44,85,0.2);
+}
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-name h2 { font-size: 18px; font-weight: 700; }
+.profile-name .username { color: var(--text-secondary); font-size: 13px; }
+.profile-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.profile-stat {
+  text-align: center; padding: 10px; background: var(--bg-card);
+  border-radius: var(--radius-sm); transition: var(--transition);
+}
+.profile-stat:hover { background: var(--bg-card-hover); transform: translateY(-1px); }
+.profile-stat .value { font-size: 17px; font-weight: 800; }
+.profile-stat .label { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+.profile-bio { margin-top: 12px; padding: 10px; background: var(--bg-card); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+/* Loading & Skeleton */
+.loading-spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.1); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-input) 25%, rgba(255,255,255,0.03) 50%, var(--bg-input) 75%);
+  background-size: 200% 100%; animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* Progress bar */
+.progress-bar {
+  width: 100%; height: 8px; background: var(--bg-input);
+  border-radius: 4px; overflow: hidden; margin-top: 8px;
+}
+.progress-fill {
+  height: 100%; border-radius: 4px;
+  background: var(--gradient); transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+.progress-fill::after {
+  content: ''; position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  animation: progressShimmer 2s infinite;
+}
+@keyframes progressShimmer { 0% { left: -100%; } 100% { left: 100%; } }
+
+/* Stats Row */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  padding: 18px; border: 1px solid var(--border); text-align: center;
+  backdrop-filter: blur(16px) saturate(1.2);
+  transition: var(--transition); cursor: default;
+}
+.stat-card:hover {
+  border-color: var(--border-active); transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.stat-card .stat-value { font-size: 30px; font-weight: 800; line-height: 1; margin-bottom: 4px; transition: var(--transition); }
+.stat-card .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card .stat-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+.stat-card.total .stat-value { color: var(--accent2); }
+.stat-card.pending .stat-value { color: var(--accent5); }
+.stat-card.completed .stat-value { color: var(--accent4); }
+.stat-card.balance .stat-value { color: var(--accent); }
+
+/* Order History */
+.order-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: var(--bg-input);
+  border-radius: var(--radius-sm); margin-bottom: 8px;
+  border: 1px solid var(--border); transition: var(--transition);
+}
+.order-item:hover { border-color: var(--border-active); background: rgba(255,255,255,0.03); }
+.order-item .service-icon { font-size: 22px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 8px; }
+.order-item .order-info { flex: 1; }
+.order-item .order-info h4 { font-size: 13px; font-weight: 600; }
+.order-item .order-info p { font-size: 11px; color: var(--text-secondary); }
+.order-status {
+  padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  white-space: nowrap;
+}
+.order-status.processing { background: rgba(245,158,11,0.12); color: var(--accent5); animation: pulse 2s ease-in-out infinite; }
+.order-status.completed { background: rgba(16,185,129,0.12); color: var(--accent4); }
+.order-status.pending { background: rgba(99,102,241,0.12); color: #818cf8; }
+
+/* Instructions */
+.instruction-step {
+  display: flex; gap: 14px; padding: 16px;
+  background: var(--bg-input); border-radius: var(--radius-sm);
+  margin-bottom: 12px; border: 1px solid var(--border);
+  align-items: flex-start; transition: var(--transition);
+}
+.instruction-step:hover { border-color: var(--border-active); }
+.instruction-step .step-num {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--gradient); display: flex; align-items: center;
+  justify-content: center; font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+}
+.instruction-step .step-content { flex: 1; }
+.instruction-step .step-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.instruction-step .step-content p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.instruction-step .step-content code {
+  display: inline-block; padding: 2px 8px; background: rgba(254,44,85,0.1);
+  border-radius: 4px; font-size: 12px; color: var(--accent);
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+/* Toast */
+.toast-container {
+  position: fixed; top: 20px; right: 20px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  padding: 14px 20px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500; background: var(--bg-card);
+  border: 1px solid var(--border); color: var(--text-primary);
+  box-shadow: var(--shadow-lg);
+  max-width: 360px; display: flex; align-items: center; gap: 10px;
+  backdrop-filter: blur(24px) saturate(1.4);
+  pointer-events: auto;
+  position: relative; overflow: hidden;
+}
+.toast::after {
+  content: ''; position: absolute; bottom: 0; left: 0; height: 2px;
+  width: 100%; background: rgba(255,255,255,0.1);
+  animation: toastProgress 3s linear forwards;
+}
+@keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
+.toast.success { border-color: rgba(16,185,129,0.3); }
+.toast.error { border-color: rgba(254,44,85,0.3); }
+.toast.info { border-color: rgba(37,244,238,0.3); }
+.toast.warning { border-color: rgba(245,158,11,0.3); }
+.toast .toast-icon { font-size: 18px; }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; display: block; }
+.empty-state h3 { font-size: 16px; color: var(--text-secondary); margin-bottom: 4px; }
+.empty-state p { font-size: 13px; }
+
+/* Modal */
+.modal-overlay {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6); z-index: 1000; backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.modal-overlay.active { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  padding: 24px; max-width: 500px; width: 90%;
+  border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+  max-height: 90vh; overflow-y: auto;
+  backdrop-filter: blur(24px) saturate(1.4);
+  animation: modalIn 0.3s var(--bounce);
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.modal-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,0.06);
+  color: var(--text-secondary); cursor: pointer;
+  font-size: 16px; transition: var(--transition);
+}
+.modal-close:hover { background: rgba(255,255,255,0.12); color: var(--text-primary); transform: rotate(90deg); }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 10px 12px; color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); transition: var(--transition); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Mobile Bottom Nav */
+.mobile-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(15, 15, 26, 0.92); backdrop-filter: blur(24px) saturate(1.4);
+  border-top: 1px solid var(--border); z-index: 500;
+  padding: 6px 0; padding-bottom: max(6px, env(safe-area-inset-bottom, 6px));
+  animation: navUp 0.4s var(--bounce);
+}
+@keyframes navUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.mobile-nav-inner { display: flex; justify-content: space-around; max-width: 600px; margin: 0 auto; }
+.mobile-nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 10px; border: none; background: transparent;
+  color: var(--text-muted); font-size: 10px; cursor: pointer;
+  transition: var(--transition); border-radius: 8px;
+  min-width: 50px;
+}
+.mobile-nav-btn .nav-icon { font-size: 20px; line-height: 1; transition: var(--transition); }
+.mobile-nav-btn .nav-label { font-size: 9px; font-weight: 500; }
+.mobile-nav-btn:hover { color: var(--text-secondary); }
+.mobile-nav-btn.active { color: var(--accent); }
+.mobile-nav-btn.active .nav-icon { transform: scale(1.15); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3, .grid-4, .provider-list { grid-template-columns: 1fr; }
+  .input-row { grid-template-columns: 1fr; }
+  .profile-stats { grid-template-columns: repeat(2, 1fr); }
+  .header { flex-direction: column; gap: 12px; text-align: center; }
+  .header-left { flex-direction: column; }
+  .desktop-nav { display: none; }
+  .mobile-nav { display: block; }
+  .app-container { padding-bottom: 80px; }
+}
+
+/* TikTok neon glow accent effects */
+.glow-red { box-shadow: 0 0 20px rgba(254,44,85,0.15); }
+.glow-cyan { box-shadow: 0 0 20px rgba(37,244,238,0.15); }
+.glow-purple { box-shadow: 0 0 20px rgba(124,58,237,0.15); }
+
+/* Copy button feedback */
+.copy-feedback { animation: copyFlash 0.4s ease; }
+@keyframes copyFlash { 0%, 100% { background: var(--bg-card); } 50% { background: rgba(16,185,129,0.15); } }
+
+/* Badge list items */
+.api-status-item {
+  padding: 12px 14px; background: var(--bg-input); border-radius: var(--radius-sm);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+  border: 1px solid var(--border); transition: var(--transition);
+}
+.api-status-item:hover { border-color: var(--border-active); }
+.status-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  transition: var(--transition);
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">TT</div>
+      <div>
+        <div class="header-title"><span>TikTok</span> Tools Pro</div>
+        <div style="font-size:11px;color:var(--text-muted)">🚀 All-in-One TikTok Service Platform</div>
+      </div>
+    </div>
+    <div class="header-right" style="display:flex;align-items:center;gap:8px">
+      <span class="header-badge" id="modeBadge" style="cursor:pointer" onclick="toggleMode()" title="Nhấn để chuyển chế độ">🧪 DEMO</span>
+      <span class="header-badge">🔥 LIVE</span>
+    </div>
+  </header>
+
+  <!-- NAV TABS - Desktop -->
+  <nav class="nav-tabs desktop-nav" id="nav-tabs">
+    <button class="nav-tab active" data-tab="dashboard">📊 Dashboard</button>
+    <button class="nav-tab" data-tab="lookup">🔍 Dò Acc</button>
+    <button class="nav-tab" data-tab="services">⚡ Buff</button>
+    <button class="nav-tab" data-tab="orders">📦 Orders</button>
+    <button class="nav-tab" data-tab="accounts">👥 Tài khoản</button>
+    <button class="nav-tab" data-tab="dame">⚠️ Dame</button>
+    <button class="nav-tab" data-tab="settings">⚙️ Settings</button>
+    <button class="nav-tab" data-tab="guide">📖 Guide</button>
+  </nav>
+
+  <!-- TAB: DASHBOARD -->
+  <div class="tab-content active" id="tab-dashboard">
+    <div class="stats-row">
+      <div class="stat-card total">
+        <span class="stat-icon">📊</span>
+        <div class="stat-value" id="dash-total-orders">0</div>
+        <div class="stat-label">Total Orders</div>
+      </div>
+      <div class="stat-card completed">
+        <span class="stat-icon">✅</span>
+        <div class="stat-value" id="dash-completed">0</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-card pending">
+        <span class="stat-icon">⏳</span>
+        <div class="stat-value" id="dash-pending">0</div>
+        <div class="stat-label">Processing</div>
+      </div>
+      <div class="stat-card balance">
+        <span class="stat-icon">💰</span>
+        <div class="stat-value" id="dash-balance">$0</div>
+        <div class="stat-label">Balance Spent</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card glow-red">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon red">🚀</span> Quick Order</div>
+        </div>
+        <div class="input-group">
+          <label>Service Type</label>
+          <select id="quick-service">
+            <option value="views">📹 TikTok Views</option>
+            <option value="followers">👥 TikTok Followers</option>
+            <option value="likes">❤️ TikTok Likes</option>
+            <option value="comment_likes">💬 Comment Likes</option>
+            <option value="shares">🔄 TikTok Shares</option>
+          </select>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Username / URL</label>
+            <input type="text" id="quick-username" placeholder="@username or video URL">
+          </div>
+          <div class="input-group">
+            <label>Quantity</label>
+            <input type="number" id="quick-quantity" value="100" min="10" step="10">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="placeQuickOrder()">🚀 Place Order</button>
+      </div>
+
+      <div class="card glow-cyan">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon cyan">🔥</span> Recent Activity</div>
+        </div>
+        <div id="recent-activity">
+          <div class="empty-state">
+            <span class="icon">📋</span>
+            <h3>No recent orders</h3>
+            <p>Your order history will appear here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: LOOKUP -->
+  <div class="tab-content" id="tab-lookup">
+    <div class="grid-2">
+      <div class="card glow-purple">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon purple">🔍</span> Dò Acc TikTok</div>
+          <span style="font-size:11px;color:var(--text-muted)">Tra cứu thông tin tài khoản</span>
+        </div>
+        <div class="input-group">
+          <label>TikTok Username</label>
+          <input type="text" id="lookup-username" placeholder="Nhập username TikTok (vd: tiktok)">
+          <div class="hint">ℹ️ Không cần @, chỉ cần nhập username</div>
+        </div>
+        <div class="input-group">
+          <label>Phương thức tra cứu</label>
+          <select id="lookup-method">
+            <option value="direct">🌐 Trực tiếp (Free - không cần API)</option>
+            <option value="oembed">🔗 TikTok oEmbed (Free)</option>
+            <option value="rapidapi">⚡ RapidAPI (Cần key - Free tier)</option>
+            <option value="tikapi">🔌 TikAPI (Dùng thử 5 ngày)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="lookupProfile()">
+          🔍 Tra Cứu
+        </button>
+
+        <div class="profile-result" id="profile-result">
+          <div class="profile-header">
+            <div class="profile-avatar" id="profile-avatar">👤</div>
+            <div class="profile-name">
+              <h2 id="profile-nickname">-</h2>
+              <div class="username" id="profile-username">@-</div>
+            </div>
+          </div>
+          <div class="profile-stats" id="profile-stats">
+            <div class="profile-stat">
+              <div class="value" id="p-followers">-</div>
+              <div class="label">Followers</div>
+            </div>
+            <div class="profile-stat">
+              <div class="value" id="p-following">-</div>
+              <div class="label">Following</div>
+            </div>
+            <div class="profile-stat">
+              <div class="value" id="p-likes">-</div>
+              <div class="label">Likes</div>
+            </div>
+            <div class="profile-stat">
+              <div class="value" id="p-videos">-</div>
+              <div class="label">Videos</div>
+            </div>
+          </div>
+          <div class="profile-bio" id="profile-bio">-</div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-success" onclick='copyProfileJson()'>📋 Copy JSON</button>
+            <button class="btn btn-sm btn-secondary" onclick='openTikTokProfile()'>🔗 Open TikTok</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon cyan">💡</span> Thông Tin</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.7">
+          <p style="margin-bottom:12px"><strong style="color:var(--text-primary)">🔍 Cách dùng:</strong></p>
+          <ol style="padding-left:20px;margin-bottom:12px">
+            <li>Nhập <strong>username</strong> TikTok cần tra</li>
+            <li>Chọn phương thức tra cứu</li>
+            <li>Nhấn "Tra Cứu" để lấy thông tin</li>
+          </ol>
+          <p style="margin-bottom:12px"><strong style="color:var(--text-primary)">📊 Dữ liệu trả về:</strong></p>
+          <ul style="padding-left:20px;margin-bottom:12px">
+            <li>Tên hiển thị & avatar</li>
+            <li>Số lượng Followers</li>
+            <li>Số lượng Following</li>
+            <li>Tổng số Like nhận được</li>
+            <li>Tổng số Video đã đăng</li>
+            <li>Bio/tiểu sử</li>
+          </ul>
+          <div style="padding:12px;background:rgba(16,185,129,0.08);border-radius:8px;font-size:12px;border:1px solid rgba(16,185,129,0.15);line-height:1.6">
+            <strong style="color:var(--accent4)">✅ 2 cách FREE không cần API key:</strong><br>
+            • <strong>Trực tiếp:</strong> Lấy dữ liệu từ trang TikTok qua CORS proxy<br>
+            • <strong>TikTok oEmbed:</strong> API chính thức từ TikTok (miễn phí)<br><br>
+            💡 <strong style="color:var(--accent5)">Mẹo:</strong> Nếu 1 proxy bị lỗi, vào API Settings đổi proxy khác!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: BUFF SERVICES -->
+  <div class="tab-content" id="tab-services">
+    <div class="grid-4">
+      <div class="service-card views">
+        <span class="icon">📹</span>
+        <h3>Views</h3>
+        <p>Tăng lượt xem video TikTok</p>
+        <div class="price">$0.49 <span>/ 1K</span></div>
+        <div style="margin-top:10px">
+          <button class="btn btn-sm btn-primary btn-full" onclick="openOrderModal('views')">Order Now</button>
+        </div>
+      </div>
+      <div class="service-card followers">
+        <span class="icon">👥</span>
+        <h3>Followers</h3>
+        <p>Tăng người theo dõi TikTok</p>
+        <div class="price">$1.99 <span>/ 1K</span></div>
+        <div style="margin-top:10px">
+          <button class="btn btn-sm btn-primary btn-full" onclick="openOrderModal('followers')">Order Now</button>
+        </div>
+      </div>
+      <div class="service-card likes">
+        <span class="icon">❤️</span>
+        <h3>Likes</h3>
+        <p>Tăng lượt thích video</p>
+        <div class="price">$0.79 <span>/ 1K</span></div>
+        <div style="margin-top:10px">
+          <button class="btn btn-sm btn-primary btn-full" onclick="openOrderModal('likes')">Order Now</button>
+        </div>
+      </div>
+      <div class="service-card comments">
+        <span class="icon">💬</span>
+        <h3>Comment Likes</h3>
+        <p>Tăng like cho bình luận</p>
+        <div class="price">$0.39 <span>/ 1K</span></div>
+        <div style="margin-top:10px">
+          <button class="btn btn-sm btn-primary btn-full" onclick="openOrderModal('comment_likes')">Order Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon amber">📋</span> Tất Cả Dịch Vụ</div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Min / Max</th>
+                <th>Price / 1K</th>
+                <th>Speed</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>📹 Views</td>
+                <td>100 - 100K</td>
+                <td style="font-weight:600;color:var(--accent2)">$0.49</td>
+                <td><span style="color:var(--accent4)">⚡ Fast</span></td>
+                <td><button class="btn btn-sm btn-primary" onclick="openOrderModal('views')">Order</button></td>
+              </tr>
+              <tr>
+                <td>👥 Followers</td>
+                <td>50 - 50K</td>
+                <td style="font-weight:600;color:var(--accent2)">$1.99</td>
+                <td><span style="color:var(--accent5)">🔄 Medium</span></td>
+                <td><button class="btn btn-sm btn-primary" onclick="openOrderModal('followers')">Order</button></td>
+              </tr>
+              <tr>
+                <td>❤️ Likes</td>
+                <td>50 - 50K</td>
+                <td style="font-weight:600;color:var(--accent2)">$0.79</td>
+                <td><span style="color:var(--accent4)">⚡ Fast</span></td>
+                <td><button class="btn btn-sm btn-primary" onclick="openOrderModal('likes')">Order</button></td>
+              </tr>
+              <tr>
+                <td>💬 Comment Likes</td>
+                <td>50 - 20K</td>
+                <td style="font-weight:600;color:var(--accent2)">$0.39</td>
+                <td><span style="color:var(--accent4)">⚡ Fast</span></td>
+                <td><button class="btn btn-sm btn-primary" onclick="openOrderModal('comment_likes')">Order</button></td>
+              </tr>
+              <tr>
+                <td>🔄 Shares</td>
+                <td>50 - 20K</td>
+                <td style="font-weight:600;color:var(--accent2)">$0.59</td>
+                <td><span style="color:var(--accent5)">🔄 Medium</span></td>
+                <td><button class="btn btn-sm btn-primary" onclick="openOrderModal('shares')">Order</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ORDERS -->
+  <div class="tab-content" id="tab-orders">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="card-icon cyan">📦</span> Order History</div>
+        <button class="btn btn-sm btn-danger" onclick="clearOrders()">🗑 Clear All</button>
+      </div>
+      <div id="orders-list">
+        <div class="empty-state">
+          <span class="icon">📋</span>
+          <h3>No orders yet</h3>
+          <p>Your orders will appear here after you place them</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ACCOUNTS -->
+  <div class="tab-content" id="tab-accounts">
+    <div class="grid-2">
+      <div class="card glow-purple">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon purple">➕</span> Thêm Tài Khoản</div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>TikTok Username</label>
+            <input type="text" id="acc-username" placeholder="@username">
+          </div>
+          <div class="input-group">
+            <label>Tên hiển thị</label>
+            <input type="text" id="acc-nickname" placeholder="VD: Dame...">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Ghi chú</label>
+          <input type="text" id="acc-notes" placeholder="Ghi chú về tài khoản này...">
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="addAccount()" style="flex:1">💾 Lưu Tài Khoản</button>
+          <button class="btn btn-sm btn-secondary" onclick="clearAllAccounts()">🗑 Xóa tất cả</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon cyan">📊</span> Thống Kê</div>
+        </div>
+        <div class="stats-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:0">
+          <div class="stat-card total" style="padding:14px">
+            <span class="stat-icon">👥</span>
+            <div class="stat-value" id="acc-total">0</div>
+            <div class="stat-label">Tài Khoản</div>
+          </div>
+          <div class="stat-card completed" style="padding:14px">
+            <span class="stat-icon">✅</span>
+            <div class="stat-value" id="acc-checked">0</div>
+            <div class="stat-label">Đã Tra</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding:12px;background:rgba(16,185,129,0.06);border-radius:8px;border:1px solid rgba(16,185,129,0.12)">
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5">💡 Nhấn vào <strong style="color:var(--accent2)">🔍 Tra</strong> để tra cứu nhanh tài khoản đã lưu.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-header">
+        <div class="card-title"><span class="card-icon green">📋</span> Danh Sách Tài Khoản</div>
+        <span style="font-size:11px;color:var(--text-muted)" id="acc-count-label">0 tài khoản</span>
+      </div>
+      <div id="accounts-list">
+        <div class="empty-state">
+          <span class="icon">👤</span>
+          <h3>Chưa có tài khoản nào</h3>
+          <p>Thêm tài khoản TikTok để dễ dàng tra cứu sau</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: DAME (BÁO CÁO) -->
+  <div class="tab-content" id="tab-dame">
+    <div class="grid-2">
+      <!-- Mass Report Card -->
+      <div class="card glow-red">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon red">🚨</span> Mass Report</div>
+          <span style="font-size:11px;color:var(--text-muted)">Gửi báo cáo hàng loạt</span>
+        </div>
+        <div class="input-group">
+          <label>TikTok Username</label>
+          <input type="text" id="dame-username" placeholder="Nhập username cần báo cáo...">
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Lý do báo cáo</label>
+            <select id="dame-reason">
+              <option value="spam">📢 Spam</option>
+              <option value="harassment">🔪 Quấy rối / Bắt nạt</option>
+              <option value="impersonation">🎭 Mạo danh</option>
+              <option value="sensitive">🔞 Nội dung nhạy cảm</option>
+              <option value="copyright">©️ Vi phạm bản quyền</option>
+              <option value="illegal">⚖️ Nội dung bất hợp pháp</option>
+              <option value="hate_speech">💢 Ngôn từ thù địch</option>
+              <option value="scam">💰 Lừa đảo / Scam</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Số lượt</label>
+            <input type="number" id="dame-count" value="3" min="1" max="20">
+            <div class="hint">Tối đa 20 lượt</div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Nội dung báo cáo (tùy chọn)</label>
+          <textarea id="dame-note" placeholder="Mô tả thêm về vi phạm..." style="min-height:60px"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-danger btn-full" onclick="submitDameReport()" id="dame-submit-btn">
+            🚨 Gửi Báo Cáo
+          </button>
+        </div>
+        <!-- Progress -->
+        <div id="dame-progress" style="display:none;margin-top:12px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+            <span id="dame-progress-text">Đang gửi...</span>
+            <span id="dame-progress-pct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="dame-progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+        <!-- Result -->
+        <div id="dame-result" style="display:none;margin-top:12px;padding:12px;background:rgba(16,185,129,0.06);border-radius:8px;border:1px solid rgba(16,185,129,0.12)">
+          <p style="font-size:13px;color:var(--accent4)" id="dame-result-text">✅ Báo cáo thành công!</p>
+          <button class="btn btn-sm btn-secondary" onclick="openTikTokReportPage()" style="margin-top:6px">🔗 Mở trang báo cáo TikTok</button>
+        </div>
+      </div>
+
+      <!-- Blacklist / Watchlist Card -->
+      <div class="card" style="border-color:rgba(254,44,85,0.15)">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon red">📋</span> Blacklist</div>
+          <span style="font-size:11px;color:var(--text-muted)">Danh sách theo dõi</span>
+        </div>
+        <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px">
+          <div class="stat-card pending" style="padding:12px">
+            <div class="stat-value" style="font-size:22px" id="bl-total">0</div>
+            <div class="stat-label">Theo dõi</div>
+          </div>
+          <div class="stat-card balance" style="padding:12px">
+            <div class="stat-value" style="font-size:22px" id="bl-reported">0</div>
+            <div class="stat-label">Đã báo cáo</div>
+          </div>
+          <div class="stat-card completed" style="padding:12px">
+            <div class="stat-value" style="font-size:22px" id="bl-banned">0</div>
+            <div class="stat-label">Đã ban</div>
+          </div>
+        </div>
+        <div class="input-group" style="margin-bottom:10px">
+          <div style="display:flex;gap:6px">
+            <input type="text" id="bl-username" placeholder="@username" style="flex:1" onkeydown="if(event.key==='Enter')addToBlacklist()">
+            <button class="btn btn-sm btn-danger" onclick="addToBlacklist()" style="white-space:nowrap">➕ Thêm</button>
+          </div>
+        </div>
+        <div id="bl-list">
+          <div class="empty-state" style="padding:20px 10px">
+            <span class="icon" style="font-size:32px">🛡️</span>
+            <h3>Danh sách trống</h3>
+            <p>Thêm tài khoản đáng ngờ vào blacklist</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report History -->
+    <div style="margin-top:16px">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon amber">📜</span> Lịch Sử Báo Cáo</div>
+          <button class="btn btn-sm btn-danger" onclick="clearDameHistory()">🗑 Xóa</button>
+        </div>
+        <div id="dame-history">
+          <div class="empty-state">
+            <span class="icon">📋</span>
+            <h3>Chưa có báo cáo nào</h3>
+            <p>Lịch sử báo cáo sẽ hiển thị ở đây</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: API SETTINGS -->
+  <div class="tab-content" id="tab-settings">
+    <div class="grid-2">
+      <div class="card glow-purple">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon purple">⚙️</span> API Configuration</div>
+        </div>
+        <div class="input-group">
+          <label>🌐 RapidAPI Key</label>
+          <input type="text" id="api-rapidapi" placeholder="Nhập RapidAPI key...">
+          <div class="hint">ℹ️ Lấy key tại <a href="https://rapidapi.com/" target="_blank" style="color:var(--accent2)">rapidapi.com</a></div>
+        </div>
+        <div class="input-group">
+          <label>🔌 TikAPI Key</label>
+          <input type="text" id="api-tikapi" placeholder="Nhập TikAPI key...">
+          <div class="hint">ℹ️ Lấy key tại <a href="https://tikapi.io/" target="_blank" style="color:var(--accent2)">tikapi.io</a></div>
+        </div>
+        <div class="input-group">
+          <label>⚡ SMM Panel API Key (Buff thật)</label>
+          <input type="text" id="api-service" placeholder="Nhập API key SMM panel...">
+          <div class="hint">⚠️ SMM API yêu cầu POST request. CORS proxy có thể không hỗ trợ POST → cần backend proxy để chạy ổn định. Để trống để dùng chế độ Demo.</div>
+        </div>
+        <div class="input-group">
+          <label>🏢 SMM Panel URL</label>
+          <input type="text" id="api-smm-url" placeholder="https://your-panel.com/api/v2" value="https://justanotherpanel.com/api/v2">
+          <div class="hint">ℹ️ URL API của SMM panel (thường là /api/v2)</div>
+        </div>
+        <div class="input-group">
+          <label>🖥 Proxy Server URL</label>
+          <input type="text" id="api-proxy-url" placeholder="http://localhost:3456" value="http://localhost:3456">
+          <div class="hint">ℹ️ Chạy <code>node server.js</code> rồi để nguyên <strong>http://localhost:3456</strong></div>
+        </div>
+        <div class="input-group" style="margin-bottom:8px">
+          <label>🆔 Service IDs (cho từng dịch vụ)</label>
+          <div class="input-row" style="gap:6px">
+            <div style="flex:1"><input type="text" id="api-sid-views" placeholder="Views ID" style="font-size:12px"><span style="font-size:10px;color:var(--text-muted)">📹 Views</span></div>
+            <div style="flex:1"><input type="text" id="api-sid-followers" placeholder="Followers ID" style="font-size:12px"><span style="font-size:10px;color:var(--text-muted)">👥 Followers</span></div>
+            <div style="flex:1"><input type="text" id="api-sid-likes" placeholder="Likes ID" style="font-size:12px"><span style="font-size:10px;color:var(--text-muted)">❤️ Likes</span></div>
+            <div style="flex:1"><input type="text" id="api-sid-comment_likes" placeholder="Cmt Likes ID" style="font-size:12px"><span style="font-size:10px;color:var(--text-muted)">💬 Cmt</span></div>
+            <div style="flex:1"><input type="text" id="api-sid-shares" placeholder="Shares ID" style="font-size:12px"><span style="font-size:10px;color:var(--text-muted)">🔄 Shares</span></div>
+          </div>
+          <div class="hint">ℹ️ Lấy Service ID từ API docs của SMM panel — để trống nếu dùng Demo</div>
+        </div>
+        <div class="input-group">
+          <label>🌐 CORS Proxy</label>
+          <select id="api-cors" onchange="document.getElementById('api-cors-input').value=this.value">
+            <option value="https://api.allorigins.win/raw?url=">🆓 allorigins.win</option>
+            <option value="https://corsproxy.io/?url=">🆓 corsproxy.io</option>
+            <option value="https://api.allorigins.win/get?url=">🆓 allorigins.win/get</option>
+            <option value="https://cors-anywhere.herokuapp.com/">🆓 cors-anywhere</option>
+          </select>
+          <input type="text" id="api-cors-input" placeholder="Hoặc nhập CORS proxy custom..." style="margin-top:6px">
+          <div class="hint">ℹ️ Nếu proxy mặc định bị lỗi, hãy chọn proxy khác</div>
+        </div>
+        <button class="btn btn-success btn-full" onclick="saveApiSettings()">💾 Save Settings</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon green">🔐</span> API Key Status</div>
+        </div>
+        <div id="api-status-list">
+          <div class="api-status-item">
+            <span class="status-dot" id="status-rapidapi"></span>
+            <span style="flex:1;font-size:13px">RapidAPI Key</span>
+            <span id="status-rapidapi-text" style="font-size:12px;color:var(--text-muted)">Not set</span>
+          </div>
+          <div class="api-status-item">
+            <span class="status-dot" id="status-tikapi"></span>
+            <span style="flex:1;font-size:13px">TikAPI Key</span>
+            <span id="status-tikapi-text" style="font-size:12px;color:var(--text-muted)">Not set</span>
+          </div>
+          <div class="api-status-item">
+            <span class="status-dot" id="status-service"></span>
+            <span style="flex:1;font-size:13px">SMM Panel</span>
+            <span id="status-service-text" style="font-size:12px;color:var(--text-muted)">⚡ Demo Mode</span>
+          </div>
+          <div class="api-status-item">
+            <span class="status-dot" id="status-proxy"></span>
+            <span style="flex:1;font-size:13px">Proxy Server</span>
+            <span id="status-proxy-text" style="font-size:12px;color:var(--text-muted)">Chưa kết nối</span>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-sm btn-success" id="btnTestProxy" onclick="testProxyConnection()" style="flex:1">🔌 Test Proxy</button>
+          <button class="btn btn-sm btn-primary" id="btnTestBalance" onclick="testBalance()" style="flex:1">💰 Test Balance</button>
+          <button class="btn btn-sm btn-secondary" id="btnFetchServices" onclick="fetchServices()" style="flex:1">📋 Lấy Services</button>
+        </div>
+
+        <div id="test-result" style="display:none;margin-top:10px;padding:10px;border-radius:8px;font-size:12px;line-height:1.5"></div>
+
+        <div style="margin-top:12px;padding:10px;background:rgba(254,44,85,0.06);border-radius:8px;border:1px solid rgba(254,44,85,0.1)">
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5">
+            <strong style="color:var(--accent)">⚠️ Chế độ DEMO vs THẬT:</strong><br>
+            • <strong>Demo</strong>: mô phỏng số liệu, không tốn phí<br>
+            • <strong>API thật</strong>: gọi SMM Panel qua proxy server — <strong>tốn tiền thật</strong><br>
+            • Chạy <code>node server.js</code> trước khi bật chế độ thật
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: GUIDE -->
+  <div class="tab-content" id="tab-guide">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="card-icon amber">📖</span> Hướng Dẫn</div>
+      </div>
+
+      <div style="margin-bottom:24px;background:rgba(16,185,129,0.04);border-radius:12px;padding:16px;border:1px solid rgba(16,185,129,0.12)">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent4)">🆓 CÁCH 1: Trực tiếp (Free, không cần API key)</h3>
+        <div class="instruction-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Vào tab Dò Acc TikTok</h4>
+            <p>Chọn phương thức <strong>"Trực tiếp (Free - không cần API)"</strong></p>
+          </div>
+        </div>
+        <div class="instruction-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Nhập username & Tra Cứu</h4>
+            <p>Tool sẽ dùng <strong>CORS proxy</strong> để lấy dữ liệu từ TikTok</p>
+          </div>
+        </div>
+        <div class="instruction-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Nếu bị lỗi</h4>
+            <p>Vào <strong>API Settings</strong> → đổi CORS proxy (có 4 proxy để chọn)</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;background:rgba(37,244,238,0.04);border-radius:12px;padding:16px;border:1px solid rgba(37,244,238,0.12)">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent2)">🆓 CÁCH 2: TikTok oEmbed (Free, chính thức từ TikTok)</h3>
+        <div class="instruction-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Chọn phương thức "TikTok oEmbed"</h4>
+            <p>Tool gọi API chính thức của TikTok <code>tiktok.com/oembed</code></p>
+          </div>
+        </div>
+        <div class="instruction-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Xem kết quả</h4>
+            <p>Lấy được tên, avatar cơ bản. Nếu lỗi sẽ tự fallback về phương thức Trực tiếp</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;background:rgba(124,58,237,0.04);border-radius:12px;padding:16px;border:1px solid rgba(124,58,237,0.12)">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent3)">⚡ CÁCH 3: RapidAPI (Có gói Free)</h3>
+        <div class="instruction-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Đăng ký RapidAPI Free</h4>
+            <p>Vào <a href="https://rapidapi.com/hub" target="_blank" style="color:var(--accent2)">rapidapi.com/hub</a> → đăng ký miễn phí</p>
+          </div>
+        </div>
+        <div class="instruction-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Tìm "TikTok API" → Subscribe Free</h4>
+            <p>Copy <code>X-RapidAPI-Key</code> từ Code Snippets</p>
+          </div>
+        </div>
+        <div class="instruction-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Cấu hình vào Tool</h4>
+            <p>Vào <strong>API Settings</strong> → paste key → Save</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px;padding:16px;background:rgba(254,44,85,0.04);border-radius:12px;border:1px solid rgba(254,44,85,0.1)">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent)">📊 Tổng Kết</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Cách</th>
+              <th>Cần Key?</th>
+              <th>Dữ liệu</th>
+              <th>Độ ổn định</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="color:var(--accent4)">🆓 Trực tiếp</span></td>
+              <td>❌ Không</td>
+              <td>Cơ bản</td>
+              <td><span style="color:var(--accent5)">Trung bình</span></td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--accent2)">🆓 oEmbed</span></td>
+              <td>❌ Không</td>
+              <td>Tên + Avatar</td>
+              <td><span style="color:var(--accent4)">✅ Tốt</span></td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--accent3)">⚡ RapidAPI</span></td>
+              <td>✅ Có</td>
+              <td>Đầy đủ</td>
+              <td><span style="color:var(--accent4)">✅ Tốt</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav" id="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-btn active" data-tab="dashboard">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="lookup">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-label">Dò Acc</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="services">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">Buff</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="orders">
+      <span class="nav-icon">📦</span>
+      <span class="nav-label">Orders</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="accounts">
+      <span class="nav-icon">👥</span>
+      <span class="nav-label">T.khoản</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="dame">
+      <span class="nav-icon">⚠️</span>
+      <span class="nav-label">Dame</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="settings">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">Settings</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="guide">
+      <span class="nav-icon">📖</span>
+      <span class="nav-label">Guide</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeOrderModal()">✕</button>
+    <h3><span id="modal-icon">📹</span> <span id="modal-title">New Order</span></h3>
+    <div class="input-group">
+      <label>TikTok URL / Username</label>
+      <input type="text" id="modal-target" placeholder="URL hoặc @username...">
+      <div class="hint" id="modal-target-hint">ℹ️ Nhập URL video hoặc username</div>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Quantity</label>
+        <input type="number" id="modal-quantity" value="100" min="10" step="10">
+      </div>
+      <div class="input-group">
+        <label>Price</label>
+        <input type="text" id="modal-price" readonly style="font-weight:700;color:var(--accent2)">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" style="flex:1" onclick="submitOrder()">🚀 Submit</button>
+      <button class="btn btn-secondary" onclick="closeOrderModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ================================================================
+//  DATA
+// ================================================================
+const SERVICES = {
+  views: { name: 'TikTok Views', icon: '📹', price: 0.49, min: 100, max: 100000, hint: 'URL video TikTok' },
+  followers: { name: 'TikTok Followers', icon: '👥', price: 1.99, min: 50, max: 50000, hint: '@username' },
+  likes: { name: 'TikTok Likes', icon: '❤️', price: 0.79, min: 50, max: 50000, hint: 'URL video TikTok' },
+  comment_likes: { name: 'Comment Likes', icon: '💬', price: 0.39, min: 50, max: 20000, hint: 'URL comment' },
+  shares: { name: 'TikTok Shares', icon: '🔄', price: 0.59, min: 50, max: 20000, hint: 'URL video TikTok' }
+};
+
+let orders = JSON.parse(localStorage.getItem('tt_orders') || '[]');
+let apiSettings = JSON.parse(localStorage.getItem('tt_api_settings') || '{}');
+let cachedServices = JSON.parse(localStorage.getItem('tt_cached_services') || '[]');
+const CORS_PROXIES = [
+  'https://api.allorigins.win/raw?url=',
+  'https://corsproxy.io/?url=',
+  'https://api.allorigins.win/get?url=',
+  'https://cors-anywhere.herokuapp.com/'
+];
+let currentOrderType = 'views';
+let useRealApi = false; // toggle: false = demo, true = that
+
+// ================================================================
+//  TABS (Desktop + Mobile)
+// ================================================================
+function switchTab(tabName) {
+  document.querySelectorAll('.nav-tab, .mobile-nav-btn').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll(`[data-tab="${tabName}"]`).forEach(t => t.classList.add('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+}
+
+document.querySelectorAll('.nav-tab, .mobile-nav-btn').forEach(tab => {
+  tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+});
+
+// ================================================================
+//  TOAST
+// ================================================================
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = '<span class="toast-icon">' + (icons[type] || 'ℹ️') + '</span>' + msg;
+  container.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0'; t.style.transform = 'translateX(100px)';
+    t.style.transition = 'all 0.4s ease';
+    setTimeout(() => t.remove(), 400);
+  }, 3000);
+}
+
+// ================================================================
+//  API SETTINGS
+// ================================================================
+function loadApiSettings() {
+  const keys = ['rapidapi', 'tikapi', 'service', 'smm-url', 'proxy-url', 'sid-views', 'sid-followers', 'sid-likes', 'sid-comment_likes', 'sid-shares', 'cors', 'cors-input'];
+  keys.forEach(k => {
+    const el = document.getElementById('api-' + k);
+    if (el && apiSettings[k]) el.value = apiSettings[k];
+  });
+  updateApiStatus();
+  const corsVal = apiSettings['cors'] || 'https://api.allorigins.win/raw?url=';
+  const select = document.getElementById('api-cors');
+  const input = document.getElementById('api-cors-input');
+  if (select && input && !apiSettings['cors-input']) {
+    if (Array.from(select.options).some(o => o.value === corsVal)) {
+      select.value = corsVal;
+    } else {
+      input.value = corsVal;
+    }
+  }
+}
+
+function saveApiSettings() {
+  ['rapidapi', 'tikapi', 'service', 'smm-url', 'proxy-url', 'sid-views', 'sid-followers', 'sid-likes', 'sid-comment_likes', 'sid-shares'].forEach(k => {
+    const el = document.getElementById('api-' + k);
+    if (el) apiSettings[k] = el.value.trim();
+  });
+  const corsInput = document.getElementById('api-cors-input')?.value.trim();
+  const corsSelect = document.getElementById('api-cors')?.value;
+  apiSettings['cors'] = corsInput || corsSelect;
+  apiSettings['cors-input'] = corsInput;
+  localStorage.setItem('tt_api_settings', JSON.stringify(apiSettings));
+  updateApiStatus();
+  showToast('✅ API settings saved!', 'success');
+}
+
+function updateApiStatus() {
+  ['rapidapi', 'tikapi'].forEach(k => {
+    const dot = document.getElementById('status-' + k);
+    const text = document.getElementById('status-' + k + '-text');
+    if (apiSettings[k] && apiSettings[k].length > 5) {
+      dot.style.background = 'var(--accent4)';
+      dot.style.boxShadow = '0 0 8px rgba(16,185,129,0.5)';
+      text.textContent = '✓ Connected';
+      text.style.color = 'var(--accent4)';
+    } else {
+      dot.style.background = 'var(--text-muted)';
+      dot.style.boxShadow = 'none';
+      text.textContent = 'Not set';
+      text.style.color = 'var(--text-muted)';
+    }
+  });
+  // Update SMM panel status
+  const smmDot = document.getElementById('status-service');
+  const smmText = document.getElementById('status-service-text');
+  if (apiSettings.service && apiSettings.service.length > 5) {
+    smmDot.style.background = 'var(--accent4)';
+    smmDot.style.boxShadow = '0 0 8px rgba(16,185,129,0.5)';
+    smmText.textContent = '✓ SMM Panel Ready';
+    smmText.style.color = 'var(--accent4)';
+  } else {
+    smmDot.style.background = 'var(--accent5)';
+    smmDot.style.boxShadow = '0 0 8px rgba(245,158,11,0.4)';
+    smmText.textContent = '⚡ Demo Mode (nhập API key để chạy thật)';
+    smmText.style.color = 'var(--accent5)';
+  }
+  // Update proxy status
+  const pDot = document.getElementById('status-proxy');
+  const pText = document.getElementById('status-proxy-text');
+  if (apiSettings['proxy-url']) {
+    pDot.style.background = 'var(--accent5)';
+    pDot.style.boxShadow = '0 0 8px rgba(245,158,11,0.4)';
+    pText.textContent = '⏳ Chưa test (nhấn "Test Proxy")';
+    pText.style.color = 'var(--accent5)';
+  } else {
+    pDot.style.background = 'var(--text-muted)';
+    pDot.style.boxShadow = 'none';
+    pText.textContent = 'Chưa cấu hình';
+    pText.style.color = 'var(--text-muted)';
+  }
+}
+
+// ================================================================
+//  PROFILE LOOKUP
+// ================================================================
+function formatNumber(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n.toString();
+}
+
+async function lookupProfile() {
+  const username = document.getElementById('lookup-username').value.trim().replace('@', '');
+  const method = document.getElementById('lookup-method').value;
+  const btn = document.querySelector('#tab-lookup .btn-primary');
+  const result = document.getElementById('profile-result');
+
+  if (!username) { showToast('⚠️ Vui lòng nhập username TikTok', 'warning'); return; }
+
+  btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span> Đang tra cứu...';
+  result.classList.remove('show');
+
+  try {
+    let data = null;
+    if (method === 'direct') data = await lookupDirect(username);
+    else if (method === 'oembed') data = await lookupOEmbed(username);
+    else if (method === 'rapidapi') data = await lookupRapidAPI(username);
+    else if (method === 'tikapi') data = await lookupTikAPI(username);
+    if (data) { displayProfile(data); showToast('✅ Tra cứu thành công!', 'success'); }
+    else { showToast('❌ Không tìm thấy thông tin', 'error'); }
+  } catch (e) { showToast('❌ Lỗi: ' + e.message, 'error'); }
+
+  btn.disabled = false; btn.innerHTML = '🔍 Tra Cứu';
+}
+
+async function lookupDirect(username) {
+  const corsProxy = apiSettings.cors || 'https://api.allorigins.win/raw?url=';
+  const url = `https://www.tiktok.com/@${username}`;
+
+  async function tryFetch(proxyUrl) {
+    const encodedUrl = proxyUrl.includes('?url=') ? proxyUrl + encodeURIComponent(url) : proxyUrl + url;
+    const resp = await fetch(encodedUrl, { signal: AbortSignal.timeout(8000) });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return proxyUrl.includes('/get?url=') ? (await resp.json()).contents : await resp.text();
+  }
+
+  try {
+    let html = null;
+    try { html = await tryFetch(corsProxy); } catch (e) {
+      for (const proxy of CORS_PROXIES) {
+        if (proxy === corsProxy) continue;
+        try { html = await tryFetch(proxy); break; } catch(e) { continue; }
+      }
+      if (!html) throw new Error('All CORS proxies failed.');
+    }
+
+    const match = html.match(/<script[^>]*id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>([\s\S]*?)<\/script>/);
+    if (match) {
+      try {
+        const json = JSON.parse(match[1]);
+        const user = json?.__DEFAULT_SCOPE__?.['webapp.user-detail']?.userInfo?.user
+                  || json?.__DEFAULT_SCOPE__?.['SeoPageModule']?.userInfo?.user
+                  || json?.UserModule?.users?.[username];
+        if (user) return user;
+      } catch (e) { /* fall */ }
+    }
+
+    const avatarMatch = html.match(/og:image[^>]*content="([^"]+)"/);
+    const nameMatch = html.match(/<title[^>]*>([^<]+)\(@([^)]+)\)/);
+    const descMatch = html.match(/<meta[^>]*name="description"[^>]*content="([^"]+)"/);
+
+    if (avatarMatch || nameMatch) {
+      return {
+        avatarLarger: avatarMatch ? avatarMatch[1] : '',
+        nickname: nameMatch ? nameMatch[1].trim() : username,
+        uniqueId: username,
+        signature: descMatch ? descMatch[1] : '',
+        followerCount: 0, followingCount: 0, heartCount: 0, videoCount: 0
+      };
+    }
+    throw new Error('Không thể trích xuất dữ liệu. Thử dùng API key.');
+  } catch (e) { throw new Error(e.message); }
+}
+
+async function lookupOEmbed(username) {
+  const proxy = apiSettings.cors || 'https://api.allorigins.win/raw?url=';
+  const oembedUrl = `https://www.tiktok.com/oembed?url=https://www.tiktok.com/@${username}`;
+
+  async function tryFetch(proxyUrl) {
+    const encoded = proxyUrl.includes('?url=') ? proxyUrl + encodeURIComponent(oembedUrl) : proxyUrl + oembedUrl;
+    const resp = await fetch(encoded, { signal: AbortSignal.timeout(8000) });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return proxyUrl.includes('/get?url=') ? (await resp.json()).contents : await resp.text();
+  }
+
+  try {
+    let text = null;
+    try { text = await tryFetch(proxy); } catch (e) {
+      for (const p of CORS_PROXIES) {
+        if (p === proxy) continue;
+        try { text = await tryFetch(p); break; } catch(e) { continue; }
+      }
+    }
+    if (text) {
+      try {
+        const json = JSON.parse(text);
+        if (json && json.author_name) {
+          return {
+            nickname: json.author_name, uniqueId: username,
+            avatarLarger: json.thumbnail_url || json.thumbnail || '',
+            signature: json.title || '',
+            followerCount: 0, followingCount: 0, heartCount: 0, videoCount: 0
+          };
+        }
+      } catch (e) { /* fall */ }
+    }
+    return await lookupDirect(username);
+  } catch (e) { return await lookupDirect(username); }
+}
+
+async function lookupRapidAPI(username) {
+  const key = apiSettings.rapidapi;
+  if (!key) throw new Error('Cấu hình RapidAPI key trong API Settings');
+  const resp = await fetch('https://tiktok-api23.p.rapidapi.com/api/user/info?unique_id=' + username, {
+    headers: { 'X-RapidAPI-Key': key, 'X-RapidAPI-Host': 'tiktok-api23.p.rapidapi.com' }
+  });
+  if (!resp.ok) throw new Error('RapidAPI error: ' + resp.status);
+  return (await resp.json())?.data?.user;
+}
+
+async function lookupTikAPI(username) {
+  const key = apiSettings.tikapi;
+  if (!key) throw new Error('Cấu hình TikAPI key trong API Settings');
+  const resp = await fetch('https://api.tikapi.io/user/info?username=' + username, {
+    headers: { 'api-key': key }
+  });
+  if (!resp.ok) throw new Error('TikAPI error: ' + resp.status);
+  return (await resp.json())?.data?.user;
+}
+
+function setAvatar(url) {
+  const el = document.getElementById('profile-avatar');
+  if (!url) { el.innerHTML = '👤'; return; }
+  const img = document.createElement('img');
+  img.src = url; img.alt = 'avatar'; img.onerror = () => { el.innerHTML = '👤'; };
+  el.innerHTML = ''; el.appendChild(img);
+}
+
+function displayProfile(user) {
+  const result = document.getElementById('profile-result');
+  result.classList.add('show');
+  setAvatar(user.avatarLarger || user.avatarMedium);
+  document.getElementById('profile-nickname').textContent = user.nickname || user.uniqueId || '-';
+  document.getElementById('profile-username').textContent = '@' + (user.uniqueId || '-');
+  document.getElementById('p-followers').textContent = formatNumber(user.followerCount || user.follower_count || 0);
+  document.getElementById('p-following').textContent = formatNumber(user.followingCount || user.following_count || user.friendCount || 0);
+  document.getElementById('p-likes').textContent = formatNumber(user.heartCount || user.total_favorited || user.heart || 0);
+  document.getElementById('p-videos').textContent = formatNumber(user.videoCount || user.video_count || user.aweme_count || 0);
+  document.getElementById('profile-bio').textContent = user.signature || 'No bio';
+  window._lastProfile = user;
+}
+
+function copyProfileJson() {
+  if (!window._lastProfile) return;
+  navigator.clipboard.writeText(JSON.stringify(window._lastProfile, null, 2)).then(() => showToast('📋 Copied!', 'success'));
+}
+
+function openTikTokProfile() {
+  const u = document.getElementById('lookup-username').value.trim().replace('@', '');
+  if (u) window.open('https://www.tiktok.com/@' + u, '_blank');
+}
+
+// ================================================================
+//  ORDER MODAL
+// ================================================================
+function openOrderModal(type) {
+  currentOrderType = type;
+  document.body.style.overflow = 'hidden';
+  const svc = SERVICES[type];
+  document.getElementById('modal-icon').textContent = svc.icon;
+  document.getElementById('modal-title').textContent = 'Order ' + svc.name;
+  document.getElementById('modal-target').value = '';
+  document.getElementById('modal-target').placeholder = svc.hint;
+  document.getElementById('modal-target-hint').textContent = 'ℹ️ ' + svc.hint;
+  document.getElementById('modal-quantity').value = svc.min;
+  updateModalPrice();
+  document.getElementById('order-modal').classList.add('active');
+}
+
+function closeOrderModal() {
+  document.getElementById('order-modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function updateModalPrice() {
+  const svc = SERVICES[currentOrderType];
+  const qty = parseInt(document.getElementById('modal-quantity').value) || svc.min;
+  document.getElementById('modal-price').value = '$' + ((qty / 1000) * svc.price).toFixed(2);
+}
+
+document.getElementById('modal-quantity').addEventListener('input', updateModalPrice);
+
+// ================================================================
+//  REAL SMM API — gọi qua proxy server
+// ================================================================
+async function callProxy(action, extra = {}) {
+  const proxyUrl = apiSettings['proxy-url'] || 'http://localhost:3456';
+  const panelUrl = apiSettings['smm-url'] || 'https://justanotherpanel.com/api/v2';
+  const apiKey = apiSettings.service;
+
+  const body = { panelUrl, apiKey, action, ...extra };
+
+  const resp = await fetch(proxyUrl + '/api/smm', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return await resp.json();
+}
+
+async function testProxyConnection() {
+  const btn = document.getElementById('btnTestProxy');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>'; }
+  const resultDiv = document.getElementById('test-result');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '⏳ Đang kiểm tra kết nối...';
+  resultDiv.style.background = 'rgba(245,158,11,0.06)';
+  resultDiv.style.border = '1px solid rgba(245,158,11,0.15)';
+
+  try {
+    const data = await callProxy('balance');
+    if (data.balance !== undefined) {
+      const fmt = data._format;
+      const fmtInfo = fmt ? `<br>🔧 API format: <code>${fmt.key}</code> + <code>${fmt.action}</code>` : '';
+      resultDiv.innerHTML = '✅ <strong>Kết nối thành công!</strong><br>💰 Balance: <strong>$' + parseFloat(data.balance).toFixed(2) + '</strong>'
+        + (data.currency ? '<br>📊 Currency: ' + data.currency : '')
+        + fmtInfo;
+      resultDiv.style.background = 'rgba(16,185,129,0.06)';
+      resultDiv.style.border = '1px solid rgba(16,185,129,0.15)';
+      // Update proxy status
+      document.getElementById('status-proxy').style.background = 'var(--accent4)';
+      document.getElementById('status-proxy').style.boxShadow = '0 0 8px rgba(16,185,129,0.5)';
+      document.getElementById('status-proxy-text').textContent = '✓ Connected ($' + parseFloat(data.balance).toFixed(2) + ')';
+      document.getElementById('status-proxy-text').style.color = 'var(--accent4)';
+      // Update dashboard balance
+      document.getElementById('dash-balance').textContent = '$' + parseFloat(data.balance).toFixed(2);
+      useRealApi = true;
+      showToast('✅ Proxy + SMM panel connected!', 'success');
+    } else if (data.error) {
+      const rawHtml = data.raw ? '<br><details><summary style="cursor:pointer;color:var(--accent2)">📄 Xem raw response</summary><code style="font-size:10px;word-break:break-all">' + data.raw + '</code></details>' : '';
+      resultDiv.innerHTML = '❌ <strong>Lỗi từ SMM panel:</strong> ' + data.error
+        + rawHtml
+        + '<br><br>💡 <strong>Cách fix:</strong>'
+        + '<br>1. Kiểm tra <strong>API key</strong> có đúng không?'
+        + '<br>2. <strong>Panel URL</strong> đã đúng chưa? (VD: https://justanotherpanel.com/api/v2)'
+        + '<br>3. Panel có hỗ trợ <code>key</code> làm param name không? (1 số panel dùng <code>api_key</code>)'
+        + '<br>4. Xem log ở terminal <code>node server.js</code> để biết chi tiết';
+      resultDiv.style.background = 'rgba(254,44,85,0.06)';
+      resultDiv.style.border = '1px solid rgba(254,44,85,0.15)';
+      useRealApi = false;
+    } else {
+      resultDiv.innerHTML = '⚠️ <strong>Phản hồi không mong đợi:</strong><br><code style="font-size:11px">' + JSON.stringify(data).slice(0, 500) + '</code>'
+        + '<br><br>💡 Kiểm tra log ở terminal proxy server';
+      resultDiv.style.background = 'rgba(254,44,85,0.06)';
+      resultDiv.style.border = '1px solid rgba(254,44,85,0.15)';
+    }
+  } catch (e) {
+    resultDiv.innerHTML = '❌ <strong>Lỗi kết nối proxy:</strong> ' + e.message
+      + '<br>💡 Đã chạy <code>node server.js</code> chư? Proxy URL đúng chưa?';
+    resultDiv.style.background = 'rgba(254,44,85,0.06)';
+    resultDiv.style.border = '1px solid rgba(254,44,85,0.15)';
+    document.getElementById('status-proxy').style.background = 'var(--accent)';
+    document.getElementById('status-proxy').style.boxShadow = '0 0 8px rgba(254,44,85,0.5)';
+    document.getElementById('status-proxy-text').textContent = '✕ Lỗi: ' + e.message.split('.')[0];
+    document.getElementById('status-proxy-text').style.color = 'var(--accent)';
+    useRealApi = false;
+  }
+  btn.disabled = false;
+  btn.innerHTML = '🔌 Test Proxy';
+}
+
+async function testBalance() {
+  const btn = document.getElementById('btnTestBalance');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>'; }
+  const resultDiv = document.getElementById('test-result');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '⏳ Đang lấy balance...';
+  resultDiv.style.background = 'rgba(245,158,11,0.06)';
+  resultDiv.style.border = '1px solid rgba(245,158,11,0.15)';
+  try {
+    const data = await callProxy('balance');
+    if (data.balance !== undefined) {
+      resultDiv.innerHTML = '💰 <strong>Balance:</strong> $' + parseFloat(data.balance).toFixed(2)
+        + (data.currency ? ' (' + data.currency + ')' : '');
+      resultDiv.style.background = 'rgba(16,185,129,0.06)';
+      resultDiv.style.border = '1px solid rgba(16,185,129,0.15)';
+      document.getElementById('dash-balance').textContent = '$' + parseFloat(data.balance).toFixed(2);
+    } else {
+      resultDiv.innerHTML = '❌ ' + (data.error || JSON.stringify(data));
+      resultDiv.style.background = 'rgba(254,44,85,0.06)';
+      resultDiv.style.border = '1px solid rgba(254,44,85,0.15)';
+    }
+  } catch (e) {
+    resultDiv.innerHTML = '❌ Lỗi: ' + e.message;
+    resultDiv.style.background = 'rgba(254,44,85,0.06)';
+    resultDiv.style.border = '1px solid rgba(254,44,85,0.15)';
+  }
+  if (btn) { btn.disabled = false; btn.innerHTML = '💰 Test Balance'; }
+}
+
+async function fetchServices() {
+  const btn = document.getElementById('btnFetchServices');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>'; }
+  const resultDiv = document.getElementById('test-result');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '⏳ Đang lấy danh sách services...';
+  resultDiv.style.background = 'rgba(245,158,11,0.06)';
+  resultDiv.style.border = '1px solid rgba(245,158,11,0.15)';
+  try {
+    const proxyUrl = apiSettings['proxy-url'] || 'http://localhost:3456';
+    const panelUrl = apiSettings['smm-url'] || '';
+    const apiKey = apiSettings.service;
+    if (!panelUrl || !apiKey) {
+      resultDiv.innerHTML = '❌ Cần cấu hình SMM Panel URL và API key trước';
+      if (btn) { btn.disabled = false; btn.innerHTML = '📋 Lấy Services'; }
+      return;
+    }
+    const resp = await fetch(proxyUrl + '/api/smm/services', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ panelUrl, apiKey })
+    });
+    const data = await resp.json();
+    if (Array.isArray(data) && data.length > 0) {
+      cachedServices = data;
+      localStorage.setItem('tt_cached_services', JSON.stringify(data));
+      // Filter TikTok services
+      const tiktokSvcs = data.filter(s =>
+        s.name && s.name.toLowerCase().includes('tiktok')
+      );
+      let autoFillBtn = '';
+      if (tiktokSvcs.length > 0) {
+        autoFillBtn = '<button class="btn btn-sm btn-success" onclick="autoFillTikTokServices()" style="margin-top:8px">⚡ Auto-fill Service IDs cho TikTok</button>';
+      }
+      resultDiv.innerHTML = '✅ <strong>Đã lấy ' + data.length + ' services</strong>'
+        + (tiktokSvcs.length > 0
+          ? '<br>📱 TikTok services: <strong>' + tiktokSvcs.length + '</strong>'
+          : '<br>⚠️ Không tìm thấy TikTok service — kiểm tra panel')
+        + autoFillBtn
+        + '<div style="max-height:200px;overflow-y:auto;margin-top:8px;font-size:11px">'
+        + (tiktokSvcs.length > 0
+          ? tiktokSvcs.slice(0, 20).map(s =>
+              '<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)">'
+              + '🆔 ' + s.service + ' — ' + s.name
+              + ' — <span style="color:var(--accent2)">$' + parseFloat(s.price).toFixed(4) + '</span>'
+              + ' / ' + s.quantity + '</div>'
+            ).join('')
+          : data.slice(0, 10).map(s =>
+              '<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:10px">'
+              + '🆔 ' + s.service + ' — ' + (s.name || '?') + '</div>'
+            ).join('')
+          + (data.length > 10 ? '<div style="padding:4px 0;color:var(--text-muted)">… và ' + (data.length - 10) + ' services khác</div>' : '')
+        )
+        + '</div>';
+      resultDiv.style.background = 'rgba(16,185,129,0.06)';
+      resultDiv.style.border = '1px solid rgba(16,185,129,0.15)';
+      showToast('✅ Đã lấy ' + data.length + ' services từ panel', 'success');
+    } else if (data.error) {
+      resultDiv.innerHTML = '❌ Lỗi: ' + data.error;
+      resultDiv.style.background = 'rgba(254,44,85,0.06)';
+      resultDiv.style.border = '1px solid rgba(254,44,85,0.15)';
+    } else {
+      resultDiv.innerHTML = '⚠️ Dữ liệu không đúng định dạng:<br><code style="font-size:11px">' + JSON.stringify(data).slice(0, 200) + '</code>';
+      resultDiv.style.background = 'rgba(254,44,85,0.06)';
+      resultDiv.style.border = '1px solid rgba(254,44,85,0.15)';
+    }
+    if (btn) { btn.disabled = false; btn.innerHTML = '📋 Lấy Services'; }
+  } catch (e) {
+    resultDiv.innerHTML = '❌ Lỗi: ' + e.message + '<br>💡 Đã chạy <code>node server.js</code> chưa?';
+    resultDiv.style.background = 'rgba(254,44,85,0.06)';
+    resultDiv.style.border = '1px solid rgba(254,44,85,0.15)';
+    if (btn) { btn.disabled = false; btn.innerHTML = '📋 Lấy Services'; }
+  }
+}
+
+// ================================================================
+//  SUBMIT ORDER — DEMO or REAL
+// ================================================================
+async function submitOrder() {
+  const svc = SERVICES[currentOrderType];
+  const target = document.getElementById('modal-target').value.trim();
+  const qty = parseInt(document.getElementById('modal-quantity').value) || svc.min;
+  if (!target) { showToast('⚠️ Nhập URL hoặc username', 'warning'); return; }
+  if (qty < svc.min) { showToast('⚠️ Tối thiểu ' + svc.min, 'warning'); return; }
+  if (qty > svc.max) { showToast('⚠️ Tối đa ' + svc.max, 'warning'); return; }
+  
+  const order = { id: Date.now(), type: currentOrderType, service: svc.name, icon: svc.icon,
+    target, quantity: qty, price: ((qty / 1000) * svc.price).toFixed(2), status: 'processing', createdAt: new Date().toISOString() };
+  orders.unshift(order);
+  localStorage.setItem('tt_orders', JSON.stringify(orders));
+  closeOrderModal(); renderOrders(); updateDashboard();
+
+  if (useRealApi && apiSettings.service) {
+    // REAL: gọi SMM panel qua proxy
+    showToast('⏳ Đặt order thật qua SMM panel...', 'info');
+    try {
+      const sidKey = 'sid-' + currentOrderType;
+      const serviceId = apiSettings[sidKey];
+      if (!serviceId) {
+        showToast('⚠️ Chưa cấu hình Service ID cho ' + svc.name + '. Vào Settings để nhập.', 'warning');
+        simulateOrderCompletion(order);
+        return;
+      }
+      const data = await callProxy('add', { service: serviceId, link: target, quantity: qty });
+      if (data.order) {
+        order.smmOrderId = data.order;
+        localStorage.setItem('tt_orders', JSON.stringify(orders));
+        renderOrders();
+        showToast('✅ Order thật #' + data.order + ' đã được tạo trên panel!', 'success');
+        pollSMMOrder(order);
+      } else if (data.error) {
+        showToast('❌ Panel lỗi: ' + data.error, 'error');
+        simulateOrderCompletion(order);
+      } else {
+        showToast('⚠️ Panel phản hồi: ' + JSON.stringify(data), 'warning');
+        simulateOrderCompletion(order);
+      }
+    } catch (e) {
+      showToast('❌ Lỗi gọi API: ' + e.message, 'error');
+      simulateOrderCompletion(order);
+    }
+  } else {
+    // DEMO
+    if (!apiSettings.service) {
+      showToast('ℹ️ Chạy ở chế độ Demo (cấu hình API key trong Settings để dùng thật)', 'info');
+    }
+    showToast('✅ Order demo: ' + qty + ' ' + svc.name, 'success');
+    simulateOrderCompletion(order);
+  }
+}
+
+// SMM Panel API Integration (standard JAP format)
+// Note: SMM panels may block CORS requests from browsers.
+// If requests fail, configure a CORS proxy in Settings, or
+// use a backend proxy. Works best with panels that allow CORS.
+async function smmFetch(url, params) {
+  const corsProxy = apiSettings.cors || '';
+  // Handle both ?url= and raw URL suffix proxy formats
+  const fullUrl = corsProxy ? (corsProxy.includes('?url=') ? corsProxy + encodeURIComponent(url) : corsProxy + url) : url;
+  
+  const resp = await fetch(fullUrl, {
+    method: corsProxy ? 'GET' : 'POST',
+    headers: corsProxy ? {} : { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: corsProxy ? undefined : params
+  });
+  
+  if (corsProxy && corsProxy.includes('/get?url=')) {
+    return JSON.parse((await resp.json()).contents);
+  }
+  if (corsProxy && corsProxy.includes('/raw?url=')) {
+    const text = await resp.text();
+    return JSON.parse(text);
+  }
+  return await resp.json();
+}
+
+async function placeSMMOrder(order) {
+  const smmUrl = apiSettings['smm-url'] || '';
+  const apiKey = apiSettings.service;
+  const sidKey = 'sid-' + order.type;
+  const serviceId = apiSettings[sidKey];
+  
+  if (!smmUrl) { showToast('⚠️ Chưa cấu hình SMM Panel URL', 'warning'); return null; }
+  if (!serviceId) {
+    showToast('⚠️ Chưa cấu hình Service ID cho ' + order.service, 'warning');
+    return null;
+  }
+  
+  const params = new URLSearchParams();
+  params.append('key', apiKey);
+  params.append('action', 'add');
+  params.append('service', serviceId);
+  params.append('link', order.target);
+  params.append('quantity', order.quantity);
+  
+  try {
+    const data = await smmFetch(smmUrl, params);
+    if (data.order) return data;
+    if (data.error) { showToast('❌ SMM Error: ' + data.error, 'error'); return null; }
+    showToast('⚠️ Unexpected SMM response: ' + JSON.stringify(data), 'warning');
+    return null;
+  } catch (e) {
+    showToast('❌ SMM API error: ' + e.message + '. Try enabling CORS proxy in Settings.', 'error');
+    return null;
+  }
+}
+
+async function pollSMMOrder(order) {
+  let attempts = 0;
+  const maxAttempts = 18; // 3 phut
+  
+  showToast('⏳ Đang kiểm tra trạng thái order #' + order.smmOrderId + '...', 'info');
+  
+  const interval = setInterval(async () => {
+    attempts++;
+    if (!orders.find(o => o.id === order.id)) {
+      clearInterval(interval);
+      return;
+    }
+    if (attempts > maxAttempts) {
+      clearInterval(interval);
+      showToast('⏰ Hết thời gian chờ. Kiểm tra thủ công trên panel.', 'warning');
+      return;
+    }
+    try {
+      const data = await callProxy('status', { orderId: order.smmOrderId });
+      const idx = orders.findIndex(o => o.id === order.id);
+      if (idx === -1) { clearInterval(interval); return; }
+      
+      const status = (data.status || '').toLowerCase();
+      if (status === 'completed' || status === 'partial') {
+        orders[idx].status = 'completed';
+        localStorage.setItem('tt_orders', JSON.stringify(orders));
+        renderOrders(); updateDashboard();
+        showToast('✅ ' + order.service + ' hoàn thành! (' + (data.start_count || '?') + ' → ' + (data.remains || '?') + ')', 'success');
+        clearInterval(interval);
+      } else if (status === 'canceled' || status === 'error' || status === 'cancelled') {
+        orders[idx].status = 'pending';
+        localStorage.setItem('tt_orders', JSON.stringify(orders));
+        renderOrders();
+        showToast('⚠️ Order bị hủy trên panel', 'warning');
+        clearInterval(interval);
+      }
+      // else 'In progress' — tiếp tục poll
+    } catch (e) { /* polling error - retry */ }
+  }, 10000);
+}
+
+function simulateOrderCompletion(order) {
+  setTimeout(() => {
+    const idx = orders.findIndex(o => o.id === order.id);
+    if (idx !== -1 && orders[idx]) {
+      orders[idx].status = 'completed';
+      localStorage.setItem('tt_orders', JSON.stringify(orders));
+      renderOrders(); updateDashboard();
+      showToast('✅ ' + order.service + ' completed!', 'success');
+    }
+  }, 5000 + Math.random() * 5000);
+}
+
+async function placeQuickOrder() {
+  const type = document.getElementById('quick-service').value;
+  const username = document.getElementById('quick-username').value.trim();
+  const qty = parseInt(document.getElementById('quick-quantity').value) || 100;
+  const svc = SERVICES[type];
+  if (!username) { showToast('⚠️ Nhập username/URL', 'warning'); return; }
+  const order = { id: Date.now(), type, service: svc.name, icon: svc.icon,
+    target: username, quantity: qty, price: ((qty / 1000) * svc.price).toFixed(2), status: 'processing', createdAt: new Date().toISOString() };
+  orders.unshift(order);
+  localStorage.setItem('tt_orders', JSON.stringify(orders));
+  renderOrders(); updateDashboard(); updateRecentActivity();
+
+  if (useRealApi && apiSettings.service) {
+    showToast('⏳ Đặt order thật...', 'info');
+    try {
+      const sidKey = 'sid-' + type;
+      const serviceId = apiSettings[sidKey];
+      if (!serviceId) {
+        showToast('⚠️ Chưa cấu hình Service ID cho ' + svc.name, 'warning');
+        simulateOrderCompletion(order);
+        return;
+      }
+      const data = await callProxy('add', { service: serviceId, link: username, quantity: qty });
+      if (data.order) {
+        order.smmOrderId = data.order;
+        localStorage.setItem('tt_orders', JSON.stringify(orders));
+        renderOrders();
+        pollSMMOrder(order);
+        showToast('✅ Order thật #' + data.order + ' đã tạo!', 'success');
+        return;
+      } else if (data.error) {
+        showToast('❌ Panel lỗi: ' + data.error, 'error');
+      } else {
+        showToast('⚠️ Panel phản hồi: ' + JSON.stringify(data), 'warning');
+      }
+    } catch (e) {
+      showToast('❌ Lỗi: ' + e.message, 'error');
+    }
+  } else {
+    showToast('✅ Quick order (demo): ' + qty + ' ' + svc.name, 'success');
+  }
+  simulateOrderCompletion(order);
+}
+
+// ================================================================
+//  ORDERS & DASHBOARD
+// ================================================================
+function renderOrders() {
+  const c = document.getElementById('orders-list');
+  if (orders.length === 0) {
+    c.innerHTML = '<div class="empty-state"><span class="icon">📋</span><h3>No orders yet</h3><p>Place an order to see it here</p></div>';
+    return;
+  }
+  c.innerHTML = orders.map(o => {
+    const sc = o.status === 'completed' ? 'completed' : o.status === 'processing' ? 'processing' : 'pending';
+    const sl = o.status === 'completed' ? '✅ Completed' : o.status === 'processing' ? '⏳ Processing' : '⏸ Pending';
+    return '<div class="order-item"><span class="service-icon">' + o.icon + '</span><div class="order-info"><h4>' + o.service + '</h4><p>' + o.target + ' × ' + o.quantity + ' — $' + o.price + '</p></div><span class="order-status ' + sc + '">' + sl + '</span></div>';
+  }).join('');
+}
+
+function clearOrders() {
+  if (!orders.length) return;
+  orders = []; localStorage.setItem('tt_orders', JSON.stringify(orders));
+  renderOrders(); updateDashboard(); updateRecentActivity();
+  showToast('🗑 All cleared', 'info');
+}
+
+function updateDashboard() {
+  document.getElementById('dash-total-orders').textContent = orders.length;
+  document.getElementById('dash-completed').textContent = orders.filter(o => o.status === 'completed').length;
+  document.getElementById('dash-pending').textContent = orders.filter(o => o.status === 'processing').length;
+  document.getElementById('dash-balance').textContent = '$' + orders.reduce((s, o) => s + parseFloat(o.price || 0), 0).toFixed(2);
+  updateRecentActivity();
+}
+
+function updateRecentActivity() {
+  const c = document.getElementById('recent-activity');
+  const recent = orders.slice(0, 5);
+  if (!recent.length) {
+    c.innerHTML = '<div class="empty-state"><span class="icon">📋</span><h3>No recent orders</h3><p>Your activity will appear here</p></div>';
+    return;
+  }
+  c.innerHTML = recent.map(o => '<div class="order-item"><span class="service-icon">' + o.icon + '</span><div class="order-info"><h4>' + o.service + '</h4><p>' + o.target + ' × ' + o.quantity + '</p></div><span>' + (o.status === 'completed' ? '✅' : '⏳') + '</span></div>').join('');
+}
+
+// ================================================================
+//  SAVED ACCOUNTS
+// ================================================================
+let savedAccounts = JSON.parse(localStorage.getItem('tt_saved_accounts') || '[]');
+
+// Pre-populate with @dame if empty and never cleared
+function initSavedAccounts() {
+  const wasCleared = localStorage.getItem('tt_accounts_cleared') === 'true';
+  if (savedAccounts.length === 0 && !wasCleared) {
+    savedAccounts.push({
+      id: Date.now(),
+      username: 'dame',
+      nickname: 'Dame',
+      notes: 'Tài khoản TikTok',
+      addedAt: new Date().toISOString(),
+      checked: false
+    });
+    localStorage.setItem('tt_saved_accounts', JSON.stringify(savedAccounts));
+  }
+  renderAccounts();
+}
+
+function addAccount() {
+  const username = document.getElementById('acc-username').value.trim().replace('@', '');
+  const nickname = document.getElementById('acc-nickname').value.trim() || username;
+  const notes = document.getElementById('acc-notes').value.trim();
+
+  if (!username) { showToast('⚠️ Nhập username TikTok', 'warning'); return; }
+  if (savedAccounts.some(a => a.username.toLowerCase() === username.toLowerCase())) {
+    showToast('⚠️ Tài khoản @' + username + ' đã tồn tại', 'warning');
+    return;
+  }
+
+  savedAccounts.unshift({
+    id: Date.now(), username, nickname, notes,
+    addedAt: new Date().toISOString(), checked: false
+  });
+  localStorage.setItem('tt_saved_accounts', JSON.stringify(savedAccounts));
+  renderAccounts();
+  document.getElementById('acc-username').value = '';
+  document.getElementById('acc-nickname').value = '';
+  document.getElementById('acc-notes').value = '';
+  showToast('✅ Đã lưu @' + username, 'success');
+}
+
+function deleteAccount(id) {
+  if (!confirm('Xóa tài khoản này?')) return;
+  savedAccounts = savedAccounts.filter(a => a.id !== id);
+  localStorage.setItem('tt_saved_accounts', JSON.stringify(savedAccounts));
+  renderAccounts();
+  showToast('🗑 Đã xóa tài khoản', 'info');
+}
+
+function clearAllAccounts() {
+  if (!savedAccounts.length) return;
+  if (!confirm('Xóa tất cả tài khoản đã lưu?')) return;
+  savedAccounts = [];
+  localStorage.setItem('tt_saved_accounts', JSON.stringify(savedAccounts));
+  localStorage.setItem('tt_accounts_cleared', 'true');
+  renderAccounts();
+  showToast('🗑 Đã xóa tất cả', 'info');
+}
+
+function lookupSavedAccount(username) {
+  // Switch to lookup tab and fill username
+  document.getElementById('lookup-username').value = username;
+  switchTab('lookup');
+  setTimeout(() => lookupProfile(), 300);
+  // Mark as checked
+  const idx = savedAccounts.findIndex(a => a.username.toLowerCase() === username.toLowerCase());
+  if (idx !== -1) {
+    savedAccounts[idx].checked = true;
+    localStorage.setItem('tt_saved_accounts', JSON.stringify(savedAccounts));
+    renderAccounts();
+  }
+}
+
+function renderAccounts() {
+  const list = document.getElementById('accounts-list');
+  const total = document.getElementById('acc-total');
+  const checked = document.getElementById('acc-checked');
+  const label = document.getElementById('acc-count-label');
+
+  const checkedCount = savedAccounts.filter(a => a.checked).length;
+  total.textContent = savedAccounts.length;
+  checked.textContent = checkedCount;
+  label.textContent = savedAccounts.length + ' tài khoản';
+
+  if (savedAccounts.length === 0) {
+    list.innerHTML = '<div class="empty-state"><span class="icon">👤</span><h3>Chưa có tài khoản nào</h3><p>Thêm tài khoản TikTok để dễ dàng tra cứu sau</p></div>';
+    return;
+  }
+
+  list.innerHTML = savedAccounts.map(a => {
+    const date = new Date(a.addedAt);
+    const dateStr = date.toLocaleDateString('vi-VN');
+    const checkedBadge = a.checked
+      ? '<span class="order-status completed" style="font-size:10px">✅ Đã tra</span>'
+      : '<span class="order-status pending" style="font-size:10px">⏸ Chưa tra</span>';
+    return '<div class="order-item" style="cursor:default">'
+      + '<span class="service-icon" style="background:rgba(124,58,237,0.15);font-size:20px">👤</span>'
+      + '<div class="order-info"><h4>' + a.nickname + ' <span style="color:var(--text-secondary);font-weight:400;font-size:12px">@' + a.username + '</span></h4>'
+      + '<p>' + (a.notes || '—') + ' · ' + dateStr + '</p></div>'
+      + '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">'
+      + checkedBadge
+      + '<button class="btn btn-sm btn-primary" style="padding:5px 10px;font-size:11px" onclick="lookupSavedAccount(\'' + a.username + '\')">🔍 Tra</button>'
+      + '<button class="btn btn-sm btn-danger" style="padding:5px 10px;font-size:11px" onclick="deleteAccount(' + a.id + ')">🗑</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+// ================================================================
+//  DAME (BÁO CÁO / BANNED)
+// ================================================================
+let dameReports = JSON.parse(localStorage.getItem('tt_dame_reports') || '[]');
+let blacklist = JSON.parse(localStorage.getItem('tt_blacklist') || '[]');
+
+const REPORT_REASONS = {
+  spam: '📢 Spam', harassment: '🔪 Quấy rối / Bắt nạt',
+  impersonation: '🎭 Mạo danh', sensitive: '🔞 Nội dung nhạy cảm',
+  copyright: '©️ Vi phạm bản quyền', illegal: '⚖️ Nội dung bất hợp pháp',
+  hate_speech: '💢 Ngôn từ thù địch', scam: '💰 Lừa đảo / Scam'
+};
+
+async function submitDameReport() {
+  const username = document.getElementById('dame-username').value.trim().replace('@', '');
+  const reason = document.getElementById('dame-reason').value;
+  const count = parseInt(document.getElementById('dame-count').value) || 3;
+  const note = document.getElementById('dame-note').value.trim();
+  const btn = document.getElementById('dame-submit-btn');
+  const progress = document.getElementById('dame-progress');
+  const result = document.getElementById('dame-result');
+
+  if (!username) { showToast('⚠️ Nhập username cần báo cáo', 'warning'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-spinner"></span> Đang gửi...';
+  progress.style.display = 'block';
+  result.style.display = 'none';
+
+  const reasonLabel = REPORT_REASONS[reason] || reason;
+
+  // Simulate sending reports with progress
+  for (let i = 1; i <= count; i++) {
+    const pct = Math.round((i / count) * 100);
+    document.getElementById('dame-progress-fill').style.width = pct + '%';
+    document.getElementById('dame-progress-text').textContent = `Đang gửi báo cáo ${i}/${count}...`;
+    document.getElementById('dame-progress-pct').textContent = pct + '%';
+    // Simulate delay per report
+    await new Promise(r => setTimeout(r, 600 + Math.random() * 400));
+  }
+
+  // Save report to history
+  const report = {
+    id: Date.now(), username, reason, reasonLabel,
+    note, count, reportedAt: new Date().toISOString()
+  };
+  dameReports.unshift(report);
+  localStorage.setItem('tt_dame_reports', JSON.stringify(dameReports));
+
+  // Auto-add to blacklist if not already
+  if (!blacklist.some(b => b.username.toLowerCase() === username.toLowerCase())) {
+    blacklist.unshift({
+      id: Date.now() + 1, username, reason: reasonLabel,
+      status: 'reported', reportedCount: count, reportedAt: new Date().toISOString()
+    });
+    localStorage.setItem('tt_blacklist', JSON.stringify(blacklist));
+    renderBlacklist();
+  } else {
+    // Update existing blacklist entry
+    const idx = blacklist.findIndex(b => b.username.toLowerCase() === username.toLowerCase());
+    if (idx !== -1) {
+      blacklist[idx].status = 'reported';
+      blacklist[idx].reportedCount = (blacklist[idx].reportedCount || 0) + count;
+      blacklist[idx].reason = reasonLabel;
+      localStorage.setItem('tt_blacklist', JSON.stringify(blacklist));
+      renderBlacklist();
+    }
+  }
+
+  // Show result
+  document.getElementById('dame-progress-fill').style.width = '100%';
+  document.getElementById('dame-progress-text').textContent = '✅ Hoàn thành!';
+  document.getElementById('dame-progress-pct').textContent = '100%';
+  result.style.display = 'block';
+  document.getElementById('dame-result-text').textContent = `✅ Đã gửi ${count} báo cáo cho @${username} (${reasonLabel})`;
+
+  btn.disabled = false;
+  btn.innerHTML = '🚨 Gửi Báo Cáo';
+  renderDameHistory();
+  updateDameStats();
+  showToast(`✅ Đã gửi ${count} báo cáo cho @${username}`, 'success');
+}
+
+function openTikTokReportPage() {
+  const username = document.getElementById('dame-username').value.trim().replace('@', '');
+  if (username) {
+    // Open TikTok's report page
+    window.open(`https://www.tiktok.com/@${username}`, '_blank');
+    showToast('ℹ️ Mở trang TikTok, nhấn ... → Report để báo cáo thủ công', 'info');
+  }
+}
+
+function renderDameHistory() {
+  const c = document.getElementById('dame-history');
+  if (dameReports.length === 0) {
+    c.innerHTML = '<div class="empty-state"><span class="icon">📋</span><h3>Chưa có báo cáo nào</h3><p>Lịch sử báo cáo sẽ hiển thị ở đây</p></div>';
+    return;
+  }
+  c.innerHTML = dameReports.slice(0, 20).map(r => {
+    const date = new Date(r.reportedAt);
+    const dateStr = date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    return '<div class="order-item">'
+      + '<span class="service-icon" style="background:rgba(254,44,85,0.15);font-size:18px">🚨</span>'
+      + '<div class="order-info"><h4>@' + r.username + ' <span style="color:var(--text-muted);font-weight:400;font-size:11px">' + r.reasonLabel + '</span></h4>'
+      + '<p>' + r.count + ' báo cáo · ' + dateStr + '</p></div>'
+      + '<span class="order-status completed" style="font-size:10px">✅ Đã gửi</span>'
+      + '</div>';
+  }).join('');
+}
+
+function clearDameHistory() {
+  if (!dameReports.length) return;
+  if (!confirm('Xóa tất cả lịch sử báo cáo?')) return;
+  dameReports = [];
+  localStorage.setItem('tt_dame_reports', JSON.stringify(dameReports));
+  renderDameHistory();
+  showToast('🗑 Đã xóa lịch sử', 'info');
+}
+
+// ================================================================
+//  BLACKLIST
+// ================================================================
+function addToBlacklist() {
+  const username = document.getElementById('bl-username').value.trim().replace('@', '');
+  if (!username) { showToast('⚠️ Nhập username', 'warning'); return; }
+  if (blacklist.some(b => b.username.toLowerCase() === username.toLowerCase())) {
+    showToast('⚠️ @' + username + ' đã có trong blacklist', 'warning');
+    return;
+  }
+  blacklist.unshift({
+    id: Date.now(), username, reason: 'Chưa xác định',
+    status: 'watching', reportedCount: 0, reportedAt: new Date().toISOString()
+  });
+  localStorage.setItem('tt_blacklist', JSON.stringify(blacklist));
+  document.getElementById('bl-username').value = '';
+  renderBlacklist();
+  updateDameStats();
+  showToast('✅ Đã thêm @' + username + ' vào blacklist', 'success');
+}
+
+function removeFromBlacklist(id) {
+  if (!confirm('Xóa khỏi blacklist?')) return;
+  blacklist = blacklist.filter(b => b.id !== id);
+  localStorage.setItem('tt_blacklist', JSON.stringify(blacklist));
+  renderBlacklist();
+  updateDameStats();
+  showToast('🗑 Đã xóa khỏi blacklist', 'info');
+}
+
+function updateBlacklistStatus(id, newStatus) {
+  const idx = blacklist.findIndex(b => b.id === id);
+  if (idx !== -1) {
+    blacklist[idx].status = newStatus;
+    localStorage.setItem('tt_blacklist', JSON.stringify(blacklist));
+    renderBlacklist();
+    updateDameStats();
+  }
+}
+
+function renderBlacklist() {
+  const c = document.getElementById('bl-list');
+  if (blacklist.length === 0) {
+    c.innerHTML = '<div class="empty-state" style="padding:20px 10px"><span class="icon" style="font-size:32px">🛡️</span><h3>Danh sách trống</h3><p>Thêm tài khoản đáng ngờ vào blacklist</p></div>';
+    return;
+  }
+  c.innerHTML = blacklist.map(b => {
+    let badge, badgeClass;
+    if (b.status === 'banned') { badge = '🚫 Đã ban'; badgeClass = 'completed'; }
+    else if (b.status === 'reported') { badge = '🚨 Đã báo cáo'; badgeClass = 'processing'; }
+    else { badge = '👁️ Theo dõi'; badgeClass = 'pending'; }
+
+    return '<div class="order-item" style="cursor:default">'
+      + '<span class="service-icon" style="background:rgba(254,44,85,0.15);font-size:18px">👤</span>'
+      + '<div class="order-info"><h4>@' + b.username + '</h4>'
+      + '<p>' + (b.reason || '—') + ' · ' + (b.reportedCount || 0) + ' báo cáo</p></div>'
+      + '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">'
+      + '<span class="order-status ' + badgeClass + '" style="font-size:10px">' + badge + '</span>'
+      + '<select style="width:auto;padding:4px 6px;font-size:10px;min-width:70px" onchange="updateBlacklistStatus(' + b.id + ', this.value)">'
+      + '<option value="watching" ' + (b.status === 'watching' ? 'selected' : '') + '>👁️ Theo dõi</option>'
+      + '<option value="reported" ' + (b.status === 'reported' ? 'selected' : '') + '>🚨 Đã báo cáo</option>'
+      + '<option value="banned" ' + (b.status === 'banned' ? 'selected' : '') + '>🚫 Đã ban</option>'
+      + '</select>'
+      + '<button class="btn btn-sm btn-primary" style="padding:4px 8px;font-size:10px" onclick="quickReportFromBL(\'' + b.username + '\')">🚨</button>'
+      + '<button class="btn btn-sm btn-danger" style="padding:4px 8px;font-size:10px" onclick="removeFromBlacklist(' + b.id + ')">✕</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+function quickReportFromBL(username) {
+  document.getElementById('dame-username').value = username;
+  switchTab('dame');
+  document.getElementById('dame-submit-btn').scrollIntoView({ behavior: 'smooth' });
+}
+
+function updateDameStats() {
+  document.getElementById('bl-total').textContent = blacklist.length;
+  document.getElementById('bl-reported').textContent = blacklist.filter(b => b.status === 'reported').length;
+  document.getElementById('bl-banned').textContent = blacklist.filter(b => b.status === 'banned').length;
+}
+
+function initDame() {
+  renderDameHistory();
+  renderBlacklist();
+  updateDameStats();
+}
+
+// ================================================================
+//  AUTO-FILL SERVICE IDS from cached services
+// ================================================================
+function autoFillTikTokServices() {
+  if (!cachedServices.length) {
+    showToast('⚠️ Chưa có dữ liệu services. Nhấn "Lấy Services" trước.', 'warning');
+    return;
+  }
+
+  const keywords = {
+    'sid-views': ['view', 'play'],
+    'sid-followers': ['follower', 'subscriber'],
+    'sid-likes': ['like', 'favorite'],
+    'sid-comment_likes': ['comment', 'like comment'],
+    'sid-shares': ['share', 'repost']
+  };
+
+  let found = 0;
+  for (const [key, words] of Object.entries(keywords)) {
+    const matched = cachedServices.find(s =>
+      s.name && words.some(w => s.name.toLowerCase().includes(w))
+    );
+    if (matched) {
+      apiSettings[key] = matched.service;
+      const el = document.getElementById('api-' + key);
+      if (el) el.value = matched.service;
+      found++;
+    }
+  }
+
+  localStorage.setItem('tt_api_settings', JSON.stringify(apiSettings));
+  showToast('✅ Đã tự động điền ' + found + ' Service IDs! Kiểm tra lại trong Settings.', 'success');
+}
+
+// ================================================================
+//  MODE TOGGLE: DEMO / REAL
+// ================================================================
+function toggleMode() {
+  useRealApi = !useRealApi;
+  const badge = document.getElementById('modeBadge');
+  if (useRealApi) {
+    badge.innerHTML = '🔴 REAL';
+    badge.style.background = 'rgba(254,44,85,0.2)';
+    badge.style.borderColor = 'rgba(254,44,85,0.4)';
+    badge.style.color = 'var(--accent)';
+    showToast('🔴 Chế độ API THẬT — order sẽ tốn tiền thật!', 'warning');
+  } else {
+    badge.innerHTML = '🧪 DEMO';
+    badge.style.background = 'rgba(245,158,11,0.12)';
+    badge.style.borderColor = 'rgba(245,158,11,0.2)';
+    badge.style.color = 'var(--accent5)';
+    showToast('🧪 Chế độ DEMO — số liệu mô phỏng', 'info');
+  }
+}
+
+// ================================================================
+//  INIT
+// ================================================================
+loadApiSettings(); renderOrders(); updateDashboard(); initSavedAccounts(); initDame();
+</script>
+</body>
+</html>

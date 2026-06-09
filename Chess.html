@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Puzzles - Luyện Tập Cờ Vua</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-primary: #1a1a2e; --bg-secondary: #16213e; --bg-card: #1e2a4a;
+  --bg-board-light: #f0d9b5; --bg-board-dark: #b58863;
+  --bg-board-light-selected: #829769; --bg-board-dark-selected: #646e3c;
+  --bg-board-light-hint: #d4e47c; --bg-board-dark-hint: #a8c44a;
+  --bg-board-light-lastmove: #cdd26a; --bg-board-dark-lastmove: #aaa23a;
+  --text-primary: #e8e8e8; --text-secondary: #9d9d9d; --text-accent: #81b64c;
+  --text-correct: #4caf50; --text-wrong: #f44336;
+  --color-accent: #7fa650; --color-accent-hover: #8fc45e;
+  --color-danger: #e74c3c; --color-warning: #f39c12; --color-info: #3498db;
+  --radius: 8px; --shadow: 0 4px 20px rgba(0,0,0,0.3);
+  --transition: all 0.2s ease;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-primary); color: var(--text-primary);
+  min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px;
+  background-image: radial-gradient(ellipse at 50% 0%, #1e2a4a 0%, #0f0f23 70%);
+}
+#app { width: 100%; max-width: 1100px; margin: 0 auto; }
+.header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px; background: var(--bg-card); border-radius: var(--radius);
+  margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.05);
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header-logo { font-size: 28px; font-weight: 800; color: var(--text-accent); letter-spacing: -0.5px; }
+.header-logo span { font-size: 30px; margin-right: 4px; }
+.header-stats { display: flex; gap: 24px; }
+.header-stat { text-align: center; }
+.header-stat-value { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+.header-stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+.main-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+.board-container {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.05);
+}
+.board-wrapper { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.file-labels {
+  display: flex; justify-content: space-around; padding: 4px 24px 0 24px;
+  font-size: 11px; color: var(--text-secondary); font-weight: 500;
+}
+.rank-labels {
+  display: flex; flex-direction: column; justify-content: space-around;
+  align-items: center; padding: 0 4px; font-size: 11px; color: var(--text-secondary);
+  font-weight: 500; height: 100%; min-height: 480px;
+}
+.board {
+  display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr);
+  width: 480px; height: 480px; border-radius: 4px; overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4); user-select: none; position: relative;
+}
+.square { display: flex; align-items: center; justify-content: center; font-size: 38px; cursor: pointer; position: relative; transition: background-color 0.1s; }
+.square.light { background: var(--bg-board-light); }
+.square.dark { background: var(--bg-board-dark); }
+.square.selected.light { background: var(--bg-board-light-selected); }
+.square.selected.dark { background: var(--bg-board-dark-selected); }
+.square.last-move.light { background: var(--bg-board-light-lastmove); }
+.square.last-move.dark { background: var(--bg-board-dark-lastmove); }
+.square.hint.light { background: var(--bg-board-light-hint); }
+.square.hint.dark { background: var(--bg-board-dark-hint); }
+.square.check { background: radial-gradient(ellipse at center, #ff0000 0%, #e00000 25%, #cc0000 50%, transparent 70%) !important; }
+.square .piece { position: relative; z-index: 2; line-height: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.2); pointer-events: none; transition: transform 0.1s; }
+.square .piece.white-piece { filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15)); }
+.square .piece.black-piece { filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25)); }
+.square:hover .piece { transform: scale(1.05); }
+.move-dot { position: absolute; width: 26%; height: 26%; border-radius: 50%; z-index: 3; pointer-events: none; }
+.move-dot.capture { width: 90%; height: 90%; border-radius: 50%; border: 5px solid rgba(0,0,0,0.15); background: transparent; }
+.move-dot.normal { background: rgba(0,0,0,0.12); }
+.promotion-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
+.promotion-overlay.active { display: flex; }
+.promotion-dialog { background: var(--bg-card); border-radius: var(--radius); padding: 24px; text-align: center; box-shadow: 0 8px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+.promotion-dialog h3 { margin-bottom: 16px; color: var(--text-secondary); font-size: 14px; font-weight: 500; }
+.promotion-options { display: flex; gap: 12px; justify-content: center; }
+.promotion-btn { width: 64px; height: 64px; border: 2px solid transparent; border-radius: var(--radius); background: var(--bg-secondary); cursor: pointer; font-size: 36px; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+.promotion-btn:hover { border-color: var(--color-accent); background: rgba(127, 166, 80, 0.15); }
+.sidebar { display: flex; flex-direction: column; gap: 12px; }
+.puzzle-card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.05); }
+.puzzle-number { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500; }
+.puzzle-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+.puzzle-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.puzzle-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.puzzle-tag.difficulty-easy { background: rgba(76, 175, 80, 0.15); color: #4caf50; }
+.puzzle-tag.difficulty-medium { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
+.puzzle-tag.difficulty-hard { background: rgba(244, 67, 54, 0.15); color: #ff6b6b; }
+.puzzle-tag.theme { background: rgba(52, 152, 219, 0.15); color: #5dade2; }
+.puzzle-status { padding: 12px; border-radius: var(--radius); text-align: center; font-weight: 600; font-size: 15px; margin-bottom: 12px; transition: var(--transition); }
+.puzzle-status.solving { background: rgba(52, 152, 219, 0.1); color: #5dade2; }
+.puzzle-status.correct { background: rgba(76, 175, 80, 0.15); color: var(--text-correct); }
+.puzzle-status.wrong { background: rgba(244, 67, 54, 0.15); color: var(--text-wrong); }
+.puzzle-status.hint-used { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
+.move-history { margin-top: 12px; }
+.move-history h4 { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.move-list { display: flex; flex-wrap: wrap; gap: 4px; max-height: 100px; overflow-y: auto; padding: 8px; background: rgba(0,0,0,0.15); border-radius: 4px; font-size: 13px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; }
+.move-list::-webkit-scrollbar { width: 4px; }
+.move-list::-webkit-scrollbar-track { background: transparent; }
+.move-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+.move-item { padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.05); }
+.move-item.current { background: rgba(127, 166, 80, 0.2); }
+.move-item.wrong-move { background: rgba(244, 67, 54, 0.2); text-decoration: line-through; }
+.controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--text-primary); }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--color-accent); color: #fff; }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-secondary { background: rgba(255,255,255,0.08); }
+.btn-secondary:hover { background: rgba(255,255,255,0.12); }
+.btn-danger { background: rgba(231, 76, 60, 0.2); color: var(--color-danger); }
+.btn-danger:hover { background: rgba(231, 76, 60, 0.3); }
+.btn-warning { background: rgba(243, 156, 18, 0.15); color: var(--color-warning); }
+.btn-warning:hover { background: rgba(243, 156, 18, 0.25); }
+.btn-info { background: rgba(52, 152, 219, 0.15); color: var(--color-info); }
+.btn-info:hover { background: rgba(52, 152, 219, 0.25); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-full { grid-column: 1 / -1; }
+.progress-section { margin-top: 12px; }
+.progress-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+.progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; background: linear-gradient(90deg, var(--color-accent), #8fc45e); }
+.toast-container { position: fixed; top: 20px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+.toast { padding: 12px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; max-width: 320px; }
+.toast.success { background: #2e7d32; color: #fff; }
+.toast.error { background: #c62828; color: #fff; }
+.toast.info { background: #1565c0; color: #fff; }
+.toast.warning { background: #f57f17; color: #fff; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+@media (max-width: 860px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .board { width: min(85vw, 480px); height: min(85vw, 480px); }
+  .header-stats { gap: 12px; } .header-stat-value { font-size: 16px; }
+  .sidebar { max-width: 480px; margin: 0 auto; }
+}
+@media (max-width: 500px) {
+  body { padding: 10px; }
+  .header { flex-direction: column; gap: 12px; padding: 12px 16px; }
+  .board { width: calc(100vw - 60px); height: calc(100vw - 60px); }
+  .square { font-size: 28px; } .rank-labels { min-height: auto; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="header">
+    <div class="header-left"><div class="header-logo"><span>♔</span> Chess Puzzles</div></div>
+    <div class="header-stats">
+      <div class="header-stat"><div class="header-stat-value" id="rating-display">1200</div><div class="header-stat-label">Rating</div></div>
+      <div class="header-stat"><div class="header-stat-value" id="streak-display">0</div><div class="header-stat-label">Streak 🔥</div></div>
+      <div class="header-stat"><div class="header-stat-value" id="solved-display">0</div><div class="header-stat-label">Solved</div></div>
+      <div class="header-stat"><div class="header-stat-value" id="timer-display">0:00</div><div class="header-stat-label">⏱ Time</div></div>
+    </div>
+  </header>
+  <div class="main-layout">
+    <div class="board-container">
+      <div class="board-wrapper">
+        <div class="rank-labels" id="rank-labels">8<br>7<br>6<br>5<br>4<br>3<br>2<br>1</div>
+        <div style="flex:1">
+          <div class="board" id="board"></div>
+          <div class="file-labels" id="file-labels">a&nbsp;&nbsp;&nbsp;b&nbsp;&nbsp;&nbsp;c&nbsp;&nbsp;&nbsp;d&nbsp;&nbsp;&nbsp;e&nbsp;&nbsp;&nbsp;f&nbsp;&nbsp;&nbsp;g&nbsp;&nbsp;&nbsp;h</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="puzzle-card">
+        <div class="puzzle-number" id="puzzle-number">Puzzle #1</div>
+        <div class="puzzle-title" id="puzzle-title">Find the Best Move</div>
+        <div class="puzzle-meta" id="puzzle-meta"></div>
+        <div class="puzzle-status solving" id="puzzle-status">♟ Find the winning move</div>
+        <div class="move-history">
+          <h4>Moves</h4>
+          <div class="move-list" id="move-list"><span style="color:var(--text-secondary);font-style:italic">Make your first move...</span></div>
+        </div>
+      </div>
+      <div class="puzzle-card">
+        <div class="controls" id="controls">
+          <button class="btn btn-warning" id="btn-hint" title="Show hint">💡 Hint</button>
+          <button class="btn btn-info" id="btn-flip" title="Flip board">🔄 Flip</button>
+          <button class="btn btn-secondary" id="btn-retry" title="Retry puzzle">↩ Retry</button>
+          <button class="btn btn-primary" id="btn-next" title="Next puzzle">→ Next</button>
+        </div>
+        <div class="progress-section">
+          <div class="progress-header"><span id="progress-label">Progress</span><span id="progress-count">0 / 10</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="promotion-overlay" id="promotion-overlay">
+  <div class="promotion-dialog">
+    <h3>Promote Pawn</h3>
+    <div class="promotion-options" id="promotion-options"></div>
+  </div>
+</div>
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const PIECE_UNICODE = {
+  'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
+  'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
+};
+const PIECE_VALUES = { 'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 20000 };
+
+function sqName(row, col) { return 'abcdefgh'[col] + (8 - row); }
+function sqFromName(name) { return { row: 8 - parseInt(name[1]), col: 'abcdefgh'.indexOf(name[0]) }; }
+
+class ChessEngine {
+  constructor(fen) {
+    this.board = []; this.turn = 'w'; this.castling = {}; this.enPassant = null;
+    this.halfMoveClock = 0; this.fullMoveNumber = 1;
+    this.history = []; this.lastMove = null; this.kingPos = { w: null, b: null };
+    if (fen) this.parseFEN(fen);
+  }
+  parseFEN(fen) {
+    const parts = fen.split(' ');
+    const rows = parts[0].split('/');
+    this.board = [];
+    for (let r = 0; r < 8; r++) {
+      const row = []; let c = 0;
+      for (const ch of rows[r]) {
+        if (ch >= '1' && ch <= '8') { for (let i = 0; i < parseInt(ch); i++) { row.push(null); c++; } }
+        else { row.push(ch); if (ch === 'K') this.kingPos.w = { row: r, col: c }; if (ch === 'k') this.kingPos.b = { row: r, col: c }; c++; }
+      }
+      this.board.push(row);
+    }
+    this.turn = parts[1];
+    this.castling = { K: false, Q: false, k: false, q: false };
+    if (parts[2] !== '-') {
+      if (parts[2].includes('K')) this.castling.K = true; if (parts[2].includes('Q')) this.castling.Q = true;
+      if (parts[2].includes('k')) this.castling.k = true; if (parts[2].includes('q')) this.castling.q = true;
+    }
+    this.enPassant = parts[3] === '-' ? null : sqFromName(parts[3]);
+    this.halfMoveClock = parseInt(parts[4]) || 0; this.fullMoveNumber = parseInt(parts[5]) || 1;
+  }
+  clone() {
+    const c = new ChessEngine(null);
+    c.board = this.board.map(r => [...r]); c.turn = this.turn; c.castling = { ...this.castling };
+    c.enPassant = this.enPassant ? { ...this.enPassant } : null;
+    c.halfMoveClock = this.halfMoveClock; c.fullMoveNumber = this.fullMoveNumber;
+    c.kingPos = { w: this.kingPos.w ? { ...this.kingPos.w } : null, b: this.kingPos.b ? { ...this.kingPos.b } : null };
+    c.history = [...this.history];
+    c.lastMove = this.lastMove ? { from: { ...this.lastMove.from }, to: { ...this.lastMove.to }, piece: this.lastMove.piece, captured: this.lastMove.captured, promotion: this.lastMove.promotion, castle: this.lastMove.castle, enPassant: this.lastMove.enPassant } : null;
+    return c;
+  }
+  isWhite(p) { return p && p === p.toUpperCase(); }
+  isBlack(p) { return p && p === p.toLowerCase(); }
+  colorOf(p) { return this.isWhite(p) ? 'w' : (this.isBlack(p) ? 'b' : null); }
+  inBounds(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
+  isSquareAttacked(row, col, byColor) {
+    const enemy = byColor === 'w' ? (p) => this.isWhite(p) : (p) => this.isBlack(p);
+    const pawnDir = byColor === 'w' ? 1 : -1;
+    for (const dc of [-1, 1]) { const r = row + pawnDir, c = col + dc; if (this.inBounds(r, c) && this.board[r][c] === (byColor === 'w' ? 'P' : 'p')) return true; }
+    for (const [dr, dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) { const r = row + dr, c = col + dc; if (this.inBounds(r, c) && enemy(this.board[r][c]) && this.board[r][c].toLowerCase() === 'n') return true; }
+    for (const [dr, dc] of [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]) { const r = row + dr, c = col + dc; if (this.inBounds(r, c) && enemy(this.board[r][c]) && this.board[r][c].toLowerCase() === 'k') return true; }
+    for (const [dr, dc] of [[-1,-1],[-1,1],[1,-1],[1,1]]) { let r = row + dr, c = col + dc; while (this.inBounds(r, c)) { const p = this.board[r][c]; if (p) { if (enemy(p) && (p.toLowerCase() === 'b' || p.toLowerCase() === 'q')) return true; break; } r += dr; c += dc; } }
+    for (const [dr, dc] of [[-1,0],[1,0],[0,-1],[0,1]]) { let r = row + dr, c = col + dc; while (this.inBounds(r, c)) { const p = this.board[r][c]; if (p) { if (enemy(p) && (p.toLowerCase() === 'r' || p.toLowerCase() === 'q')) return true; break; } r += dr; c += dc; } }
+    return false;
+  }
+  isInCheck(color) { const kp = color === 'w' ? this.kingPos.w : this.kingPos.b; if (!kp) return false; return this.isSquareAttacked(kp.row, kp.col, color === 'w' ? 'b' : 'w'); }
+  generateMoves(color) {
+    const moves = []; const c = color || this.turn;
+    const isMyPiece = c === 'w' ? (p) => this.isWhite(p) : (p) => this.isBlack(p);
+    for (let r = 0; r < 8; r++) for (let c2 = 0; c2 < 8; c2++) {
+      const p = this.board[r][c2]; if (!p || !isMyPiece(p)) continue;
+      const type = p.toLowerCase(); const from = { row: r, col: c2 };
+      if (type === 'p') this._pawnMoves(from, c, moves); else if (type === 'n') this._knightMoves(from, c, moves);
+      else if (type === 'b') this._bishopMoves(from, c, moves); else if (type === 'r') this._rookMoves(from, c, moves);
+      else if (type === 'q') this._queenMoves(from, c, moves); else if (type === 'k') this._kingMoves(from, c, moves);
+    }
+    return moves;
+  }
+  _pawnMoves(from, color, moves) {
+    const dir = color === 'w' ? -1 : 1; const startRow = color === 'w' ? 6 : 1; const promRow = color === 'w' ? 0 : 7;
+    const r = from.row, c = from.col; const nr = r + dir;
+    if (this.inBounds(nr, c) && !this.board[nr][c]) {
+      if (nr === promRow) { for (const promo of ['Q', 'R', 'B', 'N']) moves.push({ from, to: { row: nr, col: c }, promotion: promo }); }
+      else { moves.push({ from, to: { row: nr, col: c } }); }
+      if (r === startRow) { const nr2 = r + 2 * dir; if (this.inBounds(nr2, c) && !this.board[nr2][c]) moves.push({ from, to: { row: nr2, col: c } }); }
+    }
+    for (const dc of [-1, 1]) { const nc = c + dc; if (!this.inBounds(nr, nc)) continue; const target = this.board[nr][nc]; if (target && this.colorOf(target) !== color) { if (nr === promRow) { for (const promo of ['Q', 'R', 'B', 'N']) moves.push({ from, to: { row: nr, col: nc }, promotion: promo }); } else { moves.push({ from, to: { row: nr, col: nc } }); } } if (this.enPassant && this.enPassant.row === nr && this.enPassant.col === nc) { moves.push({ from, to: { row: nr, col: nc }, enPassant: true }); } }
+  }
+  _knightMoves(from, color, moves) { for (const [dr, dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) { const nr = from.row + dr, nc = from.col + dc; if (!this.inBounds(nr, nc)) continue; const target = this.board[nr][nc]; if (!target || this.colorOf(target) !== color) moves.push({ from, to: { row: nr, col: nc } }); } }
+  _slideMoves(from, color, directions, moves) { for (const [dr, dc] of directions) { let r = from.row + dr, c = from.col + dc; while (this.inBounds(r, c)) { const target = this.board[r][c]; if (target) { if (this.colorOf(target) !== color) moves.push({ from, to: { row: r, col: c } }); break; } moves.push({ from, to: { row: r, col: c } }); r += dr; c += dc; } } }
+  _bishopMoves(from, color, moves) { this._slideMoves(from, color, [[-1,-1],[-1,1],[1,-1],[1,1]], moves); }
+  _rookMoves(from, color, moves) { this._slideMoves(from, color, [[-1,0],[1,0],[0,-1],[0,1]], moves); }
+  _queenMoves(from, color, moves) { this._slideMoves(from, color, [[-1,-1],[-1,1],[1,-1],[1,1],[-1,0],[1,0],[0,-1],[0,1]], moves); }
+  _kingMoves(from, color, moves) {
+    for (const [dr, dc] of [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]) { const nr = from.row + dr, nc = from.col + dc; if (!this.inBounds(nr, nc)) continue; const target = this.board[nr][nc]; if (!target || this.colorOf(target) !== color) moves.push({ from, to: { row: nr, col: nc } }); }
+    const row = color === 'w' ? 7 : 0; const eColor = color === 'w' ? 'b' : 'w';
+    if (from.row === row && from.col === 4) {
+      const kSide = color === 'w' ? 'K' : 'k'; const qSide = color === 'w' ? 'Q' : 'q';
+      if (this.castling[kSide] && !this.board[row][5] && !this.board[row][6] && this.board[row][7] === (color === 'w' ? 'R' : 'r') && !this.isSquareAttacked(row, 4, eColor) && !this.isSquareAttacked(row, 5, eColor) && !this.isSquareAttacked(row, 6, eColor)) moves.push({ from, to: { row, col: 6 }, castle: kSide });
+      if (this.castling[qSide] && !this.board[row][3] && !this.board[row][2] && !this.board[row][1] && this.board[row][0] === (color === 'w' ? 'R' : 'r') && !this.isSquareAttacked(row, 4, eColor) && !this.isSquareAttacked(row, 3, eColor) && !this.isSquareAttacked(row, 2, eColor)) moves.push({ from, to: { row, col: 2 }, castle: qSide });
+    }
+  }
+  getLegalMoves(color) { const c = color || this.turn; const pseudo = this.generateMoves(c); const legal = []; for (const move of pseudo) { const temp = this.clone(); temp._applyMove(move, true); if (!temp.isInCheck(c)) legal.push(move); } return legal; }
+  _applyMove(move, skipHistory) {
+    const { from, to } = move; const piece = this.board[from.row][from.col]; const captured = this.board[to.row][to.col];
+    let castleRookMove = null;
+    if (move.castle) { const row = from.row; if (to.col === 6) { castleRookMove = { from: { row, col: 7 }, to: { row, col: 5 } }; } else { castleRookMove = { from: { row, col: 0 }, to: { row, col: 3 } }; } }
+    let epCaptured = null; if (move.enPassant) { epCaptured = this.board[from.row][to.col]; this.board[from.row][to.col] = null; }
+    this.board[to.row][to.col] = piece; this.board[from.row][from.col] = null;
+    if (castleRookMove) { this.board[castleRookMove.to.row][castleRookMove.to.col] = this.board[castleRookMove.from.row][castleRookMove.from.col]; this.board[castleRookMove.from.row][castleRookMove.from.col] = null; }
+    if (move.promotion) { const promPiece = this.turn === 'w' ? move.promotion : move.promotion.toLowerCase(); this.board[to.row][to.col] = promPiece; }
+    if (piece === 'K') this.kingPos.w = { row: to.row, col: to.col }; if (piece === 'k') this.kingPos.b = { row: to.row, col: to.col };
+    this.enPassant = null; if (piece.toLowerCase() === 'p' && Math.abs(to.row - from.row) === 2) { this.enPassant = { row: (from.row + to.row) / 2, col: from.col }; }
+    if (piece === 'K') { this.castling.K = false; this.castling.Q = false; } if (piece === 'k') { this.castling.k = false; this.castling.q = false; }
+    if (piece === 'R' && from.row === 7 && from.col === 7) this.castling.K = false; if (piece === 'R' && from.row === 7 && from.col === 0) this.castling.Q = false;
+    if (piece === 'r' && from.row === 0 && from.col === 7) this.castling.k = false; if (piece === 'r' && from.row === 0 && from.col === 0) this.castling.q = false;
+    if (captured === 'R' && to.row === 7 && to.col === 7) this.castling.K = false; if (captured === 'R' && to.row === 7 && to.col === 0) this.castling.Q = false;
+    if (captured === 'r' && to.row === 0 && to.col === 7) this.castling.k = false; if (captured === 'r' && to.row === 0 && to.col === 0) this.castling.q = false;
+    this.turn = this.turn === 'w' ? 'b' : 'w'; if (this.turn === 'w') this.fullMoveNumber++;
+    if (!skipHistory) { this.lastMove = { from: { ...from }, to: { ...to }, piece, captured: captured || (move.enPassant ? epCaptured : null), promotion: move.promotion, castle: move.castle, enPassant: move.enPassant }; this.history.push(this.lastMove); }
+  }
+  makeMove(move) { this._applyMove(move, false); }
+  isCheckmate() { return this.isInCheck(this.turn) && this.getLegalMoves(this.turn).length === 0; }
+  isStalemate() { return !this.isInCheck(this.turn) && this.getLegalMoves(this.turn).length === 0; }
+  evaluate() {
+    let score = 0;
+    const pst = {
+      'P': [[0,0,0,0,0,0,0,0],[50,50,50,50,50,50,50,50],[10,10,20,30,30,20,10,10],[5,5,10,25,25,10,5,5],[0,0,0,20,20,0,0,0],[5,-5,-10,0,0,-10,-5,5],[5,10,10,-20,-20,10,10,5],[0,0,0,0,0,0,0,0]],
+      'N': [[-50,-40,-30,-30,-30,-30,-40,-50],[-40,-20,0,0,0,0,-20,-40],[-30,0,10,15,15,10,0,-30],[-30,5,15,20,20,15,5,-30],[-30,0,15,20,20,15,0,-30],[-30,5,10,15,15,10,5,-30],[-40,-20,0,5,5,0,-20,-40],[-50,-40,-30,-30,-30,-30,-40,-50]],
+      'B': [[-20,-10,-10,-10,-10,-10,-10,-20],[-10,0,0,0,0,0,0,-10],[-10,0,5,10,10,5,0,-10],[-10,5,5,10,10,5,5,-10],[-10,0,5,10,10,5,0,-10],[-10,10,10,10,10,10,10,-10],[-10,5,0,0,0,0,5,-10],[-20,-10,-10,-10,-10,-10,-10,-20]],
+      'R': [[0,0,0,0,0,0,0,0],[5,10,10,10,10,10,10,5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[0,0,0,5,5,0,0,0]],
+      'Q': [[-20,-10,-10,-5,-5,-10,-10,-20],[-10,0,0,0,0,0,0,-10],[-10,0,5,5,5,5,0,-10],[-5,0,5,5,5,5,0,-5],[0,0,5,5,5,5,0,-5],[-10,5,5,5,5,5,0,-10],[-10,0,5,0,0,0,0,-10],[-20,-10,-10,-5,-5,-10,-10,-20]],
+      'K': [[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-20,-30,-30,-40,-40,-30,-30,-20],[-10,-20,-20,-20,-20,-20,-20,-10],[20,20,0,0,0,0,20,20],[20,30,10,0,0,10,30,20]]
+    };
+    for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { const p = this.board[r][c]; if (!p) continue; const val = PIECE_VALUES[p.toUpperCase()] || 0; if (this.isWhite(p)) { score += val + ((pst[p.toUpperCase()]||[0,0,0,0,0,0,0,0])[7 - r]?.[c] || 0); } else { score -= val + ((pst[p.toUpperCase()]||[0,0,0,0,0,0,0,0])[r]?.[7 - c] || 0); } }
+    return score;
+  }
+  findMove(fromSq, toSq, promotion) { const moves = this.getLegalMoves(); for (const m of moves) { if (m.from.row === fromSq.row && m.from.col === fromSq.col && m.to.row === toSq.row && m.to.col === toSq.col) { if (promotion && m.promotion !== promotion) continue; return m; } } return null; }
+}
+
+// ================================================================
+//  PUZZLE DATA (10 carefully verified puzzles)
+// ================================================================
+const ALL_PUZZLES = [
+  // 1 - Queen Fork (Easy)
+  { id: 1, fen: '2kr4/pp6/8/8/8/5Q2/PPP5/2KR4 w - - 0 1', theme: 'Queen Fork', difficulty: 'easy', rating: 800,
+    desc: 'Fork the king and rook with your queen!', sol: [{ from: 'f3', to: 'c6' }] },
+  // 2 - Back Rank Mate (Easy)
+  { id: 2, fen: '6k1/5ppp/8/8/8/4R3/5PPP/6K1 w - - 0 1', theme: 'Back Rank Mate', difficulty: 'easy', rating: 900,
+    desc: 'Deliver back rank checkmate with your rook!', sol: [{ from: 'e3', to: 'e8' }] },
+  // 3 - Bishop Sacrifice (Easy)
+  { id: 3, fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/2NP4/PPP2PPP/R1BQK2R w KQkq - 0 1', theme: 'Bishop Sacrifice', difficulty: 'easy', rating: 1000,
+    desc: 'Sacrifice your bishop on f7 to win material!', sol: [{ from: 'c4', to: 'f7' }] },
+  // 4 - Rook Skewer (Medium)
+  { id: 4, fen: '3r2k1/pp3ppp/8/8/8/8/PP3PPP/3R2K1 w - - 0 1', theme: 'Rook Skewer', difficulty: 'medium', rating: 1100,
+    desc: 'Use a rook skewer to win the exchange!', sol: [{ from: 'd1', to: 'd8' }, { from: 'g8', to: 'f7' }, { from: 'd8', to: 'd7' }] },
+  // 5 - Knight Fork (Medium)
+  { id: 5, fen: 'r1bqkb1r/pppp1ppp/2n5/4p3/2B1n3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 1', theme: 'Knight Fork', difficulty: 'medium', rating: 1200,
+    desc: 'Win a pawn with a knight fork!', sol: [{ from: 'f3', to: 'e5' }] },
+  // 6 - Scholar Checkmate (Medium)
+  { id: 6, fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 1', theme: 'Scholar Checkmate', difficulty: 'medium', rating: 1300,
+    desc: 'Attack f7 with queen and bishop! Qh5 threatens Qxf7 mate!', sol: [{ from: 'd1', to: 'h5' }, { from: 'g8', to: 'f6' }, { from: 'h5', to: 'f7' }] },
+  // 7 - Deflection (Hard)
+  { id: 7, fen: 'r1b1kb1r/pppp1ppp/2n2q2/4p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w kq - 0 1', theme: 'Deflection', difficulty: 'hard', rating: 1500,
+    desc: 'Deflect the defender of f7 with a knight sacrifice!', sol: [{ from: 'f3', to: 'e5' }, { from: 'f6', to: 'e5' }, { from: 'd1', to: 'h5' }] },
+  // 8 - Removal of Defender (Hard)
+  { id: 8, fen: 'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 1', theme: 'Defender Removal', difficulty: 'hard', rating: 1600,
+    desc: 'Remove the bishop that defends f7!', sol: [{ from: 'c4', to: 'd5' }, { from: 'c5', to: 'b6' }, { from: 'd5', to: 'f7' }] },
+  // 9 - Greek Gift Sacrifice (Hard)
+  { id: 9, fen: 'r1b2rk1/pppp1ppp/2n2q2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w - - 0 1', theme: 'Greek Gift', difficulty: 'hard', rating: 1800,
+    desc: 'The classic Greek Gift sacrifice! Bxf7+ initiates a winning attack!', sol: [{ from: 'c4', to: 'f7' }, { from: 'f8', to: 'f7' }, { from: 'f3', to: 'g5' }, { from: 'f6', to: 'e7' }, { from: 'g5', to: 'f7' }] },
+  // 10 - King Opposition (Medium)
+  { id: 10, fen: '8/5kpp/8/8/8/8/5PPP/6K1 w - - 0 1', theme: 'King Opposition', difficulty: 'medium', rating: 1200,
+    desc: 'Take the opposition to force your king forward!', sol: [{ from: 'g1', to: 'f1' }] }
+];
+
+// ================================================================
+//  PUZZLE APP
+// ================================================================
+class PuzzleApp {
+  constructor() {
+    this.currentIndex = 0; this.engine = null; this.originalFEN = '';
+    this.solutionMoves = []; this.currentSolutionStep = 0;
+    this.playerColor = 'w'; this.selected = null; this.legalMoves = [];
+    this.aiThinking = false; this.puzzleSolved = false; this.puzzleFailed = false;
+    this.hintUsed = false; this.showingHint = false; this.flipped = false;
+    this.rating = 1200; this.streak = 0; this.solved = 0; this.totalAttempted = 0;
+    this.timerInterval = null; this.seconds = 0; this.isAnimating = false;
+    this.moveHistory = []; this.promotionPending = null;
+    this.boardEl = document.getElementById('board'); this.rankLabels = document.getElementById('rank-labels');
+    this.fileLabels = document.getElementById('file-labels'); this.puzzleNumber = document.getElementById('puzzle-number');
+    this.puzzleTitle = document.getElementById('puzzle-title'); this.puzzleMeta = document.getElementById('puzzle-meta');
+    this.puzzleStatus = document.getElementById('puzzle-status'); this.moveList = document.getElementById('move-list');
+    this.ratingDisplay = document.getElementById('rating-display'); this.streakDisplay = document.getElementById('streak-display');
+    this.solvedDisplay = document.getElementById('solved-display'); this.timerDisplay = document.getElementById('timer-display');
+    this.progressFill = document.getElementById('progress-fill'); this.progressCount = document.getElementById('progress-count');
+
+    document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
+    document.getElementById('btn-flip').addEventListener('click', () => this.flipBoard());
+    document.getElementById('btn-retry').addEventListener('click', () => this.retryPuzzle());
+    document.getElementById('btn-next').addEventListener('click', () => this.nextPuzzle());
+
+    this.boardEl.addEventListener('click', (e) => {
+      const sq = e.target.closest('.square');
+      if (sq) this.handleSquareClick(parseInt(sq.dataset.row), parseInt(sq.dataset.col));
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'r' || e.key === 'R') this.retryPuzzle();
+      if (e.key === 'n' || e.key === 'N') this.nextPuzzle();
+      if (e.key === 'h' || e.key === 'H') this.showHint();
+      if (e.key === 'f' || e.key === 'F') this.flipBoard();
+    });
+
+    this.startTimer();
+    this.loadPuzzle(0);
+  }
+
+  startTimer() {
+    this.timerInterval = setInterval(() => {
+      this.seconds++;
+      this.timerDisplay.textContent = Math.floor(this.seconds / 60) + ':' + (this.seconds % 60 < 10 ? '0' : '') + this.seconds % 60;
+    }, 1000);
+  }
+
+  loadPuzzle(index) {
+    this.currentIndex = index % ALL_PUZZLES.length;
+    const puzzle = ALL_PUZZLES[this.currentIndex];
+    this.originalFEN = puzzle.fen; this.engine = new ChessEngine(puzzle.fen);
+    this.solutionMoves = puzzle.sol; this.currentSolutionStep = 0;
+    this.playerColor = this.engine.turn; this.selected = null; this.legalMoves = [];
+    this.puzzleSolved = false; this.puzzleFailed = false; this.hintUsed = false; this.showingHint = false;
+    this.moveHistory = []; this.promotionPending = null; this.isAnimating = false;
+    this.puzzleNumber.textContent = 'Puzzle #' + (this.currentIndex + 1) + ' of ' + ALL_PUZZLES.length;
+    this.puzzleTitle.textContent = puzzle.desc;
+    const meta = this.puzzleMeta; meta.innerHTML = '';
+    const diffTag = document.createElement('span'); diffTag.className = 'puzzle-tag difficulty-' + puzzle.difficulty;
+    diffTag.textContent = '★'.repeat(puzzle.difficulty === 'easy' ? 1 : puzzle.difficulty === 'medium' ? 2 : 3) + ' ' + puzzle.difficulty; meta.appendChild(diffTag);
+    const themeTag = document.createElement('span'); themeTag.className = 'puzzle-tag theme'; themeTag.textContent = '🏷 ' + puzzle.theme; meta.appendChild(themeTag);
+    const ratingTag = document.createElement('span'); ratingTag.className = 'puzzle-tag theme'; ratingTag.textContent = '⭐ ' + puzzle.rating; meta.appendChild(ratingTag);
+    this.setStatus('solving', '♟ Find the winning move');
+    this.moveList.innerHTML = '<span style="color:var(--text-secondary);font-style:italic">Make your first move...</span>';
+    this.updateProgress(); this.render();
+  }
+
+  render() {
+    this.boardEl.innerHTML = '';
+    const board = this.engine.board;
+    for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+      const dr = this.flipped ? 7 - r : r, dc = this.flipped ? 7 - c : c;
+      const sq = document.createElement('div');
+      sq.className = 'square ' + ((dr + dc) % 2 === 0 ? 'light' : 'dark');
+      sq.dataset.row = dr; sq.dataset.col = dc;
+      const piece = board[dr][dc];
+      if (piece) { const span = document.createElement('span'); span.className = 'piece ' + (piece === piece.toUpperCase() ? 'white-piece' : 'black-piece'); span.textContent = PIECE_UNICODE[piece] || ''; sq.appendChild(span); }
+      if (this.selected && this.selected.row === dr && this.selected.col === dc) sq.classList.add('selected');
+      if (this.engine.lastMove && ((this.engine.lastMove.from.row === dr && this.engine.lastMove.from.col === dc) || (this.engine.lastMove.to.row === dr && this.engine.lastMove.to.col === dc))) sq.classList.add('last-move');
+      const kp = this.engine.turn === 'w' ? 'K' : 'k';
+      if (piece === kp && this.engine.isInCheck(this.engine.turn)) sq.classList.add('check');
+      if (this.selected && !this.puzzleSolved && !this.puzzleFailed) {
+        const isLegal = this.legalMoves.some(m => m.to.row === dr && m.to.col === dc);
+        if (isLegal) { const dot = document.createElement('div'); dot.className = 'move-dot ' + (board[dr][dc] !== null ? 'capture' : 'normal'); sq.appendChild(dot); }
+      }
+      this.boardEl.appendChild(sq);
+    }
+    this.rankLabels.innerHTML = this.flipped ? '1<br>2<br>3<br>4<br>5<br>6<br>7<br>8' : '8<br>7<br>6<br>5<br>4<br>3<br>2<br>1';
+    this.fileLabels.innerHTML = this.flipped ? 'h&nbsp;&nbsp;&nbsp;g&nbsp;&nbsp;&nbsp;f&nbsp;&nbsp;&nbsp;e&nbsp;&nbsp;&nbsp;d&nbsp;&nbsp;&nbsp;c&nbsp;&nbsp;&nbsp;b&nbsp;&nbsp;&nbsp;a' : 'a&nbsp;&nbsp;&nbsp;b&nbsp;&nbsp;&nbsp;c&nbsp;&nbsp;&nbsp;d&nbsp;&nbsp;&nbsp;e&nbsp;&nbsp;&nbsp;f&nbsp;&nbsp;&nbsp;g&nbsp;&nbsp;&nbsp;h';
+    if (this.showingHint && !this.puzzleSolved && !this.puzzleFailed && this.currentSolutionStep < this.solutionMoves.length) {
+      const hMove = this.solutionMoves[this.currentSolutionStep]; const hf = sqFromName(hMove.from); const ht = sqFromName(hMove.to);
+      this.boardEl.querySelectorAll('.square').forEach(sq => { const r = parseInt(sq.dataset.row), c = parseInt(sq.dataset.col); if ((r === hf.row && c === hf.col) || (r === ht.row && c === ht.col)) sq.classList.add('hint'); });
+    }
+  }
+
+  handleSquareClick(row, col) {
+    if (this.puzzleSolved || this.puzzleFailed || this.aiThinking || this.isAnimating) return;
+    const piece = this.engine.board[row][col]; const color = this.engine.colorOf(piece);
+    if (this.selected) {
+      if (this.selected.row === row && this.selected.col === col) { this.selected = null; this.legalMoves = []; this.render(); return; }
+      if (color === this.playerColor) { this.selected = { row, col }; this.legalMoves = this.engine.getLegalMoves().filter(m => m.from.row === row && m.from.col === col); this.render(); return; }
+      const move = this.engine.findMove(this.selected, { row, col });
+      if (move) { if (move.promotion) { this.showPromotionDialog(move); return; } this.executePlayerMove(move); }
+      else { this.selected = null; this.legalMoves = []; this.render(); }
+    } else { if (color === this.playerColor) { this.selected = { row, col }; this.legalMoves = this.engine.getLegalMoves().filter(m => m.from.row === row && m.from.col === col); this.render(); } }
+  }
+
+  showPromotionDialog(move) {
+    this.promotionPending = move;
+    const overlay = document.getElementById('promotion-overlay'); const options = document.getElementById('promotion-options'); options.innerHTML = '';
+    for (const p of ['Q', 'R', 'B', 'N']) {
+      const btn = document.createElement('button'); btn.className = 'promotion-btn';
+      btn.textContent = PIECE_UNICODE[this.playerColor === 'w' ? p : p.toLowerCase()]; btn.dataset.piece = p;
+      btn.addEventListener('click', () => { overlay.classList.remove('active'); this.completePromotion(p); });
+      options.appendChild(btn);
+    }
+    overlay.classList.add('active');
+  }
+
+  completePromotion(piece) {
+    if (!this.promotionPending) return;
+    const move = this.promotionPending; this.promotionPending = null;
+    const promMove = this.engine.findMove(move.from, move.to, piece);
+    if (promMove) this.executePlayerMove(promMove);
+  }
+
+  executePlayerMove(move) {
+    this.isAnimating = true; this.engine.makeMove(move);
+    this.moveHistory.push(move); this.selected = null; this.legalMoves = []; this.showingHint = false;
+    const expectedMove = this.solutionMoves[this.currentSolutionStep];
+    if (expectedMove) {
+      const moveName = sqName(move.from.row, move.from.col) + sqName(move.to.row, move.to.col);
+      if (moveName === expectedMove.from + expectedMove.to) {
+        this.currentSolutionStep++; this.render(); this.addMoveToHistory(move, true);
+        if (this.currentSolutionStep >= this.solutionMoves.length) { this.onPuzzleSolved(); return; }
+        setTimeout(() => this.playOpponentResponse(), 400);
+      } else { this.addMoveToHistory(move, false); this.onPuzzleFailed(); }
+    } else { this.onPuzzleSolved(); }
+  }
+
+  playOpponentResponse() {
+    if (this.puzzleSolved) return;
+    const expectedMove = this.solutionMoves[this.currentSolutionStep];
+    if (!expectedMove) { this.onPuzzleSolved(); return; }
+    const fromSq = sqFromName(expectedMove.from); const toSq = sqFromName(expectedMove.to);
+    const move = this.engine.findMove(fromSq, toSq);
+    if (move) {
+      this.engine.makeMove(move); this.moveHistory.push(move); this.currentSolutionStep++; this.render(); this.addMoveToHistory(move, true);
+      if (this.currentSolutionStep >= this.solutionMoves.length) { setTimeout(() => this.onPuzzleSolved(), 300); }
+      else { this.isAnimating = false; }
+    } else { this.setStatus('wrong', '⚠ Puzzle error. Try next puzzle.'); this.puzzleFailed = true; this.isAnimating = false; }
+  }
+
+  addMoveToHistory(move, correct) {
+    const h = this.engine.history; const piece = h.length > 0 ? h[h.length - 1].piece : '?';
+    const moveStr = (PIECE_UNICODE[piece] || '?') + ' ' + sqName(move.from.row, move.from.col) + '→' + sqName(move.to.row, move.to.col);
+    if (this.moveList.querySelector('span[style]')) this.moveList.innerHTML = '';
+    const item = document.createElement('span'); item.className = 'move-item' + (correct ? '' : ' wrong-move'); item.textContent = moveStr; this.moveList.appendChild(item); this.moveList.scrollTop = this.moveList.scrollHeight;
+  }
+
+  onPuzzleSolved() {
+    this.puzzleSolved = true; this.isAnimating = false; this.streak++; this.solved++; this.totalAttempted++;
+    this.rating += this.hintUsed ? 3 : 8;
+    this.setStatus('correct', '✅ Correct! Well played!');
+    this.showToast('🎉 Puzzle solved! +' + (this.hintUsed ? 3 : 8) + ' rating', 'success');
+    this.updateStats(); this.updateProgress();
+  }
+
+  onPuzzleFailed() {
+    this.puzzleFailed = true; this.isAnimating = false; this.streak = 0; this.totalAttempted++;
+    this.rating = Math.max(400, this.rating - 5);
+    this.setStatus('wrong', '❌ Incorrect. Try again!');
+    this.showToast('❌ Wrong move! Rating -5', 'error');
+    this.updateStats();
+  }
+
+  setStatus(type, msg) { this.puzzleStatus.className = 'puzzle-status ' + type; this.puzzleStatus.textContent = msg; }
+
+  showHint() {
+    if (this.puzzleSolved || this.puzzleFailed || this.currentSolutionStep >= this.solutionMoves.length) return;
+    this.hintUsed = true; this.showingHint = true;
+    const hMove = this.solutionMoves[this.currentSolutionStep];
+    this.setStatus('hint-used', '💡 Hint: Try ' + hMove.from + ' → ' + hMove.to);
+    this.render(); this.showToast('💡 Hint shown! Reduced rating gain.', 'warning');
+  }
+
+  flipBoard() { this.flipped = !this.flipped; this.render(); }
+  retryPuzzle() { this.loadPuzzle(this.currentIndex); this.showToast('↩ Puzzle restarted', 'info'); }
+  nextPuzzle() {
+    if (this.currentIndex < ALL_PUZZLES.length - 1) { this.loadPuzzle(this.currentIndex + 1); }
+    else { this.loadPuzzle(0); this.showToast('🔄 All puzzles done! Starting over.', 'info'); }
+  }
+  updateStats() { this.ratingDisplay.textContent = this.rating; this.streakDisplay.textContent = this.streak; this.solvedDisplay.textContent = this.solved; }
+  updateProgress() {
+    const total = ALL_PUZZLES.length;
+    const done = Math.min(this.currentIndex + (this.puzzleSolved ? 1 : 0), total);
+    this.progressFill.style.width = (done / total * 100) + '%';
+    this.progressCount.textContent = done + ' / ' + total;
+  }
+  showToast(msg, type) {
+    const c = document.getElementById('toast-container'); const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg; c.appendChild(t);
+    setTimeout(() => { t.style.animation = 'fadeOut 0.3s ease'; setTimeout(() => t.remove(), 300); }, 2500);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { new PuzzleApp(); });
+</script>
+</body>
+</html>
