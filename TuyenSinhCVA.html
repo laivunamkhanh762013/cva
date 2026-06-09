@@ -1,0 +1,2249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Đăng ký tuyển sinh lớp 6 CLC - THCS Chu Văn An</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #1a4a8a;
+  --primary-light: #2a6bc4;
+  --primary-dark: #0f2d55;
+  --accent: #e67e22;
+  --accent-hover: #d35400;
+  --success: #27ae60;
+  --success-light: rgba(39, 174, 96, 0.1);
+  --danger: #e74c3c;
+  --danger-light: rgba(231, 76, 60, 0.08);
+  --warning: #f39c12;
+  --bg: #f0f4f8;
+  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-card-solid: #ffffff;
+  --bg-input: #f7f9fc;
+  --text-primary: #1a2a3a;
+  --text-secondary: #5a6a7a;
+  --text-muted: #8a9aaa;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-focus: var(--primary-light);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 0 3px rgba(26, 74, 138, 0.12);
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --overlay: rgba(0, 0, 0, 0.5);
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --header-shadow: 0 4px 24px rgba(26, 74, 138, 0.25);
+}
+
+[data-theme="dark"] {
+  --primary: #5a9cf0;
+  --primary-light: #7bb5ff;
+  --primary-dark: #1a4a8a;
+  --accent: #f5a623;
+  --accent-hover: #e8920e;
+  --success: #2ecc71;
+  --success-light: rgba(46, 204, 113, 0.12);
+  --danger: #ff6b6b;
+  --danger-light: rgba(255, 107, 107, 0.1);
+  --warning: #f1c40f;
+  --bg: #0d1117;
+  --bg-card: rgba(30, 35, 45, 0.92);
+  --bg-card-solid: #1e232d;
+  --bg-input: #161b24;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-focus: var(--primary-light);
+  --shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 0 3px rgba(90, 156, 240, 0.2);
+  --overlay: rgba(0, 0, 0, 0.7);
+  --nav-bg: rgba(22, 27, 36, 0.9);
+  --header-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(26,74,138,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(230,126,34,0.05) 0%, transparent 50%);
+}
+[data-theme="dark"] body,
+body { background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(90,156,240,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(245,166,35,0.03) 0%, transparent 50%);
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 60px 60px;
+  transition: padding 0.3s ease;
+}
+
+/* ===== THEME TOGGLE ===== */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ===== DRAFT INDICATOR ===== */
+.draft-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+.draft-bar .draft-icon { font-size: 14px; }
+.draft-bar .draft-status { flex: 1; }
+.draft-bar .draft-action {
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  transition: var(--transition);
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-family: inherit;
+}
+.draft-bar .draft-action:hover { color: var(--accent); }
+.draft-bar.saved { border-color: var(--success); }
+.draft-bar.saved .draft-status { color: var(--success); }
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--header-shadow);
+  animation: headerIn 0.6s var(--bounce);
+}
+@keyframes headerIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+  pointer-events: none;
+}
+.header-badge {
+  display: inline-flex;
+  align-items: center; gap: 6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(8px);
+  margin-bottom: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1;
+}
+.header p {
+  font-size: 14px;
+  opacity: 0.8;
+  position: relative;
+  z-index: 1;
+}
+.header .sub {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.header .sub .dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: sectionIn 0.5s var(--bounce);
+  animation-delay: 0.1s;
+  animation-fill-mode: both;
+}
+.progress-steps {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.progress-step {
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.06);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.progress-step::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 100%;
+  background: linear-gradient(90deg, var(--primary-light), var(--primary));
+  border-radius: 4px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--bounce);
+}
+.progress-step.done::after { transform: scaleX(1); }
+.progress-step.active::after {
+  transform: scaleX(1);
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+}
+.progress-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* ===== SECTION CARDS ===== */
+.section {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  animation: sectionIn 0.5s var(--bounce);
+  animation-fill-mode: both;
+  scroll-margin-top: 20px;
+}
+.section:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+@keyframes sectionIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section:hover {
+  border-color: rgba(26,74,138,0.1);
+  box-shadow: var(--shadow-lg);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+.section-header:hover .section-title { color: var(--primary); }
+.section-number {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  flex: 1;
+  transition: var(--transition);
+}
+.section-badge {
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.section-badge.required { background: rgba(231,76,60,0.08); color: var(--danger); }
+.section-badge.optional { background: rgba(0,0,0,0.04); color: var(--text-muted); }
+
+.section-collapse {
+  font-size: 16px;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.section.collapsed .section-collapse { transform: rotate(-90deg); }
+.section-body { transition: max-height 0.35s ease, opacity 0.25s ease; overflow: hidden; }
+.section.collapsed .section-body { max-height: 0 !important; opacity: 0; padding-top: 0 !important; margin-top: 0 !important; }
+
+/* ===== FORM FIELDS ===== */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+.form-grid.full { grid-template-columns: 1fr; }
+.form-grid.third { grid-template-columns: 1fr 1fr 1fr; }
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative;
+}
+.form-group.full { grid-column: 1 / -1; }
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.form-label .required-star { color: var(--danger); font-weight: 700; }
+.form-label .hint-icon {
+  cursor: help;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.04);
+  font-size: 10px;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+.form-label .hint-icon:hover { background: rgba(26,74,138,0.1); color: var(--primary); }
+
+input, select, textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  transition: var(--transition);
+  outline: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-glow);
+  background: var(--bg-card-solid);
+}
+input::placeholder, textarea::placeholder { color: var(--text-muted); }
+input.error, select.error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(231,76,60,0.1); }
+input.success, select.success { border-color: var(--success); box-shadow: 0 0 0 3px var(--success-light); }
+input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.field-error {
+  font-size: 11px;
+  color: var(--danger);
+  line-height: 1.3;
+  opacity: 0;
+  max-height: 0;
+  transition: opacity 0.2s ease, max-height 0.25s ease, margin 0.25s ease;
+  overflow: hidden;
+  margin: 0;
+}
+.field-error.visible {
+  opacity: 1;
+  max-height: 40px;
+  margin-top: 3px;
+}
+.field-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a6a7a' d='M6 8.5L1.5 4h9z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+textarea { resize: vertical; min-height: 60px; }
+
+/* Radio group */
+.radio-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg-input);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 13px;
+  font-weight: 500;
+  user-select: none;
+}
+.radio-option:hover { border-color: rgba(26,74,138,0.2); }
+.radio-option.active {
+  border-color: var(--primary);
+  background: rgba(26,74,138,0.06);
+  color: var(--primary);
+}
+.radio-option input[type="radio"] {
+  display: none;
+}
+.radio-option .radio-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.radio-option.active .radio-dot {
+  border-color: var(--primary);
+}
+.radio-option.active .radio-dot::after {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: dotPop 0.2s var(--bounce);
+}
+@keyframes dotPop {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+/* Checkbox */
+.checkbox-group {
+  margin-top: 4px;
+}
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  user-select: none;
+}
+.checkbox-label input[type="checkbox"] { display: none; }
+.checkbox-box {
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  border: 2px solid rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.checkbox-label input:checked + .checkbox-box {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.checkbox-label input:checked + .checkbox-box::after {
+  content: '✓';
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.checkbox-label .checkbox-text strong { color: var(--text-primary); }
+
+/* File upload */
+.file-upload {
+  position: relative;
+  padding: 20px;
+  border-radius: var(--radius-sm);
+  border: 2px dashed rgba(0,0,0,0.08);
+  background: var(--bg-input);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.file-upload:hover {
+  border-color: var(--primary-light);
+  background: rgba(26,74,138,0.03);
+}
+.file-upload input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.file-upload .upload-icon { font-size: 32px; margin-bottom: 8px; display: block; transition: transform 0.3s ease; }
+.file-upload:hover .upload-icon { transform: scale(1.15); }
+.file-upload .upload-text { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.file-upload .upload-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.file-upload.has-file {
+  border-color: var(--success);
+  background: var(--success-light);
+  border-style: solid;
+}
+.file-upload.has-file .upload-text { color: var(--success); }
+.file-upload.has-file .upload-icon { transform: scale(1); }
+
+/* ===== FAMILY SECTION ===== */
+.family-member {
+  background: rgba(0,0,0,0.02);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  border: 1px solid rgba(0,0,0,0.04);
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+.family-member:hover { border-color: rgba(0,0,0,0.08); }
+.family-member:last-child { margin-bottom: 0; }
+.family-member-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.family-member-header .avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.family-member-header .avatar.father { background: rgba(26,74,138,0.1); }
+.family-member-header .avatar.mother { background: rgba(230,126,34,0.1); }
+.family-member-header .avatar.guardian { background: rgba(39,174,96,0.1); }
+.family-member-header h4 { font-size: 14px; font-weight: 600; }
+.family-member-header .tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.04);
+  color: var(--text-muted);
+}
+
+/* ===== EDU RESULTS (GRADES 1-5) ===== */
+.edu-grid { display: grid; gap: 8px; }
+.edu-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  transition: var(--transition);
+}
+.edu-row:hover { background: rgba(26,74,138,0.03); }
+.edu-row .grade-label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ===== REVIEW SUMMARY ===== */
+.review-section {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: sectionIn 0.5s var(--bounce);
+  animation-fill-mode: both;
+  display: none;
+}
+.review-section.visible { display: block; }
+.review-section .section-header { margin-bottom: 16px; }
+.review-grid { display: grid; gap: 10px; }
+.review-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  font-size: 13px;
+}
+.review-item .review-label {
+  color: var(--text-muted);
+  min-width: 140px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.review-item .review-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.review-item .review-value.empty {
+  color: var(--danger);
+  font-style: italic;
+}
+.review-edit-btn {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: var(--transition);
+}
+.review-edit-btn:hover {
+  background: rgba(26,74,138,0.08);
+}
+
+/* ===== SUBMIT ===== */
+.submit-section {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  color: #fff;
+  margin-top: 4px;
+  animation: sectionIn 0.5s var(--bounce);
+  animation-fill-mode: both;
+  position: relative;
+  overflow: hidden;
+}
+.submit-section::before {
+  content: '';
+  position: absolute;
+  top: -40%; right: -10%;
+  width: 250px; height: 250px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.submit-section .note {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-bottom: 16px;
+  line-height: 1.6;
+  position: relative;
+}
+.submit-section .btn-row {
+  display: flex;
+  gap: 12px;
+  position: relative;
+}
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+  padding: 16px 24px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(230,126,34,0.35);
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.submit-btn:hover::before { opacity: 1; }
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(230,126,34,0.45);
+}
+.submit-btn:active { transform: translateY(0) scale(0.98); }
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+.submit-btn .icon { font-size: 18px; }
+.submit-btn .spinner {
+  display: none;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+.submit-btn.loading .spinner { display: inline-block; }
+.submit-btn.loading .btn-text { display: none; }
+.submit-btn.loading .icon { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.review-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 20px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  background: transparent;
+  color: #fff;
+  white-space: nowrap;
+}
+.review-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* ===== TOAST ===== */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  padding: 14px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-lg);
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+  animation: toastIn 0.4s var(--bounce);
+  position: relative;
+  overflow: hidden;
+}
+.toast::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; height: 2px;
+  width: 100%;
+  animation: toastProgress 3s linear forwards;
+}
+.toast.success { border-left: 3px solid var(--success); }
+.toast.success::after { background: var(--success); }
+.toast.error { border-left: 3px solid var(--danger); }
+.toast.error::after { background: var(--danger); }
+.toast.info { border-left: 3px solid var(--primary); }
+.toast.info::after { background: var(--primary); }
+.toast.warning { border-left: 3px solid var(--warning); }
+.toast.warning::after { background: var(--warning); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px) scale(0.95); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes toastProgress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* ===== MODAL / THANK YOU ===== */
+.thankyou-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  animation: overlayIn 0.3s ease;
+}
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+.thankyou-overlay.active { display: flex; }
+.thankyou-modal {
+  background: var(--bg-card-solid);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px 32px;
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: modalIn 0.5s var(--bounce);
+  border: 1px solid var(--border);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.thankyou-modal .check-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--success), #2ecc71);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 20px rgba(39,174,96,0.3);
+  animation: checkPop 0.6s var(--bounce);
+}
+@keyframes checkPop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.thankyou-modal h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.thankyou-modal p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
+.thankyou-modal .btn-ok {
+  padding: 12px 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.thankyou-modal .btn-ok:hover { background: var(--primary-light); transform: translateY(-1px); }
+
+/* ===== CONFETTI CANVAS ===== */
+#confettiCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1001;
+}
+
+/* ===== SCROLL TO TOP ===== */
+.scroll-top {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 998;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+.scroll-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.scroll-top:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.scroll-top.visible:hover { transform: translateY(-3px); }
+
+/* ===== FLOATING SECTION NAV ===== */
+.section-nav {
+  position: fixed;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.section-nav-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  opacity: 0.3;
+  position: relative;
+}
+.section-nav-dot:hover { opacity: 0.7; transform: scale(1.2); }
+.section-nav-dot.active {
+  opacity: 1;
+  background: var(--primary);
+  border-color: var(--primary-light);
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(26,74,138,0.3);
+}
+.section-nav-dot.done {
+  opacity: 0.6;
+  background: var(--success);
+}
+.section-nav-dot .nav-tooltip {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text-primary);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.section-nav-dot:hover .nav-tooltip { opacity: 1; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+  .container { padding: 12px 16px 40px; }
+  .header { padding: 20px; }
+  .header h1 { font-size: 20px; }
+  .section { padding: 20px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid.third { grid-template-columns: 1fr; }
+  .edu-row { grid-template-columns: 1fr; gap: 6px; }
+  .edu-row .grade-label { font-size: 13px; padding: 4px 0; }
+  .family-member { padding: 12px; }
+  .progress-steps { display: none; }
+  .submit-section { padding: 20px; }
+  .submit-btn { font-size: 15px; padding: 14px 18px; }
+  .submit-section .btn-row { flex-direction: column; }
+  .review-btn { width: 100%; }
+  .thankyou-modal { padding: 28px 20px; }
+  .section-nav { display: none; }
+  .container { padding: 12px 12px 40px; }
+  .theme-toggle { top: 12px; right: 12px; width: 40px; height: 40px; }
+  .scroll-top { bottom: 20px; right: 12px; }
+  .review-item { flex-direction: column; gap: 4px; }
+  .review-item .review-label { min-width: auto; }
+}
+@media (max-width: 400px) {
+  .header h1 { font-size: 17px; }
+  .section { padding: 16px; }
+  .submit-section { padding: 16px; }
+  .radio-group { flex-direction: column; }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  .progress-bar, .toast-container, .thankyou-overlay,
+  .theme-toggle, .scroll-top, .section-nav, .draft-bar,
+  .section-collapse { display: none !important; }
+  .section { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+  .section-body { max-height: none !important; opacity: 1 !important; overflow: visible !important; }
+  .section.collapsed .section-body { max-height: none !important; opacity: 1 !important; }
+  .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .submit-section { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- THEME TOGGLE -->
+  <button class="theme-toggle" id="themeToggle" title="Chuyển đổi giao diện tối/sáng" aria-label="Chuyển đổi giao diện">🌙</button>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">📋 Bản thử nghiệm</div>
+    <h1>PHIẾU ĐĂNG KÝ TUYỂN SINH<br>VÀO LỚP 6 CHẤT LƯỢNG CAO</h1>
+    <p>Trường THCS Chu Văn An - Xã Thanh Trì</p>
+    <div class="sub">
+      <span>📅 Năm học 2026 – 2027</span>
+      <span class="dot"></span>
+      <span>⏰ Hạn cuối: 12h00 ngày 09/6/2026</span>
+    </div>
+  </div>
+
+  <!-- DRAFT BAR -->
+  <div class="draft-bar" id="draftBar">
+    <span class="draft-icon">💾</span>
+    <span class="draft-status">Tự động lưu nháp...</span>
+    <button class="draft-action" id="clearDraftBtn" title="Xoá bản nháp đã lưu">Xoá nháp</button>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-steps" id="progressSteps">
+      <div class="progress-step" data-step="1" data-section="1" title="Thông tin học sinh"></div>
+      <div class="progress-step" data-step="2" data-section="2" title="Địa chỉ"></div>
+      <div class="progress-step" data-step="3" data-section="3" title="Kết quả giáo dục"></div>
+      <div class="progress-step" data-step="4" data-section="4" title="Thông tin gia đình"></div>
+      <div class="progress-step" data-step="5" data-section="5" title="Thông tin liên hệ"></div>
+      <div class="progress-step" data-step="6" data-section="6" title="Tải hồ sơ"></div>
+    </div>
+    <span class="progress-text" id="progressText">0 / 6 mục</span>
+  </div>
+
+  <form id="enrollForm" novalidate autocomplete="off">
+
+    <!-- ===== SECTION 1: HỌC SINH ===== -->
+    <div class="section" data-section="1">
+      <div class="section-header" data-toggle>
+        <div class="section-number">1</div>
+        <div class="section-title">Thông tin học sinh</div>
+        <span class="section-badge required">Bắt buộc</span>
+        <span class="section-collapse">▼</span>
+      </div>
+      <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label" for="hoTen">Họ tên học sinh <span class="required-star">*</span></label>
+          <input type="text" id="hoTen" placeholder="Nhập họ và tên học sinh (VD: Nguyễn Văn A)" required data-validate="required|min:3">
+          <div class="field-error" data-for="hoTen"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Giới tính <span class="required-star">*</span></label>
+          <div class="radio-group" id="gioiTinh" data-validate="required">
+            <label class="radio-option" data-value="Nam">
+              <input type="radio" name="gioiTinh" value="Nam" required>
+              <span class="radio-dot"></span> Nam
+            </label>
+            <label class="radio-option" data-value="Nữ">
+              <input type="radio" name="gioiTinh" value="Nữ" required>
+              <span class="radio-dot"></span> Nữ
+            </label>
+          </div>
+          <div class="field-error" data-for="gioiTinh"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ngaySinh">Ngày sinh <span class="required-star">*</span></label>
+          <input type="date" id="ngaySinh" required data-validate="required">
+          <div class="field-error" data-for="ngaySinh"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="danToc">Dân tộc <span class="required-star">*</span></label>
+          <select id="danToc" required data-validate="required">
+            <option value="">-- Chọn dân tộc --</option>
+            <option value="Kinh">Kinh</option>
+            <option value="Tày">Tày</option>
+            <option value="Thái">Thái</option>
+            <option value="Mường">Mường</option>
+            <option value="H'Mong">H'Mong</option>
+            <option value="Nùng">Nùng</option>
+            <option value="Dao">Dao</option>
+            <option value="Khmer">Khmer</option>
+            <option value="Hoa">Hoa</option>
+            <option value="Khác">Khác</option>
+          </select>
+          <div class="field-error" data-for="danToc"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="noiSinh">Nơi sinh <span class="required-star">*</span></label>
+          <input type="text" id="noiSinh" placeholder="VD: Hà Nội" required data-validate="required">
+          <div class="field-error" data-for="noiSinh"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="doiTuongCS">Đối tượng chính sách</label>
+          <select id="doiTuongCS">
+            <option value="">Không thuộc diện</option>
+            <option value="Con thương binh">Con thương binh</option>
+            <option value="Con liệt sĩ">Con liệt sĩ</option>
+            <option value="Hộ nghèo">Hộ nghèo</option>
+            <option value="Dân tộc thiểu số">Dân tộc thiểu số</option>
+            <option value="Khác">Khác</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Học sinh khuyết tật?</label>
+          <div class="radio-group" id="khuyetTat">
+            <label class="radio-option" data-value="Không">
+              <input type="radio" name="khuyetTat" value="Không">
+              <span class="radio-dot"></span> Không
+            </label>
+            <label class="radio-option" data-value="Có">
+              <input type="radio" name="khuyetTat" value="Có">
+              <span class="radio-dot"></span> Có
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cccd">Số định danh cá nhân (CCCD) <span class="required-star">*</span></label>
+          <input type="text" id="cccd" placeholder="12 số (VD: 123456789012)" maxlength="12" required
+                 oninput="this.value=this.value.replace(/\D/g,'')" data-validate="required|number|len:12">
+          <div class="field-error" data-for="cccd"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="truongTH">Trường Tiểu học (2025-2026) <span class="required-star">*</span></label>
+          <input type="text" id="truongTH" placeholder="VD: Trường Tiểu học Thanh Trì" required data-validate="required">
+          <div class="field-error" data-for="truongTH"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="maDinhDanh">Mã định danh học sinh (Bộ GD cấp) <span class="required-star">*</span></label>
+          <input type="text" id="maDinhDanh" placeholder="VD: HS12345678" required data-validate="required">
+          <div class="field-error" data-for="maDinhDanh"></div>
+          <span class="field-hint">ℹ️ Nhập giả định nếu chưa rõ</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="matKhau">Mật khẩu tài khoản (Bộ GD cấp) <span class="required-star">*</span></label>
+          <input type="text" id="matKhau" placeholder="VD: Mk1234@" required data-validate="required">
+          <div class="field-error" data-for="matKhau"></div>
+          <span class="field-hint">ℹ️ Nhập giả định đủ chữ và số (VD: Mk1234@)</span>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 2: ĐỊA CHỈ ===== -->
+    <div class="section" data-section="2">
+      <div class="section-header" data-toggle>
+        <div class="section-number">2</div>
+        <div class="section-title">Địa chỉ</div>
+        <span class="section-badge required">Bắt buộc</span>
+        <span class="section-collapse">▼</span>
+      </div>
+      <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="tinh">Tỉnh / Thành phố <span class="required-star">*</span></label>
+          <select id="tinh" required data-validate="required">
+            <option value="">-- Chọn tỉnh/TP --</option>
+            <option value="Hà Nội">Hà Nội</option>
+            <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+            <option value="Đà Nẵng">Đà Nẵng</option>
+            <option value="Hải Phòng">Hải Phòng</option>
+            <option value="Cần Thơ">Cần Thơ</option>
+            <option value="Khác">Khác</option>
+          </select>
+          <div class="field-error" data-for="tinh"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="huyen">Quận / Huyện <span class="required-star">*</span></label>
+          <select id="huyen" required data-validate="required">
+            <option value="">-- Chọn quận/huyện --</option>
+            <option value="Thanh Trì">Thanh Trì</option>
+            <option value="Thanh Xuân">Thanh Xuân</option>
+            <option value="Hoàng Mai">Hoàng Mai</option>
+            <option value="Hà Đông">Hà Đông</option>
+            <option value="Nam Từ Liêm">Nam Từ Liêm</option>
+            <option value="Bắc Từ Liêm">Bắc Từ Liêm</option>
+            <option value="Khác">Khác</option>
+          </select>
+          <div class="field-error" data-for="huyen"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="xa">Xã / Phường / Thị trấn <span class="required-star">*</span></label>
+          <select id="xa" required data-validate="required">
+            <option value="">-- Chọn xã/phường --</option>
+            <option value="Thanh Trì">Thanh Trì</option>
+            <option value="Tứ Hiệp">Tứ Hiệp</option>
+            <option value="Yên Mỹ">Yên Mỹ</option>
+            <option value="Tam Hiệp">Tam Hiệp</option>
+            <option value="Tả Thanh Oai">Tả Thanh Oai</option>
+            <option value="Hữu Hòa">Hữu Hòa</option>
+            <option value="Khác">Khác</option>
+          </select>
+          <div class="field-error" data-for="xa"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="thon">Thôn / Tổ <span class="required-star">*</span></label>
+          <input type="text" id="thon" placeholder="VD: Thôn 5" required data-validate="required">
+          <div class="field-error" data-for="thon"></div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="soNha">Số nhà / Đường <span class="required-star">*</span></label>
+          <input type="text" id="soNha" placeholder="VD: Số 12, Ngõ 34, Đường Giải Phóng" required data-validate="required">
+          <div class="field-error" data-for="soNha"></div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 3: KẾT QUẢ GIÁO DỤC ===== -->
+    <div class="section" data-section="3">
+      <div class="section-header" data-toggle>
+        <div class="section-number">3</div>
+        <div class="section-title">Kết quả giáo dục</div>
+        <span class="section-badge required">Bắt buộc</span>
+        <span class="section-collapse">▼</span>
+      </div>
+      <div class="section-body">
+      <div class="edu-grid">
+        <div class="edu-row">
+          <span class="grade-label">📘 Lớp 1</span>
+          <select id="hocluc1" required data-validate="required"><option value="">Học lực</option><option value="Giỏi">Giỏi</option><option value="Khá">Khá</option><option value="Trung bình">Trung bình</option></select>
+          <select id="hanhkiem1" required data-validate="required"><option value="">Hạnh kiểm</option><option value="Tốt">Tốt</option><option value="Khá">Khá</option><option value="Đạt">Đạt</option></select>
+        </div>
+        <div class="edu-row">
+          <span class="grade-label">📗 Lớp 2</span>
+          <select id="hocluc2" required data-validate="required"><option value="">Học lực</option><option value="Giỏi">Giỏi</option><option value="Khá">Khá</option><option value="Trung bình">Trung bình</option></select>
+          <select id="hanhkiem2" required data-validate="required"><option value="">Hạnh kiểm</option><option value="Tốt">Tốt</option><option value="Khá">Khá</option><option value="Đạt">Đạt</option></select>
+        </div>
+        <div class="edu-row">
+          <span class="grade-label">📙 Lớp 3</span>
+          <select id="hocluc3" required data-validate="required"><option value="">Học lực</option><option value="Giỏi">Giỏi</option><option value="Khá">Khá</option><option value="Trung bình">Trung bình</option></select>
+          <select id="hanhkiem3" required data-validate="required"><option value="">Hạnh kiểm</option><option value="Tốt">Tốt</option><option value="Khá">Khá</option><option value="Đạt">Đạt</option></select>
+        </div>
+        <div class="edu-row">
+          <span class="grade-label">📕 Lớp 4</span>
+          <select id="hocluc4" required data-validate="required"><option value="">Học lực</option><option value="Giỏi">Giỏi</option><option value="Khá">Khá</option><option value="Trung bình">Trung bình</option></select>
+          <select id="hanhkiem4" required data-validate="required"><option value="">Hạnh kiểm</option><option value="Tốt">Tốt</option><option value="Khá">Khá</option><option value="Đạt">Đạt</option></select>
+        </div>
+        <div class="edu-row">
+          <span class="grade-label">📒 Lớp 5</span>
+          <select id="hocluc5" required data-validate="required"><option value="">Học lực</option><option value="Giỏi">Giỏi</option><option value="Khá">Khá</option><option value="Trung bình">Trung bình</option></select>
+          <select id="hanhkiem5" required data-validate="required"><option value="">Hạnh kiểm</option><option value="Tốt">Tốt</option><option value="Khá">Khá</option><option value="Đạt">Đạt</option></select>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 4: GIA ĐÌNH ===== -->
+    <div class="section" data-section="4">
+      <div class="section-header" data-toggle>
+        <div class="section-number">4</div>
+        <div class="section-title">Thông tin gia đình</div>
+        <span class="section-badge required">Bắt buộc</span>
+        <span class="section-collapse">▼</span>
+      </div>
+      <div class="section-body">
+      <!-- Father -->
+      <div class="family-member">
+        <div class="family-member-header">
+          <div class="avatar father">👨</div>
+          <h4>Thông tin cha</h4>
+          <span class="tag">Bắt buộc</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="chaHoTen">Họ tên cha <span class="required-star">*</span></label>
+            <input type="text" id="chaHoTen" placeholder="Nhập họ tên cha" required data-validate="required">
+            <div class="field-error" data-for="chaHoTen"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="chaNamSinh">Năm sinh</label>
+            <input type="number" id="chaNamSinh" placeholder="VD: 1975" min="1950" max="2005">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="chaSDT">Số điện thoại <span class="required-star">*</span></label>
+            <input type="tel" id="chaSDT" placeholder="VD: 0912345678" maxlength="10" required
+                   oninput="this.value=this.value.replace(/\D/g,'')" data-validate="required|phone">
+            <div class="field-error" data-for="chaSDT"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="chaNgheNghiep">Nghề nghiệp</label>
+            <input type="text" id="chaNgheNghiep" placeholder="VD: Công nhân">
+          </div>
+        </div>
+      </div>
+
+      <!-- Mother -->
+      <div class="family-member">
+        <div class="family-member-header">
+          <div class="avatar mother">👩</div>
+          <h4>Thông tin mẹ</h4>
+          <span class="tag">Bắt buộc</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="meHoTen">Họ tên mẹ <span class="required-star">*</span></label>
+            <input type="text" id="meHoTen" placeholder="Nhập họ tên mẹ" required data-validate="required">
+            <div class="field-error" data-for="meHoTen"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="meNamSinh">Năm sinh</label>
+            <input type="number" id="meNamSinh" placeholder="VD: 1978" min="1950" max="2008">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="meSDT">Số điện thoại <span class="required-star">*</span></label>
+            <input type="tel" id="meSDT" placeholder="VD: 0987654321" maxlength="10" required
+                   oninput="this.value=this.value.replace(/\D/g,'')" data-validate="required|phone">
+            <div class="field-error" data-for="meSDT"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="meNgheNghiep">Nghề nghiệp</label>
+            <input type="text" id="meNgheNghiep" placeholder="VD: Giáo viên">
+          </div>
+        </div>
+      </div>
+
+      <!-- Guardian -->
+      <div class="family-member">
+        <div class="family-member-header">
+          <div class="avatar guardian">👤</div>
+          <h4>Người giám hộ</h4>
+          <span class="tag">Không bắt buộc</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="ghHoTen">Họ tên người giám hộ</label>
+            <input type="text" id="ghHoTen" placeholder="Nhập họ tên (nếu có)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ghNamSinh">Năm sinh</label>
+            <input type="number" id="ghNamSinh" placeholder="VD: 1970" min="1950" max="2005">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ghSDT">Số điện thoại</label>
+            <input type="tel" id="ghSDT" placeholder="VD: 0909090909" maxlength="10"
+                   oninput="this.value=this.value.replace(/\D/g,'')">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ghNgheNghiep">Nghề nghiệp</label>
+            <input type="text" id="ghNgheNghiep" placeholder="VD: Kinh doanh">
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 5: LIÊN HỆ ===== -->
+    <div class="section" data-section="5">
+      <div class="section-header" data-toggle>
+        <div class="section-number">5</div>
+        <div class="section-title">Thông tin liên hệ</div>
+        <span class="section-badge required">Bắt buộc</span>
+        <span class="section-collapse">▼</span>
+      </div>
+      <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="sdtLienHe">Số điện thoại liên hệ <span class="required-star">*</span></label>
+          <input type="tel" id="sdtLienHe" placeholder="VD: 0912345678" maxlength="10" required
+                 oninput="this.value=this.value.replace(/\D/g,'')" data-validate="required|phone">
+          <div class="field-error" data-for="sdtLienHe"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email <span class="required-star">*</span></label>
+          <input type="email" id="email" placeholder="VD: phuhuynh@email.com" required data-validate="required|email">
+          <div class="field-error" data-for="email"></div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 6: TẢI HỒ SƠ ===== -->
+    <div class="section" data-section="6">
+      <div class="section-header" data-toggle>
+        <div class="section-number">6</div>
+        <div class="section-title">Tải hồ sơ</div>
+        <span class="section-badge required">Bắt buộc</span>
+        <span class="section-collapse">▼</span>
+      </div>
+      <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Ảnh thẻ 3×4 <span class="required-star">*</span></label>
+          <div class="file-upload" id="uploadAnhThe">
+            <input type="file" id="anhThe" accept="image/*" required data-validate="required">
+            <span class="upload-icon">📸</span>
+            <span class="upload-text" data-default="Nhấn để tải ảnh thẻ 3×4">Nhấn để tải ảnh thẻ 3×4</span>
+            <span class="upload-hint" data-default="JPG, PNG • Tối đa 5MB">JPG, PNG • Tối đa 5MB</span>
+          </div>
+          <div class="field-error" data-for="anhThe"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Giấy khai sinh <span class="required-star">*</span></label>
+          <div class="file-upload" id="uploadGKS">
+            <input type="file" id="giayKhaiSinh" accept="image/*,application/pdf" required data-validate="required">
+            <span class="upload-icon">📄</span>
+            <span class="upload-text" data-default="Nhấn để tải giấy khai sinh">Nhấn để tải giấy khai sinh</span>
+            <span class="upload-hint" data-default="JPG, PNG, PDF • Tối đa 5MB">JPG, PNG, PDF • Tối đa 5MB</span>
+          </div>
+          <div class="field-error" data-for="giayKhaiSinh"></div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Minh chứng nộp lệ phí</label>
+          <div class="file-upload" id="uploadMinhChung">
+            <input type="file" id="minhChung" accept="image/*,application/pdf">
+            <span class="upload-icon">🧾</span>
+            <span class="upload-text" data-default="Nhấn để tải minh chứng (nếu có)">Nhấn để tải minh chứng (nếu có)</span>
+            <span class="upload-hint" data-default="JPG, PNG, PDF • Không bắt buộc">JPG, PNG, PDF • Không bắt buộc</span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="camKet" required>
+              <span class="checkbox-box"></span>
+              <span class="checkbox-text">
+                <strong>Tôi cam kết</strong> các thông tin trên là đúng sự thật và hoàn toàn chịu trách nhiệm trước pháp luật về những thông tin đã khai báo.
+                <span class="required-star">*</span>
+              </span>
+            </label>
+            <div class="field-error" data-for="camKet"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ===== REVIEW SECTION ===== -->
+    <div class="review-section" id="reviewSection">
+      <div class="section-header">
+        <div class="section-number">✓</div>
+        <div class="section-title">Xem lại thông tin trước khi gửi</div>
+      </div>
+      <div class="review-grid" id="reviewGrid"></div>
+    </div>
+
+    <!-- ===== SUBMIT ===== -->
+    <div class="submit-section">
+      <div class="note">
+        📌 Sau khi nhập xong, bấm nút bên dưới để gửi đăng ký và tải phiếu PDF.<br>
+        ⚠️ Hệ thống có thể bị chậm do nghẽn mạng — vui lòng kiên nhẫn chờ xử lý.
+      </div>
+      <div class="btn-row">
+        <button type="button" class="review-btn" id="reviewBtn">📋 Xem lại</button>
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="icon">📨</span>
+          <span class="btn-text">GỬI ĐĂNG KÝ &amp; TẢI PHIẾU PDF</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<!-- THANK YOU MODAL -->
+<div class="thankyou-overlay" id="thankyouOverlay">
+  <div class="thankyou-modal">
+    <div class="check-icon">✓</div>
+    <h2>Đăng ký thành công!</h2>
+    <p>Thông tin tuyển sinh của học sinh đã được ghi nhận vào hệ thống.<br>
+    Phiếu PDF sẽ được tải xuống trong giây lát.</p>
+    <button class="btn-ok" onclick="closeThankyou()">Đã hiểu</button>
+  </div>
+</div>
+
+<!-- CONFETTI CANVAS -->
+<canvas id="confettiCanvas"></canvas>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTopBtn" title="Lên đầu trang" aria-label="Lên đầu trang">↑</button>
+
+<!-- FLOATING SECTION NAV -->
+<nav class="section-nav" id="sectionNav">
+  <div class="section-nav-dot" data-section="1"><span class="nav-tooltip">Học sinh</span></div>
+  <div class="section-nav-dot" data-section="2"><span class="nav-tooltip">Địa chỉ</span></div>
+  <div class="section-nav-dot" data-section="3"><span class="nav-tooltip">Kết quả GD</span></div>
+  <div class="section-nav-dot" data-section="4"><span class="nav-tooltip">Gia đình</span></div>
+  <div class="section-nav-dot" data-section="5"><span class="nav-tooltip">Liên hệ</span></div>
+  <div class="section-nav-dot" data-section="6"><span class="nav-tooltip">Hồ sơ</span></div>
+</nav>
+
+<script>
+// ================================================================
+//  VALIDATION RULES
+// ================================================================
+const VALIDATORS = {
+  required: v => v !== '' && v !== null && v !== undefined,
+  email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+  phone: v => /^0\d{9}$/.test(v),
+  number: v => /^\d+$/.test(v),
+  len: (v, n) => v.length === parseInt(n),
+  min: (v, n) => v.length >= parseInt(n),
+};
+
+const VALIDATION_MESSAGES = {
+  required: 'Vui lòng nhập trường này',
+  email: 'Email không hợp lệ (VD: ten@email.com)',
+  phone: 'SĐT không hợp lệ (10 số, bắt đầu bằng 0)',
+  number: 'Chỉ được nhập số',
+  len: 'Phải đúng {n} ký tự',
+  min: 'Phải có ít nhất {n} ký tự',
+};
+
+// ================================================================
+//  THEME TOGGLE
+// ================================================================
+const themeToggle = document.getElementById('themeToggle');
+let currentTheme = localStorage.getItem('cva-theme') || 'light';
+applyTheme(currentTheme);
+
+themeToggle.addEventListener('click', () => {
+  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+  applyTheme(currentTheme);
+  localStorage.setItem('cva-theme', currentTheme);
+});
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+// ================================================================
+//  AUTO-SAVE DRAFT
+// ================================================================
+const DRAFT_KEY = 'cva-form-draft';
+const draftBar = document.getElementById('draftBar');
+const clearDraftBtn = document.getElementById('clearDraftBtn');
+let saveTimer;
+let lastSaved = Date.now();
+
+function collectFormData() {
+  const data = {};
+  document.querySelectorAll('#enrollForm input, #enrollForm select, #enrollForm textarea').forEach(el => {
+    if (el.type === 'radio') {
+      if (el.checked) data[el.name] = el.value;
+    } else if (el.type === 'checkbox') {
+      data[el.id] = el.checked;
+    } else if (el.type === 'file') {
+      data[el.id] = null; // can't store files
+    } else {
+      data[el.id] = el.value;
+    }
+  });
+  return data;
+}
+
+function restoreFormData(data) {
+  if (!data) return;
+  Object.entries(data).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.type === 'radio') {
+      const radio = document.querySelector(`input[name="${id}"][value="${val}"]`);
+      if (radio) {
+        radio.checked = true;
+        const opt = radio.closest('.radio-option');
+        if (opt) {
+          opt.closest('.radio-group').querySelectorAll('.radio-option').forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+        }
+      }
+    } else if (el.type === 'checkbox') {
+      el.checked = !!val;
+    } else {
+      el.value = val;
+    }
+  });
+}
+
+function saveDraft() {
+  const data = collectFormData();
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+  lastSaved = Date.now();
+  draftBar.classList.add('saved');
+  const status = draftBar.querySelector('.draft-status');
+  const now = new Date();
+  status.textContent = '💾 Đã lưu nháp lúc ' + now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+}
+
+function debounceSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveDraft, 800);
+  draftBar.classList.remove('saved');
+  draftBar.querySelector('.draft-status').textContent = '⏳ Đang lưu...';
+}
+
+// Restore draft on load
+const saved = localStorage.getItem(DRAFT_KEY);
+if (saved) {
+  try {
+    restoreFormData(JSON.parse(saved));
+    draftBar.classList.add('saved');
+    draftBar.querySelector('.draft-status').textContent = '💾 Đã khôi phục bản nháp';
+  } catch (e) {}
+}
+
+clearDraftBtn.addEventListener('click', () => {
+  localStorage.removeItem(DRAFT_KEY);
+  document.getElementById('enrollForm').reset();
+  document.querySelectorAll('.file-upload').forEach(w => {
+    w.classList.remove('has-file');
+    w.querySelector('.upload-text').textContent = w.querySelector('.upload-text').getAttribute('data-default') || '';
+    w.querySelector('.upload-hint').textContent = w.querySelector('.upload-hint').getAttribute('data-default') || '';
+  });
+  document.querySelectorAll('.radio-option').forEach(o => o.classList.remove('active'));
+  document.querySelectorAll('.checkbox-box').forEach(b => b.style.removeProperty('border-color'));
+  updateProgress();
+  runAllValidations();
+  draftBar.classList.remove('saved');
+  draftBar.querySelector('.draft-status').textContent = '💾 Đã xoá nháp';
+  showToast('🗑️ Đã xoá bản nháp', 'info');
+});
+
+// ================================================================
+//  REAL-TIME VALIDATION
+// ================================================================
+function validateField(el) {
+  const rules = (el.dataset.validate || '').split('|').filter(Boolean);
+  const errorEl = document.querySelector(`.field-error[data-for="${el.id}"]`);
+  if (!errorEl) return true;
+
+  let value = el.value.trim();
+  let errors = [];
+
+  for (const rule of rules) {
+    const [name, param] = rule.split(':');
+    if (name === 'required' && !value) {
+      errors.push(VALIDATION_MESSAGES.required);
+    } else if (value) {
+      if (name === 'email' && !VALIDATORS.email(value)) {
+        errors.push(VALIDATION_MESSAGES.email);
+      } else if (name === 'phone' && !VALIDATORS.phone(value)) {
+        errors.push(VALIDATION_MESSAGES.phone);
+      } else if (name === 'number' && !VALIDATORS.number(value)) {
+        errors.push(VALIDATION_MESSAGES.number);
+      } else if (name === 'len' && !VALIDATORS.len(value, param)) {
+        errors.push(VALIDATION_MESSAGES.len.replace('{n}', param));
+      } else if (name === 'min' && !VALIDATORS.min(value, param)) {
+        errors.push(VALIDATION_MESSAGES.min.replace('{n}', param));
+      }
+    }
+  }
+
+  errorEl.textContent = errors.join(', ');
+  if (errors.length > 0) {
+    errorEl.classList.add('visible');
+    el.classList.add('error');
+    el.classList.remove('success');
+    return false;
+  } else {
+    errorEl.classList.remove('visible');
+    el.classList.remove('error');
+    if (value) el.classList.add('success');
+    else el.classList.remove('success');
+    return true;
+  }
+}
+
+function validateRadioGroup(name) {
+  const radios = document.querySelectorAll(`input[name="${name}"]`);
+  const group = radios[0]?.closest('.radio-group');
+  const errorEl = document.querySelector(`.field-error[data-for="${name}"]`);
+  if (!errorEl || !group) return true;
+
+  const rules = (group.dataset.validate || '').split('|').filter(Boolean);
+  if (!rules.includes('required')) return true;
+
+  const checked = Array.from(radios).some(r => r.checked);
+  if (!checked) {
+    errorEl.textContent = VALIDATION_MESSAGES.required;
+    errorEl.classList.add('visible');
+    return false;
+  } else {
+    errorEl.classList.remove('visible');
+    return true;
+  }
+}
+
+function validateFileInput(id) {
+  const el = document.getElementById(id);
+  const errorEl = document.querySelector(`.field-error[data-for="${id}"]`);
+  if (!errorEl || !el) return true;
+  const rules = (el.dataset.validate || '').split('|').filter(Boolean);
+  if (!rules.includes('required')) return true;
+  if (!el.files || el.files.length === 0) {
+    errorEl.textContent = VALIDATION_MESSAGES.required;
+    errorEl.classList.add('visible');
+    return false;
+  } else {
+    errorEl.classList.remove('visible');
+    return true;
+  }
+}
+
+function validateCheckbox(id) {
+  const el = document.getElementById(id);
+  const errorEl = document.querySelector(`.field-error[data-for="${id}"]`);
+  if (!errorEl || !el) return true;
+  if (el.hasAttribute('required') && !el.checked) {
+    errorEl.textContent = VALIDATION_MESSAGES.required;
+    errorEl.classList.add('visible');
+    return false;
+  } else {
+    errorEl.classList.remove('visible');
+    return true;
+  }
+}
+
+function validateFieldWithEmit(el) {
+  if (el.type === 'radio') {
+    validateRadioGroup(el.name);
+  } else if (el.type === 'file') {
+    validateFileInput(el.id);
+  } else if (el.type === 'checkbox') {
+    validateCheckbox(el.id);
+  } else {
+    validateField(el);
+  }
+}
+
+function runAllValidations() {
+  document.querySelectorAll('#enrollForm input, #enrollForm select, #enrollForm textarea').forEach(el => {
+    validateFieldWithEmit(el);
+  });
+  // Also validate radio groups
+  ['gioiTinh', 'khuyetTat'].forEach(name => validateRadioGroup(name));
+}
+
+document.querySelectorAll('.section input, .section select, .section textarea').forEach(el => {
+  el.addEventListener('blur', () => validateFieldWithEmit(el));
+  el.addEventListener('input', () => {
+    if (el.type === 'file' || el.type === 'checkbox') return;
+    validateFieldWithEmit(el);
+  });
+  el.addEventListener('change', () => {
+    validateFieldWithEmit(el);
+    debounceSave();
+  });
+});
+
+// File change handlers
+document.querySelectorAll('.file-upload input[type="file"]').forEach(input => {
+  input.addEventListener('change', function() {
+    const wrapper = this.closest('.file-upload');
+    if (this.files && this.files.length > 0) {
+      wrapper.classList.add('has-file');
+      wrapper.querySelector('.upload-text').textContent = '✓ ' + this.files[0].name;
+      wrapper.querySelector('.upload-hint').textContent =
+        (this.files[0].size / 1024 / 1024).toFixed(1) + 'MB';
+    } else {
+      wrapper.classList.remove('has-file');
+    }
+    validateFieldWithEmit(this);
+    debounceSave();
+  });
+});
+
+// ================================================================
+//  RADIO BUTTON INTERACTION
+// ================================================================
+document.querySelectorAll('.radio-option').forEach(opt => {
+  opt.addEventListener('click', function() {
+    const radio = this.querySelector('input[type="radio"]');
+    if (radio.disabled) return;
+    const parent = this.closest('.radio-group');
+    parent.querySelectorAll('.radio-option').forEach(o => o.classList.remove('active'));
+    this.classList.add('active');
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+});
+
+// ================================================================
+//  SECTION COLLAPSE
+// ================================================================
+document.querySelectorAll('.section-header[data-toggle]').forEach(header => {
+  header.addEventListener('click', function() {
+    const section = this.closest('.section');
+    section.classList.toggle('collapsed');
+  });
+});
+
+// ================================================================
+//  PROGRESS TRACKER
+// ================================================================
+function updateProgress() {
+  const sections = document.querySelectorAll('.section');
+  let filledSections = 0;
+  sections.forEach(sec => {
+    const inputs = sec.querySelectorAll('input, select, textarea');
+    let allFilled = true;
+    inputs.forEach(input => {
+      if (input.hasAttribute('required') || input.closest('.radio-group')) {
+        if (input.type === 'radio') {
+          if (input.name) {
+            const group = sec.querySelectorAll(`input[name="${input.name}"]`);
+            const checked = Array.from(group).some(r => r.checked);
+            if (!checked) allFilled = false;
+          }
+        } else if (input.type === 'file') {
+          if (input.hasAttribute('required') && (!input.files || input.files.length === 0)) {
+            allFilled = false;
+          }
+        } else if (input.type === 'checkbox') {
+          if (input.hasAttribute('required') && !input.checked) {
+            allFilled = false;
+          }
+        } else if (input.hasAttribute('required') && !input.value.trim()) {
+          allFilled = false;
+        }
+      }
+    });
+    if (allFilled) filledSections++;
+  });
+
+  const steps = document.querySelectorAll('.progress-step');
+  steps.forEach((step, i) => {
+    step.classList.remove('done', 'active');
+    if (i < filledSections) step.classList.add('done');
+    else if (i === filledSections) step.classList.add('active');
+  });
+
+  document.getElementById('progressText').textContent =
+    filledSections + ' / 6 mục';
+
+  // Update section nav dots
+  document.querySelectorAll('.section-nav-dot').forEach(dot => {
+    const idx = parseInt(dot.dataset.section) - 1;
+    dot.classList.remove('done', 'active');
+    if (idx < filledSections) dot.classList.add('done');
+    else if (idx === filledSections) dot.classList.add('active');
+  });
+}
+
+document.querySelectorAll('.section input, .section select, .section textarea').forEach(el => {
+  el.addEventListener('change', updateProgress);
+  el.addEventListener('input', updateProgress);
+  if (el.type === 'file') el.addEventListener('change', updateProgress);
+  if (el.type === 'checkbox') el.addEventListener('change', updateProgress);
+});
+
+// ================================================================
+//  FLOATING SECTION NAV & SCROLL SPY
+// ================================================================
+document.querySelectorAll('.section-nav-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const section = document.querySelector(`.section[data-section="${dot.dataset.section}"]`);
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+document.querySelectorAll('.progress-step').forEach(step => {
+  step.addEventListener('click', () => {
+    const section = document.querySelector(`.section[data-section="${step.dataset.section}"]`);
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// Scroll spy
+const scrollObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const sectionNum = entry.target.dataset.section;
+      document.querySelectorAll('.section-nav-dot').forEach(dot => {
+        dot.classList.toggle('active', dot.dataset.section === sectionNum);
+      });
+    }
+  });
+}, { threshold: 0.3, rootMargin: '-80px 0px' });
+
+document.querySelectorAll('.section').forEach(s => scrollObserver.observe(s));
+
+// ================================================================
+//  SCROLL TO TOP
+// ================================================================
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {
+  scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+});
+scrollTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ================================================================
+//  TOAST
+// ================================================================
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = '<span>' + (icons[type] || 'ℹ️') + '</span> ' + msg;
+  container.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(40px)';
+    t.style.transition = 'all 0.3s ease';
+    setTimeout(() => t.remove(), 300);
+  }, 3500);
+}
+
+// ================================================================
+//  STAGGERED ANIMATIONS
+// ================================================================
+const sectionEls = document.querySelectorAll('.section');
+sectionEls.forEach((el, i) => {
+  el.style.animationDelay = (0.1 + i * 0.15) + 's';
+});
+const reviewEl = document.querySelector('.review-section');
+if (reviewEl) reviewEl.style.animationDelay = (0.1 + sectionEls.length * 0.15) + 's';
+const submitSection = document.querySelector('.submit-section');
+if (submitSection) submitSection.style.animationDelay = (0.1 + sectionEls.length * 0.15) + 's';
+
+// ================================================================
+//  REVIEW SUMMARY
+// ================================================================
+function buildReviewData() {
+  const fields = [
+    { label: 'Họ tên học sinh', id: 'hoTen' },
+    { label: 'Giới tính', name: 'gioiTinh', type: 'radio' },
+    { label: 'Ngày sinh', id: 'ngaySinh' },
+    { label: 'Dân tộc', id: 'danToc' },
+    { label: 'Nơi sinh', id: 'noiSinh' },
+    { label: 'Đối tượng chính sách', id: 'doiTuongCS', optional: true },
+    { label: 'Số CCCD', id: 'cccd' },
+    { label: 'Trường TH', id: 'truongTH' },
+    { label: 'Tỉnh/TP', id: 'tinh' },
+    { label: 'Quận/Huyện', id: 'huyen' },
+    { label: 'Xã/Phường', id: 'xa' },
+    { label: 'Thôn/Tổ', id: 'thon' },
+    { label: 'Số nhà/Đường', id: 'soNha' },
+    { label: 'Cha', id: 'chaHoTen' },
+    { label: 'SĐT cha', id: 'chaSDT' },
+    { label: 'Mẹ', id: 'meHoTen' },
+    { label: 'SĐT mẹ', id: 'meSDT' },
+    { label: 'Người giám hộ', id: 'ghHoTen', optional: true },
+    { label: 'SĐT liên hệ', id: 'sdtLienHe' },
+    { label: 'Email', id: 'email' },
+  ];
+  const data = [];
+  fields.forEach(f => {
+    let val;
+    if (f.type === 'radio') {
+      const checked = document.querySelector(`input[name="${f.name}"]:checked`);
+      val = checked ? checked.value : '';
+    } else {
+      const el = document.getElementById(f.id);
+      val = el ? el.value : '';
+    }
+    if (!f.optional || val) {
+      data.push({ label: f.label, value: val, section: f.section });
+    }
+  });
+  return data;
+}
+
+function renderReview() {
+  const grid = document.getElementById('reviewGrid');
+  const data = buildReviewData();
+  grid.innerHTML = '';
+  data.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'review-item';
+    div.innerHTML = `
+      <span class="review-label">${item.label}</span>
+      <span class="review-value${item.value ? '' : ' empty'}">${item.value || 'Chưa nhập'}</span>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+document.getElementById('reviewBtn').addEventListener('click', () => {
+  renderReview();
+  const section = document.getElementById('reviewSection');
+  section.classList.toggle('visible');
+  document.getElementById('reviewBtn').textContent =
+    section.classList.contains('visible') ? '📝 Ẩn xem lại' : '📋 Xem lại';
+  if (section.classList.contains('visible')) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+// ================================================================
+//  CONFETTI
+// ================================================================
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+
+  const particles = [];
+  const colors = ['#e74c3c', '#f39c12', '#27ae60', '#3498db', '#9b59b6', '#e67e22', '#1abc9c'];
+
+  for (let i = 0; i < 150; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: Math.random() * 10 + 4,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 4 + 2,
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 8,
+    });
+  }
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.vy += 0.05;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 180) requestAnimationFrame(animate);
+    else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'none';
+    }
+  }
+  animate();
+}
+
+// ================================================================
+//  FORM SUBMIT
+// ================================================================
+document.getElementById('enrollForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  runAllValidations();
+
+  // Final validation check
+  let hasError = false;
+  this.querySelectorAll('[required]').forEach(el => {
+    el.classList.remove('error');
+    if (el.type === 'radio') return;
+    if (el.type === 'checkbox') {
+      if (!el.checked) {
+        el.closest('.checkbox-label')?.querySelector('.checkbox-box')?.style.setProperty('border-color', 'var(--danger)');
+        hasError = true;
+      }
+      return;
+    }
+    if (el.type === 'file') {
+      if (!el.files || el.files.length === 0) {
+        el.closest('.file-upload')?.style.setProperty('border-color', 'var(--danger)');
+        hasError = true;
+      }
+      return;
+    }
+    if (!el.value.trim()) {
+      el.classList.add('error');
+      hasError = true;
+    }
+  });
+
+  // Check radio groups
+  ['gioiTinh'].forEach(name => {
+    const checked = document.querySelector(`input[name="${name}"]:checked`);
+    if (!checked) hasError = true;
+  });
+
+  if (hasError) {
+    showToast('⚠️ Vui lòng điền đầy đủ các trường bắt buộc có dấu *', 'warning');
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+    const firstErr = this.querySelector('.error');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+
+  showToast('⏳ Đang gửi đăng ký...', 'info');
+
+  await new Promise(resolve => setTimeout(resolve, 2000));
+
+  // Clear draft on success
+  localStorage.removeItem(DRAFT_KEY);
+
+  // Show success
+  document.getElementById('thankyouOverlay').classList.add('active');
+  launchConfetti();
+
+  // Simulate PDF download
+  setTimeout(() => {
+    const data = generatePdfContent();
+    const blob = new Blob([data], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'PhieuDangKy_TuyenSinh6CLC_' + new Date().toISOString().slice(0,10) + '.txt';
+    link.click();
+    URL.revokeObjectURL(link);
+  }, 1000);
+
+  document.querySelectorAll('.file-upload input[type="file"]').forEach(input => {
+    input.value = '';
+    const wrapper = input.closest('.file-upload');
+    wrapper.classList.remove('has-file');
+    wrapper.style.removeProperty('border-color');
+    wrapper.querySelector('.upload-text').textContent = wrapper.querySelector('.upload-text').getAttribute('data-default') || 'Nhấn để tải file';
+    wrapper.querySelector('.upload-hint').textContent = wrapper.querySelector('.upload-hint').getAttribute('data-default') || '';
+  });
+
+  showToast('✅ Đăng ký thành công! Phiếu PDF đã được tải xuống.', 'success');
+
+  submitBtn.classList.remove('loading');
+  submitBtn.disabled = false;
+});
+
+function closeThankyou() {
+  document.getElementById('thankyouOverlay').classList.remove('active');
+}
+
+function generatePdfContent() {
+  const hoTen = document.getElementById('hoTen').value || '___________________';
+  const gioiTinh = document.querySelector('input[name="gioiTinh"]:checked')?.value || '_____';
+  const ngaySinh = document.getElementById('ngaySinh').value || '__/__/____';
+  const danToc = document.getElementById('danToc').value || '_____';
+  const noiSinh = document.getElementById('noiSinh').value || '________';
+  const cccd = document.getElementById('cccd').value || '________';
+  const truongTH = document.getElementById('truongTH').value || '________';
+  const sdt = document.getElementById('sdtLienHe').value || '________';
+  const email = document.getElementById('email').value || '________';
+
+  return `═══════════════════════════════════════════════
+       TRƯỜNG THCS CHU VĂN AN
+   PHIẾU ĐĂNG KÝ TUYỂN SINH LỚP 6 CLC
+            NĂM HỌC 2026 - 2027
+═══════════════════════════════════════════════
+
+1. THÔNG TIN HỌC SINH
+   Họ và tên: ${hoTen}
+   Giới tính: ${gioiTinh}
+   Ngày sinh: ${ngaySinh}
+   Dân tộc: ${danToc}
+   Nơi sinh: ${noiSinh}
+   Số CCCD: ${cccd}
+   Trường TH: ${truongTH}
+
+2. THÔNG TIN LIÊN HỆ
+   Số điện thoại: ${sdt}
+   Email: ${email}
+
+3. NGÀY ĐĂNG KÝ
+   ${new Date().toLocaleString('vi-VN')}
+
+═══════════════════════════════════════════════
+  Đã ghi nhận vào hệ thống thử nghiệm
+═══════════════════════════════════════════════`;
+}
+
+// ================================================================
+//  KEYBOARD SHORTCUTS
+// ================================================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('thankyouOverlay');
+    if (overlay.classList.contains('active')) closeThankyou();
+  }
+  if (e.key === 'r' && e.ctrlKey && e.shiftKey) {
+    e.preventDefault();
+    document.getElementById('reviewBtn').click();
+  }
+});
+
+// ================================================================
+//  INIT
+// ================================================================
+updateProgress();
+runAllValidations();
+console.log('📋 Form tuyển sinh THCS Chu Văn An đã sẵn sàng!');
+</script>
+</body>
+</html>
