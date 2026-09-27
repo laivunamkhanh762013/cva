@@ -3945,7 +3945,9 @@ function checkPaymentApi(orderId, price, isManual) {
   if (isCheckingPayment || !orderId) return;
   isCheckingPayment = true;
 
-  fetch('/api/check-payment?memo=' + encodeURIComponent(orderId) + '&price=' + encodeURIComponent(price || 0))
+  var memoParam = encodeURIComponent(orderId);
+  var orderIdParam = encodeURIComponent(window.currentOrderId || '');
+  fetch('/api/check-payment?memo=' + memoParam + '&orderId=' + orderIdParam + '&price=' + encodeURIComponent(price || 0))
     .then(function(res) {
       if (!res.ok) throw new Error('API status ' + res.status);
       return res.json();
