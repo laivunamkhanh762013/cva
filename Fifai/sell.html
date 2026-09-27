@@ -1086,6 +1086,120 @@
   font-weight: 800;
   color: #a78bfa;
 }
+
+/* ══ PAYMENT METHOD SWITCHER (BANK VS CARD) ══ */
+.pay-method-tabs {
+  display: flex;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 4px;
+  margin: 12px 0 14px;
+  gap: 6px;
+}
+.pay-method-tab {
+  flex: 1;
+  text-align: center;
+  padding: 9px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  cursor: pointer;
+  border-radius: 9px;
+  transition: all .2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  background: none;
+}
+.pay-method-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+.pay-method-tab.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%);
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+  font-weight: 800;
+}
+.pay-method-tab .tab-pill-badge {
+  font-size: 9.5px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(234, 179, 8, 0.2);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  font-weight: 800;
+}
+
+/* Card Pay Box */
+.card-pay-box {
+  background: linear-gradient(145deg, #10152b 0%, #0a0d1c 100%);
+  border: 1.5px solid rgba(234, 179, 8, 0.35);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  margin-bottom: 12px;
+}
+.card-pay-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+}
+.card-pay-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  color: #facc15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-pay-notice {
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 0;
+}
+.btn-card-zalo {
+  width: 100%;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+  transition: all .2s ease;
+  margin-top: 14px;
+}
+.btn-card-zalo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.6);
+  filter: brightness(1.1);
+}
+
 .m-qr-box {
   background: #ffffff;
   border-radius: 14px;
@@ -1705,9 +1819,9 @@
   <!-- ══ STORE HERO ══ -->
   <section class="store-hero reveal">
     <div class="hero-copy">
-      <span class="store-kicker"><i class="fa-solid fa-circle-check"></i> CỬA HÀNG SIÊU PHẨM KÉO TÂM</span>
+      <span class="store-kicker"><i class="fa-solid fa-circle-check"></i> CỬA HÀNG HỖ TRỢ KÉO TÂM CHUẨN XÁC</span>
       <h1>Chọn sản phẩm phù hợp với nhu cầu của bạn.</h1>
-      <p>Những Siêu Phẩm Bên ĐẠI PHÚ FF Tạo Ra Hoàn Toàn Là Hỗ Trợ Kéo Tâm, Không Liên Quan Đến PMT3 Và Sử Dụng Vĩnh Viễn ✅<br><br><b>ZALO ADMIN DUYỆT ĐƠN & HỖ TRỢ: 0588500524 (Anh Phú)</b></p>
+      <p>Những sản phẩm bên ĐẠI PHÚ FF tạo ra hỗ trợ kéo tâm chuẩn xác, không can thiệp sâu PMT3 và hoạt động ổn định lâu dài ✅<br><br><b>ZALO ADMIN DUYỆT ĐƠN &amp; HỖ TRỢ: 0588500524 (Anh Phú)</b><br><span style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);padding:5px 12px;border-radius:8px;font-size:12px;color:#fef08a;">💳 Phương thức thanh toán: <b>Quét mã VietQR Ngân hàng</b> | <b>Thẻ cào / Card (Liên hệ riêng)</b></span></p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#products"><i class="fa-solid fa-bag-shopping"></i> Xem sản phẩm</a>
         <a class="btn btn-ghost" href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i> Liên hệ Zalo Admin</a>
@@ -1882,10 +1996,6 @@
             <span class="m-step2-badge">BƯỚC 2 / 2</span>
           </div>
 
-          <div class="m-step-header" style="color:#a78bfa;font-size:12px;margin-bottom:10px;">
-            <i class="fa-solid fa-qrcode"></i> QUÉT MÃ QR THANH TOÁN TỰ ĐỘNG
-          </div>
-
           <!-- Tóm tắt gói đã chọn -->
           <div class="m-selected-summary">
             <div style="font-weight:800;color:#fff;font-size:13.5px;" id="mStep2ProdName">Proxy Aim iOS</div>
@@ -1895,47 +2005,120 @@
             </div>
           </div>
 
-          <!-- Khung VietQR -->
-          <div class="m-qr-box">
-            <img id="mQrCode" src="" alt="VietQR MBBank">
-            <div class="m-qr-hint">Mở App ngân hàng bất kỳ (MBBank, Vietcombank, Momo...) quét để thanh toán tự động</div>
+          <!-- Phương thức thanh toán Tabs -->
+          <div class="pay-method-tabs">
+            <button type="button" class="pay-method-tab active" id="tabPayBank" onclick="switchPayMethod('bank')">
+              <i class="fa-solid fa-qrcode"></i> Quét Mã QR Ngân Hàng
+            </button>
+            <button type="button" class="pay-method-tab" id="tabPayCard" onclick="switchPayMethod('card')">
+              <i class="fa-solid fa-credit-card"></i> Thẻ Cào (Card) <span class="tab-pill-badge">Liên hệ riêng</span>
+            </button>
           </div>
 
-          <!-- Chi tiết tài khoản ngân hàng -->
-          <div class="m-bank-rows">
-            <div class="m-bank-item">
-              <div><small>NGÂN HÀNG THỤ HƯỞNG</small><strong>MB BANK (Quân Đội)</strong></div>
-              <button class="m-copy-btn" onclick="copyText('MBBANK', this)"><i class="fa-solid fa-copy"></i> Sao chép</button>
+          <!-- PHƯƠNG THỨC 1: NGÂN HÀNG & VIETQR -->
+          <div id="bankPayView">
+            <div class="m-step-header" style="color:#a78bfa;font-size:12px;margin-bottom:10px;">
+              <i class="fa-solid fa-qrcode"></i> QUÉT MÃ QR THANH TOÁN TỰ ĐỘNG
             </div>
-            <div class="m-bank-item">
-              <div><small>SỐ TÀI KHOẢN</small><strong>0941414448</strong></div>
-              <button class="m-copy-btn" onclick="copyText('0941414448', this)"><i class="fa-solid fa-copy"></i> Sao chép</button>
+
+            <!-- Khung VietQR -->
+            <div class="m-qr-box">
+              <img id="mQrCode" src="" alt="VietQR MBBank">
+              <div class="m-qr-hint">Mở App ngân hàng bất kỳ (MBBank, Vietcombank, Momo...) quét để thanh toán tự động</div>
             </div>
-            <div class="m-bank-item">
-              <div><small>CHỦ TÀI KHOẢN</small><strong>BUI VAN CAO</strong></div>
+
+            <!-- Chi tiết tài khoản ngân hàng -->
+            <div class="m-bank-rows">
+              <div class="m-bank-item">
+                <div><small>NGÂN HÀNG THỤ HƯỞNG</small><strong>MB BANK (Quân Đội)</strong></div>
+                <button class="m-copy-btn" onclick="copyText('MBBANK', this)"><i class="fa-solid fa-copy"></i> Sao chép</button>
+              </div>
+              <div class="m-bank-item">
+                <div><small>SỐ TÀI KHOẢN</small><strong>0941414448</strong></div>
+                <button class="m-copy-btn" onclick="copyText('0941414448', this)"><i class="fa-solid fa-copy"></i> Sao chép</button>
+              </div>
+              <div class="m-bank-item">
+                <div><small>CHỦ TÀI KHOẢN</small><strong>BUI VAN CAO</strong></div>
+              </div>
+              <div class="m-bank-item">
+                <div><small>SỐ TIỀN CẦN THANH TOÁN</small><strong id="mPayAmount" style="color:#f87171;font-size:15px;">20.000 đ</strong></div>
+                <button class="m-copy-btn" onclick="copyText(window.currentPayAmountRaw, this)"><i class="fa-solid fa-copy"></i></button>
+              </div>
+              <div class="m-bank-item m-bank-memo">
+                <div><small style="color:#f87171;">NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC CHÍNH XÁC)</small><strong id="mOrderMemo" style="color:#f87171;font-family:monospace;font-size:15px;letter-spacing:1px;">DP...</strong></div>
+                <button class="m-copy-btn m-copy-memo" onclick="copyText(window.currentOrderMemo, this)"><i class="fa-solid fa-copy"></i></button>
+              </div>
             </div>
-            <div class="m-bank-item">
-              <div><small>SỐ TIỀN CẦN THANH TOÁN</small><strong id="mPayAmount" style="color:#f87171;font-size:15px;">20.000 đ</strong></div>
-              <button class="m-copy-btn" onclick="copyText(window.currentPayAmountRaw, this)"><i class="fa-solid fa-copy"></i></button>
+
+            <!-- Hướng dẫn Xác nhận Admin & Bàn giao -->
+            <div class="m-bot-box" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.35);">
+              <div class="m-bot-title" style="color:#38bdf8;"><i class="fa-solid fa-user-shield"></i> Xác nhận đơn hàng &amp; Bàn giao trực tiếp:</div>
+              <p class="m-bot-desc" style="color:#bae6fd;">
+                Sau khi chuyển khoản thành công, hãy gửi mã đơn <code class="m-code" style="background:rgba(6,182,212,0.25);color:#e0f2fe;"><span id="mAdminCode">DP...</span></code> hoặc ảnh bill chuyển khoản đến <b>Zalo Admin: 0588500524 (Anh Phú)</b>. Admin sẽ vào kiểm tra đối soát, nếu đúng tiền sẽ gửi file &amp; key kèm hỗ trợ cài đặt 1:1 ngay!
+              </p>
             </div>
-            <div class="m-bank-item m-bank-memo">
-              <div><small style="color:#f87171;">NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC CHÍNH XÁC)</small><strong id="mOrderMemo" style="color:#f87171;font-family:monospace;font-size:15px;letter-spacing:1px;">DP...</strong></div>
-              <button class="m-copy-btn m-copy-memo" onclick="copyText(window.currentOrderMemo, this)"><i class="fa-solid fa-copy"></i></button>
+
+            <!-- Nút xác nhận -->
+            <button type="button" class="btn-paid-done" onclick="confirmPaid()">
+              <i class="fa-solid fa-circle-check"></i> Tôi đã chuyển khoản thành công
+            </button>
+
+            <!-- Card Hint Link -->
+            <div style="text-align:center;margin-top:14px;padding:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.12);border-radius:10px;font-size:12px;color:#94a3b8;">
+              <i class="fa-solid fa-credit-card" style="color:#38bdf8;margin-right:4px;"></i> Bạn muốn thanh toán bằng <b>Thẻ cào (Card)</b>? <a href="javascript:void(0)" onclick="switchPayMethod('card')" style="color:#facc15;font-weight:700;text-decoration:none;">Bấm vào đây để liên hệ riêng Anh Phú</a>
             </div>
           </div>
 
-          <!-- Hướng dẫn Xác nhận Admin & Bàn giao -->
-          <div class="m-bot-box" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.35);">
-            <div class="m-bot-title" style="color:#38bdf8;"><i class="fa-solid fa-user-shield"></i> Xác nhận đơn hàng &amp; Bàn giao trực tiếp:</div>
-            <p class="m-bot-desc" style="color:#bae6fd;">
-              Sau khi chuyển khoản thành công, hãy gửi mã đơn <code class="m-code" style="background:rgba(6,182,212,0.25);color:#e0f2fe;"><span id="mAdminCode">DP...</span></code> hoặc ảnh bill chuyển khoản đến <b>Zalo Admin: 0588500524 (Anh Phú)</b>. Admin sẽ vào kiểm tra đối soát, nếu đúng tiền sẽ gửi file &amp; key kèm hỗ trợ cài đặt 1:1 ngay!
-            </p>
-          </div>
+          <!-- PHƯƠNG THỨC 2: THẺ CÀO (CARD) - LIÊN HỆ RIÊNG THEO YÊU CẦU ANH PHÚ -->
+          <div id="cardPayView" style="display:none;">
+            <div class="card-pay-box">
+              <div class="card-pay-header">
+                <div class="card-pay-icon"><i class="fa-solid fa-credit-card"></i></div>
+                <div>
+                  <h4 style="margin:0;font-size:15px;color:#fff;font-weight:800;">Thanh Toán Thẻ Cào (Card)</h4>
+                  <span style="font-size:11.5px;color:#facc15;font-weight:700;"><i class="fa-solid fa-circle-info"></i> Phương thức này LIÊN HỆ RIÊNG Anh Phú để xử lý</span>
+                </div>
+              </div>
 
-          <!-- Nút xác nhận -->
-          <button type="button" class="btn-paid-done" onclick="confirmPaid()">
-            <i class="fa-solid fa-circle-check"></i> Tôi đã chuyển khoản thành công
-          </button>
+              <div class="card-pay-body">
+                <p style="margin:0 0 10px;font-size:12.5px;color:#cbd5e1;line-height:1.5;">
+                  Anh Phú hỗ trợ nhận thanh toán qua các loại thẻ cào điện thoại &amp; thẻ game: <b>Viettel, Vinaphone, Mobifone, Zing, Gate...</b>
+                </p>
+
+                <div class="card-pay-notice">
+                  <i class="fa-solid fa-triangle-exclamation" style="color:#fbbf24;font-size:16px;flex-shrink:0;margin-top:2px;"></i>
+                  <div style="font-size:12px;color:#fef3c7;line-height:1.45;">
+                    <b>Quy định thanh toán thẻ:</b> Khi thanh toán bằng thẻ cào (Card), chiết khấu sẽ tính theo mệnh giá nhà mạng. Vui lòng nhắn tin trực tiếp cho <b>Anh Phú</b> để được tính mệnh giá thẻ cần nạp và gửi mã thẻ + seri.
+                  </div>
+                </div>
+
+                <div style="background:#090c1a;border:1.5px solid #1e2648;border-radius:10px;padding:12px;margin:12px 0;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div>
+                      <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Mã Đơn Của Bạn:</div>
+                      <code style="font-family:monospace;font-size:16px;font-weight:900;color:#38bdf8;" id="mCardOrderMemo">DP...</code>
+                    </div>
+                    <button type="button" class="m-copy-btn" onclick="copyText(window.currentOrderMemo, this)">
+                      <i class="fa-solid fa-copy"></i> Sao chép mã
+                    </button>
+                  </div>
+                  <div style="font-size:11.5px;color:#64748b;margin-top:4px;">
+                    Copy mã này gửi kèm mã thẻ &amp; số seri cho Anh Phú để đối soát nhanh nhất!
+                  </div>
+                </div>
+
+                <a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn-card-zalo">
+                  <i class="fa-solid fa-comment-dots"></i> Nhắn Zalo Anh Phú: 0588500524 (Gửi Thẻ Cào)
+                </a>
+
+                <div style="text-align:center;margin-top:12px;">
+                  <button type="button" onclick="switchPayMethod('bank')" style="background:none;border:none;color:#94a3b8;font-size:12px;cursor:pointer;text-decoration:underline;">
+                    <i class="fa-solid fa-arrow-left"></i> Chuyển lại thanh toán quét mã QR Ngân hàng
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2009,6 +2192,14 @@
       </div>
       <div class="paid-fraud-text">
         <strong style="color:#38bdf8;">Quy trình kiểm tra:</strong> Mình cùng anh Phú và Admin web sẽ trực tiếp vào hệ thống đối soát giao dịch ngân hàng theo mã đơn của bạn. Nếu đúng tiền sẽ gửi file và key ngay, nếu sai lệch sẽ thông báo và hỗ trợ xử lý ngay!
+      </div>
+    </div>
+
+    <!-- Khách thanh toán thẻ cào -->
+    <div style="margin-top:10px;padding:9px 12px;background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:10px;display:flex;align-items:center;gap:10px;">
+      <i class="fa-solid fa-credit-card" style="color:#fbbf24;font-size:16px;flex-shrink:0;"></i>
+      <div style="font-size:11.5px;color:#fef08a;line-height:1.45;">
+        <b>Khách trả bằng Thẻ Cào (Card):</b> Gửi trực tiếp <b>Mã Đơn + Mã Thẻ &amp; Seri</b> qua Zalo Anh Phú (0588500524) để được nạp và nhận key!
       </div>
     </div>
   </div>
@@ -3129,6 +3320,12 @@ function startPaymentForPlan(p, plan) {
   if (memoEl) memoEl.textContent = orderId;
   if (adminCodeEl) adminCodeEl.textContent = orderId;
 
+  var cardMemoEl = document.getElementById('mCardOrderMemo');
+  if (cardMemoEl) cardMemoEl.textContent = orderId;
+
+  // Reset về tab Quét QR ngân hàng mặc định
+  switchPayMethod('bank');
+
   // Lưu đơn hàng vào hệ thống lưu trữ để Admin & Khách có thể check
   var currentUser = getCurrentUser();
   var newOrder = {
@@ -3155,7 +3352,26 @@ function startPaymentForPlan(p, plan) {
   var col = document.querySelector('.m-info-col');
   if (col) col.scrollTo({ top: 0, behavior: 'smooth' });
 
-  toast('🛒', 'Đã chọn: ' + plan.name + ' (' + formatVND(plan.price) + '). Vui lòng quét QR.');
+  toast('🛒', 'Đã chọn: ' + plan.name + ' (' + formatVND(plan.price) + '). Vui lòng thanh toán.');
+}
+
+function switchPayMethod(method) {
+  var tabBank = document.getElementById('tabPayBank');
+  var tabCard = document.getElementById('tabPayCard');
+  var viewBank = document.getElementById('bankPayView');
+  var viewCard = document.getElementById('cardPayView');
+
+  if (method === 'card') {
+    if (tabBank) tabBank.classList.remove('active');
+    if (tabCard) tabCard.classList.add('active');
+    if (viewBank) viewBank.style.display = 'none';
+    if (viewCard) viewCard.style.display = 'block';
+  } else {
+    if (tabBank) tabBank.classList.add('active');
+    if (tabCard) tabCard.classList.remove('active');
+    if (viewBank) viewBank.style.display = 'block';
+    if (viewCard) viewCard.style.display = 'none';
+  }
 }
 
 function selectModalThumb(imgSrc, label, title, thumbEl) {
