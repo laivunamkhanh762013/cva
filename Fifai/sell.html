@@ -799,65 +799,206 @@
   100% { box-shadow: 0 0 0 rgba(139, 92, 246, 0); }
 }
 
+/* ══ MODAL CLOSE BUTTON ══ */
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .2s ease;
+  z-index: 20;
+}
+.modal-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #ff6b6b;
+  transform: rotate(90deg);
+}
+
 /* ══ AUTH MODAL (LOGIN & REGISTER TABS) ══ */
 .auth-modal-card {
   width: min(440px, calc(100% - 24px)) !important;
   max-width: 440px !important;
-  background: #0d1020 !important;
-  border: 1px solid #1e2540 !important;
+  background: linear-gradient(160deg, #0e1326 0%, #070914 100%) !important;
+  border: 1px solid rgba(0, 240, 255, 0.25) !important;
+  border-radius: 20px !important;
+  padding: 26px 24px 24px !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 240, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
   color: #f1f5f9 !important;
+  position: relative !important;
 }
-.auth-modal-card .input {
-  background: #14182e !important;
-  border-color: #272f52 !important;
-  color: #ffffff !important;
+
+.auth-modal-header {
+  text-align: center;
+  margin-bottom: 18px;
 }
-.auth-modal-card .label {
-  color: #cbd5e1 !important;
+.auth-modal-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 10px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+  border: 1.5px solid rgba(0, 240, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #22d3ee;
+  box-shadow: 0 0 18px rgba(6, 182, 212, 0.3);
 }
+.auth-modal-title {
+  font-size: 18px;
+  font-weight: 850;
+  color: #ffffff;
+  margin: 0 0 4px;
+  letter-spacing: -0.3px;
+}
+.auth-modal-subtitle {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
+}
+
 .auth-tabs {
   display: flex;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 4px;
   margin-bottom: 18px;
+  gap: 4px;
 }
 .auth-tab {
   flex: 1;
   text-align: center;
-  padding: 10px 0;
-  font-size: 13.5px;
-  font-weight: 800;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 700;
   color: #94a3b8;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
+  border-radius: 9px;
   transition: all .2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
+  border: 1px solid transparent;
+}
+.auth-tab:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.04);
 }
 .auth-tab.active {
-  color: #38bdf8;
-  border-bottom-color: #38bdf8;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
+  font-weight: 800;
 }
+.auth-tab.active i {
+  color: #22d3ee;
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.7));
+}
+
 .auth-notice {
-  background: rgba(234, 179, 8, 0.12);
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(245, 158, 11, 0.06) 100%);
   border: 1px solid rgba(234, 179, 8, 0.35);
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 16px;
+  border-radius: 12px;
+  padding: 11px 13px;
+  margin-bottom: 18px;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  color: #fde047;
-  font-weight: 600;
-  line-height: 1.4;
+  align-items: flex-start;
+  gap: 11px;
+  box-shadow: 0 4px 15px rgba(234, 179, 8, 0.08);
 }
-.auth-notice i {
+.auth-notice-icon {
   font-size: 15px;
   color: #facc15;
   flex-shrink: 0;
+  margin-top: 2px;
+}
+.auth-notice-body {
+  font-size: 12px;
+  color: #fef08a;
+  line-height: 1.5;
+  flex: 1;
+  font-weight: 500;
+}
+.auth-notice-body b {
+  color: #ffffff;
+  font-weight: 700;
+}
+.auth-notice-body strong {
+  color: #38bdf8;
+  font-weight: 800;
+}
+
+.auth-modal-card .form-group {
+  margin-bottom: 15px;
+}
+.auth-modal-card .label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #cbd5e1 !important;
+  margin-bottom: 6px;
+  letter-spacing: .2px;
+}
+.auth-modal-card .input {
+  width: 100%;
+  background: #090c1a !important;
+  border: 1.5px solid #1e2648 !important;
+  border-radius: 10px;
+  padding: 11px 13px;
+  color: #ffffff !important;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all .2s ease;
+  box-sizing: border-box;
+}
+.auth-modal-card .input:focus {
+  outline: none;
+  border-color: #00f0ff !important;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.25) !important;
+  background: #0c1126 !important;
+}
+.auth-modal-card .input::placeholder {
+  color: #475569;
+}
+.auth-modal-card .btn-auth-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #00f0ff 0%, #8b5cf6 100%) !important;
+  color: #070913 !important;
+  font-weight: 900 !important;
+  font-size: 14px !important;
+  letter-spacing: .3px;
+  padding: 12px 18px !important;
+  border-radius: 10px !important;
+  border: none !important;
+  cursor: pointer;
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 18px rgba(0, 240, 255, 0.35), 0 0 12px rgba(139, 92, 246, 0.25) !important;
+  transition: all .2s ease;
+}
+.auth-modal-card .btn-auth-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 240, 255, 0.5), 0 0 18px rgba(139, 92, 246, 0.4) !important;
+  filter: brightness(1.08);
 }
 .user-profile-btn {
   background: rgba(56, 189, 248, 0.12);
@@ -1920,12 +2061,20 @@
 <div id="loginModal" class="modal">
   <div class="modal-backdrop" onclick="closeLoginModal()"></div>
   <div class="modal-card auth-modal-card">
-    <button class="modal-close" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+    <button class="modal-close" onclick="closeLoginModal()" title="Đóng"><i class="fa-solid fa-xmark"></i></button>
+
+    <div class="auth-modal-header">
+      <div class="auth-modal-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h3 class="auth-modal-title">Tài Khoản Thành Viên</h3>
+      <p class="auth-modal-subtitle">Đăng nhập để nhận mã key tự động &amp; kích hoạt nhanh chóng</p>
+    </div>
 
     <!-- Notice if redirected from buy button -->
     <div id="authNotice" class="auth-notice" style="display:none;">
-      <i class="fa-solid fa-circle-exclamation"></i>
-      <span id="authNoticeText">Vui lòng đăng nhập hoặc đăng ký tài khoản để tiếp tục mua hàng!</span>
+      <div class="auth-notice-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div class="auth-notice-body" id="authNoticeText">Vui lòng đăng nhập hoặc đăng ký tài khoản để tiếp tục mua hàng!</div>
     </div>
 
     <!-- Tabs -->
@@ -1941,40 +2090,40 @@
     <!-- FORM ĐĂNG NHẬP -->
     <form id="formLogin" onsubmit="handleLoginSubmit(event)">
       <div class="form-group">
-        <label class="label">Tên tài khoản hoặc Email</label>
+        <label class="label"><i class="fa-solid fa-user" style="color:#38bdf8;margin-right:4px;"></i> Tên tài khoản hoặc Email</label>
         <input type="text" id="loginUser" class="input" placeholder="Nhập tên tài khoản..." required autocomplete="username">
       </div>
       <div class="form-group">
-        <label class="label">Mật khẩu</label>
+        <label class="label"><i class="fa-solid fa-lock" style="color:#a78bfa;margin-right:4px;"></i> Mật khẩu</label>
         <input type="password" id="loginPass" class="input" placeholder="Nhập mật khẩu..." required autocomplete="current-password">
       </div>
-      <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;">
+      <button type="submit" class="btn-auth-submit">
         <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập ngay
       </button>
-      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);">
-        Chưa có tài khoản? <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:var(--primary);font-weight:700;">Đăng ký miễn phí</a>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--muted);">
+        Chưa có tài khoản? <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:#38bdf8;font-weight:700;text-decoration:none;">Đăng ký miễn phí</a>
       </div>
     </form>
 
     <!-- FORM ĐĂNG KÝ -->
     <form id="formRegister" onsubmit="handleRegisterSubmit(event)" style="display:none;">
       <div class="form-group">
-        <label class="label">Tên tài khoản mong muốn</label>
+        <label class="label"><i class="fa-solid fa-user-tag" style="color:#38bdf8;margin-right:4px;"></i> Tên tài khoản mong muốn</label>
         <input type="text" id="regUser" class="input" placeholder="Ví dụ: gamer99..." required autocomplete="username">
       </div>
       <div class="form-group">
-        <label class="label">Mật khẩu</label>
+        <label class="label"><i class="fa-solid fa-lock" style="color:#a78bfa;margin-right:4px;"></i> Mật khẩu</label>
         <input type="password" id="regPass" class="input" placeholder="Tối thiểu 6 ký tự..." required autocomplete="new-password">
       </div>
       <div class="form-group">
-        <label class="label">Số điện thoại hoặc Zalo (để nhận key &amp; hỗ trợ)</label>
+        <label class="label"><i class="fa-solid fa-phone" style="color:#34d399;margin-right:4px;"></i> Số điện thoại hoặc Zalo (nhận key &amp; hỗ trợ)</label>
         <input type="tel" id="regPhone" class="input" placeholder="Ví dụ: 0987654321..." required>
       </div>
-      <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;">
+      <button type="submit" class="btn-auth-submit">
         <i class="fa-solid fa-user-check"></i> Hoàn tất đăng ký &amp; Tiếp tục mua
       </button>
-      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);">
-        Đã có tài khoản? <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:var(--primary);font-weight:700;">Đăng nhập ngay</a>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--muted);">
+        Đã có tài khoản? <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:#38bdf8;font-weight:700;text-decoration:none;">Đăng nhập ngay</a>
       </div>
     </form>
   </div>
@@ -2001,8 +2150,8 @@ var PRODUCTS = [
     plat: 'Android & iOS',
     buyers: '200+ Người mua',
     name: 'AimLock Forget (Adr · iOS)',
-    shortDesc: '1.0 khắc phục lố rung lạc đạn delay. 2.0 & 3.0 bám đầu cực đỉnh, buff FPS.',
-    fullDesc: 'AimLock Forget 1.0 - 2.0 - 3.0 (Android & iOS) — Đột phá kĩ năng, nâng tầm trải nghiệm:\n• Bản 1.0 (50k): Khắc phục lố, rung tâm, lạc đạn và delay khi kéo tâm.\n• Bản 2.0 (200k): Khắc phục chuẩn theo banner: kéo tâm siêu chuẩn, fix rung tâm ổn định, bám đầu cực đỉnh, an toàn tuyệt đối.\n• Bản 3.0 (500k): Khắc phục toàn diện như ảnh, tăng tỷ lệ bám đầu tối đa, buff FPS siêu mượt, bách phát bách trúng.',
+    shortDesc: '1.0 khắc phục lố rung lạc đạn delay. 2.0 & 3.0 bám đầu ổn định, hỗ trợ FPS.',
+    fullDesc: 'AimLock Forget 1.0 - 2.0 - 3.0 (Android & iOS) — Tối ưu hỗ trợ kéo tâm:\n• Bản 1.0 (50k): Khắc phục lố, rung tâm, lạc đạn và delay khi kéo tâm.\n• Bản 2.0 (200k): Kéo tâm chuẩn xác, fix rung tâm ổn định, bám mục tiêu tốt, an toàn.\n• Bản 3.0 (500k): Khắc phục toàn diện, tăng tỷ lệ bám đầu tối đa, hỗ trợ mượt mà, độ chuẩn xác cao.',
     priceMin: 50000,
     priceMax: 500000,
     image: 'assets/uploads/products/aimlock-forget.jpg',
@@ -2022,19 +2171,18 @@ var PRODUCTS = [
         name: 'AimLock Forget 2.0',
         price: 200000,
         badge: 'Bán chạy',
-        action: 'Kéo tâm siêu chuẩn, tự động ôm đầu ổn định trong mọi tình huống đối đầu.',
-        fix: '2.0 khắc phục giống ảnh: kéo tâm siêu chuẩn, fix rung tâm ổn định, bám đầu cực đỉnh, an toàn tuyệt đối.',
+        action: 'Kéo tâm chuẩn xác, tự động ôm đầu ổn định trong mọi tình huống đối đầu.',
+        fix: '2.0 khắc phục: kéo tâm chuẩn xác, fix rung tâm ổn định, bám đầu hiệu quả, an toàn tuyệt đối.',
         pros: 'Tự động ghìm tâm chuẩn xác khi đối thủ di chuyển liên tục, chống lệch hướng đạn.',
         note: 'Tương thích 100% mọi dòng máy Android & iOS, bao mượt và an toàn leo rank.'
       },
       {
         name: 'AimLock Forget 3.0',
         price: 500000,
-        badge: 'VIP',
-        action: 'Đỉnh cao công nghệ AimLock, tự động ghim đầu đối thủ với độ trễ 0ms.',
-        fix: '3.0 khắc phục như ảnh và tăng tỷ lệ bám đầu buff fps.',
-        pros: 'Buff FPS cực mượt, mở khóa toàn bộ sức mạnh ghìm tâm, bách phát bách trúng.',
-        note: 'Bản quyền cao cấp nhất, cập nhật trọn đời phiên bản, hỗ trợ kỹ thuật 1:1 từ Admin.'
+        action: 'Công nghệ AimLock tối ưu, tự động ghim đầu đối thủ với độ trễ thấp.',
+        fix: '3.0 khắc phục toàn diện, tăng tỷ lệ bám đầu và tối ưu khung hình FPS.',
+        pros: 'Tối ưu độ mượt, ghìm tâm chắc tay, tỷ lệ trúng mục tiêu cao.',
+        note: 'Bản quyền cao cấp nhất, cập nhật phiên bản liên tục, hỗ trợ kỹ thuật 1:1 từ Admin.'
       }
     ]
   },
@@ -2043,14 +2191,14 @@ var PRODUCTS = [
     category: 'Forget Hex',
     plat: 'Android & iOS',
     buyers: '300+ Người mua',
-    name: 'Forget Hex VIP (V1 - V5)',
-    shortDesc: 'Forget Hex V1 đến V5 hỗ trợ iOS & Android, bám dính đầu 100%.',
+    name: 'Forget Hex (V1 - V5)',
+    shortDesc: 'Forget Hex V1 đến V5 hỗ trợ iOS & Android, bám dính đầu hiệu quả.',
     fullDesc: 'Hệ thống Forget Hex độc quyền hỗ trợ Android & iOS:\n- Forget Hex V1 (49.000đ)\n- Forget Hex V2 (99.000đ)\n- Forget Hex V3 (199.000đ)\n- Forget Hex V4 (399.000đ)\n- Forget Hex V5 (799.000đ)',
     priceMin: 49000,
     priceMax: 799000,
     image: 'assets/uploads/products/forget-hex.jpg',
     images: [
-      { src: 'assets/uploads/products/forget-hex.jpg', label: 'Forget Hex V1-V5', title: 'Forget Hex VIP V1 - V5 - Make URL Code Xịn Nhất VN' }
+      { src: 'assets/uploads/products/forget-hex.jpg', label: 'Forget Hex V1-V5', title: 'Forget Hex V1 - V5 - Make URL Code Tối Ưu' }
     ],
     plans: [
       {
@@ -2081,19 +2229,17 @@ var PRODUCTS = [
       {
         name: 'Forget Hex V4',
         price: 399000,
-        badge: 'VIP',
         action: 'Cấu hình Hex nâng cao, mở rộng góc bám tâm và tối ưu cảm ứng đa điểm.',
         fix: 'Khắc phục triệt để rung lag màn hình, giữ khung hình ổn định cực cao.',
         pros: 'Đường đạn tự tìm đầu đối phương với tỷ lệ chính xác vượt trội.',
-        note: 'Chuyên dụng cho các giải đấu cọ xát và leo rank Thách Đấu.'
+        note: 'Chuyên dụng cho các giải đấu cọ xát và leo rank cao.'
       },
       {
         name: 'Forget Hex V5',
         price: 799000,
-        badge: 'VIP',
-        action: 'Đỉnh cao Make URL Code Hex độc quyền số 1 VN, bách phát bách trúng.',
+        action: 'Cấu hình Make URL Code Hex tối ưu, nâng cao tỷ lệ headshot.',
         fix: 'Khắc phục hoàn toàn mọi lỗi lệch tâm, trượt đạn, rung giật màn hình.',
-        pros: 'Tỷ lệ headshot lên tới 98%, buff FPS mượt mà không gây nóng máy.',
+        pros: 'Tỷ lệ headshot cao, tối ưu FPS mượt mà không gây nóng máy.',
         note: 'Bản cao cấp độc quyền của Shop Đại Phú FF, hỗ trợ kỹ thuật 1:1 trọn đời.'
       }
     ]
@@ -2110,13 +2256,13 @@ var PRODUCTS = [
     priceMax: 250000,
     image: 'trollmodz.png',
     images: [
-      { src: 'trollmodz.png', label: 'TrollModz', title: 'TrollModz - Menu Siêu Cấp Adr · iOS · PC' }
+      { src: 'trollmodz.png', label: 'TrollModz', title: 'TrollModz - Menu Adr · iOS · PC' }
     ],
     plans: [
       {
         name: 'Key 1 Giờ (Test)',
         price: 10000,
-        action: 'Dùng thử trọn bộ tính năng siêu cấp: Ngưng đọng thời gian, nhảy dù tức thì.',
+        action: 'Dùng thử trọn bộ tính năng: Ngưng đọng thời gian, nhảy dù tức thì.',
         fix: 'Bypass qua mặt hệ thống kiểm tra, chống lag giật tối đa.',
         pros: 'Chi phí cực rẻ để trải nghiệm sức mạnh trước khi mua dài hạn.',
         note: 'Hỗ trợ Android, iOS và PC giả lập.'
@@ -2133,7 +2279,7 @@ var PRODUCTS = [
         name: 'Key 7 Ngày (1 Tuần)',
         price: 100000,
         badge: 'Tiết kiệm',
-        action: 'Bản quyền 7 ngày với đầy đủ quyền năng mod menu bá đạo nhất.',
+        action: 'Bản quyền 7 ngày với đầy đủ tính năng mod menu mạnh mẽ.',
         fix: 'Khắc phục lỗi văng game, tối ưu hóa đường truyền mạng.',
         pros: 'Tiết kiệm chi phí, hỗ trợ fix lỗi và cập nhật key mới 24/7.',
         note: 'Hỗ trợ Android, iOS và PC.'
@@ -2201,7 +2347,6 @@ var PRODUCTS = [
       {
         name: 'Gói Vĩnh Viễn',
         price: 400000,
-        badge: 'VIP',
         action: 'Sở hữu vĩnh viễn không giới hạn thời gian mọi tính năng của Sx2 External.',
         fix: 'Bảo hành cập nhật trọn đời máy, đổi key miễn phí khi đổi máy.',
         pros: 'Đầu tư 1 lần dùng mãi mãi, hỗ trợ kỹ thuật ưu tiên 1:1 từ Admin.',
@@ -2221,7 +2366,7 @@ var PRODUCTS = [
     priceMax: 200000,
     image: 'assets/uploads/products/novax.jpg',
     images: [
-      { src: 'assets/uploads/products/novax.jpg', label: 'Nova X VIP', title: 'Proxy iOS Nova X - Đỉnh Cao Kéo Tâm iPhone & iPad' },
+      { src: 'assets/uploads/products/novax.jpg', label: 'Nova X', title: 'Proxy iOS Nova X - Kéo Tâm Chuẩn iPhone & iPad' },
       { src: 'proxy-ios.png', label: 'ESP Ghim Đầu', title: 'ESP AIMCHECK R8 - Định Vị Ghim Đầu' },
       { src: 'proxy-ios-aimdrag.png', label: 'Aim Drag', title: 'Aim Drag - Kéo Tâm Chuẩn Xác' },
       { src: 'proxy-ios-magic.png', label: 'Aim Magic', title: 'Aim Magic - Đạn Ma Thuật' },
@@ -2257,10 +2402,9 @@ var PRODUCTS = [
       {
         name: 'Key Vĩnh Viễn',
         price: 200000,
-        badge: 'VIP',
         action: 'Sử dụng trọn đời phiên bản Proxy Nova X, không lo hết hạn key.',
         fix: 'Cập nhật máy chủ Proxy trọn đời, bảo vệ tài khoản an toàn 100%.',
-        pros: 'Gói VIP kinh tế nhất, dùng thoải mái không giới hạn.',
+        pros: 'Gói trọn đời kinh tế nhất, dùng thoải mái không giới hạn thời gian.',
         note: 'Dành riêng cho iPhone và iPad, bảo hành trọn đời.'
       }
     ]
@@ -2396,47 +2540,46 @@ var PRODUCTS = [
     plat: 'iOS',
     buyers: '450+ Người mua',
     name: 'Menu Migul Pro (iOS)',
-    shortDesc: 'Bản Pro cao cấp nhất, full tính năng bá đạo, bypass an toàn.',
-    fullDesc: 'Menu Migul Pro cao cấp nhất cho iOS:\n- Đầy đủ tính năng: Aimbot 360 độ, ESP name/box/line, Teleport, Auto Kill.\n- Hệ thống Bypass bảo vệ chống quét 100% an toàn.',
+    shortDesc: 'Bản Pro đầy đủ tính năng, hoạt động mượt mà, bypass an toàn.',
+    fullDesc: 'Menu Migul Pro cao cấp cho iOS:\n- Đầy đủ tính năng: Aimbot 360 độ, ESP name/box/line, Teleport, Auto Kill.\n- Hệ thống Bypass bảo vệ chống quét an toàn.',
     priceMin: 10000,
     priceMax: 450000,
     image: 'menu-lite.png',
     images: [
-      { src: 'menu-lite.png', label: 'Migul Pro', title: 'Menu Migul Pro Full Tính Năng Vip iOS' }
+      { src: 'menu-lite.png', label: 'Migul Pro', title: 'Menu Migul Pro Cho iOS' }
     ],
     plans: [
       {
         name: 'Key 1 Giờ (Test)',
         price: 10000,
-        action: 'Trải nghiệm thử toàn bộ tính năng siêu cấp: Aimbot 360, ESP, Teleport, Auto Kill.',
+        action: 'Trải nghiệm thử toàn bộ tính năng: Aimbot 360, ESP, Teleport, Auto Kill.',
         fix: 'Kiểm tra độ tương thích và mượt mà trên thiết bị trước khi mua dài hạn.',
-        pros: 'Chỉ 10k để trải nghiệm menu mod pro cao cấp nhất.',
+        pros: 'Chỉ 10k để trải nghiệm menu mod pro.',
         note: 'Hỗ trợ các thiết bị iOS.'
       },
       {
         name: 'Key 1 Ngày',
         price: 70000,
         action: 'Aimbot 360 độ, ESP name/box/line, Teleport, Auto Kill trọn vẹn 24 giờ.',
-        fix: 'Hệ thống Bypass cao cấp bảo vệ an toàn 100% trước đợt quét.',
-        pros: 'Sức mạnh tuyệt đối, hạ gục đối thủ dễ dàng trong nháy mắt.',
+        fix: 'Hệ thống Bypass cao cấp bảo vệ an toàn trước đợt quét.',
+        pros: 'Khả năng hỗ trợ cao, thao tác chuẩn xác trong trận đấu.',
         note: 'Hỗ trợ các thiết bị iOS.'
       },
       {
         name: 'Key 7 Ngày (1 Tuần)',
         price: 215000,
         badge: 'Tiết kiệm',
-        action: 'Gói tuần bá đạo, thống trị mọi trận đấu trong chế độ Sinh Tồn và Tử Chiến.',
-        fix: 'Khắc phục mọi hạn chế của game, tối ưu tỷ lệ chiến thắng tối đa.',
+        action: 'Gói tuần đầy đủ tính năng, hỗ trợ tối đa trong chế độ Sinh Tồn và Tử Chiến.',
+        fix: 'Tối ưu độ ổn định và trải nghiệm chơi game mượt mà.',
         pros: 'Tiết kiệm hơn 50% so với mua key ngày.',
         note: 'Hỗ trợ các thiết bị iOS.'
       },
       {
         name: 'Key 30 Ngày (1 Tháng)',
         price: 450000,
-        badge: 'VIP',
-        action: 'Bản quyền 1 tháng full tính năng VIP cao cấp nhất của dòng họ Migul.',
+        action: 'Bản quyền 1 tháng đầy đủ tính năng cao cấp của dòng Migul.',
         fix: 'Bảo vệ tài khoản liên tục với hệ thống cập nhật bypass tự động.',
-        pros: 'Đặc quyền hỗ trợ VIP 1:1 từ Admin Shop Đại Phú FF.',
+        pros: 'Được hỗ trợ kỹ thuật trực tiếp 1:1 từ Admin Shop Đại Phú FF.',
         note: 'Hỗ trợ các thiết bị iOS.'
       }
     ]
@@ -2492,7 +2635,7 @@ function updateAuthUI() {
       topBtn.onclick = handleLogout;
     }
     if (sideTitle) sideTitle.textContent = 'Chào, ' + user.username + ' ⭐';
-    if (sideSub) sideSub.textContent = 'Tài khoản thành viên VIP (SĐT: ' + (user.phone || 'Đã liên kết') + ') đã sẵn sàng mua hàng & nhận key.';
+    if (sideSub) sideSub.textContent = 'Tài khoản thành viên (SĐT: ' + (user.phone || 'Đã liên kết') + ') đã sẵn sàng mua hàng & nhận key.';
     if (sideBtn) {
       sideBtn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Đăng xuất';
       sideBtn.onclick = handleLogout;
@@ -2533,9 +2676,14 @@ function switchAuthTab(tab) {
 
 function openLogin(noticeHtml) {
   var noticeEl = document.getElementById('authNotice');
+  var noticeBody = document.getElementById('authNoticeText');
   if (noticeEl) {
     if (noticeHtml) {
-      noticeEl.innerHTML = noticeHtml;
+      if (noticeBody) {
+        noticeBody.innerHTML = noticeHtml;
+      } else {
+        noticeEl.innerHTML = '<div class="auth-notice-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="auth-notice-body" id="authNoticeText">' + noticeHtml + '</div>';
+      }
       noticeEl.style.display = 'flex';
     } else {
       noticeEl.style.display = 'none';
@@ -2947,7 +3095,7 @@ function handleBuyVersionClick(pId, planIdx) {
   // KIỂM TRA ĐĂNG NHẬP / ĐĂNG KÝ THEO YÊU CẦU ANH PHÚ
   if (!isLoggedIn()) {
     pendingPurchase = { productId: pId, planIdx: planIdx };
-    var noticeHtml = '<i class="fa-solid fa-triangle-exclamation"></i> Vui lòng <b>đăng nhập</b> hoặc <b>đăng ký tài khoản</b> để tiếp tục mua gói <strong>' + plan.name + ' (' + formatVND(plan.price) + ')</strong>.';
+    var noticeHtml = 'Vui lòng <b>đăng nhập</b> hoặc <b>đăng ký tài khoản</b> để tiếp tục mua gói <strong>' + plan.name + ' (' + formatVND(plan.price) + ')</strong>.';
     openLogin(noticeHtml);
     toast('⚠️', 'Vui lòng đăng nhập hoặc tạo tài khoản để mua hàng!');
     return;
