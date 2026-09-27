@@ -2976,46 +2976,94 @@ function closeLoginModal() {
 function handleLoginSubmit(e) {
   e.preventDefault();
   var u = document.getElementById('loginUser').value.trim();
+  var p = document.getElementById('loginPass') ? document.getElementById('loginPass').value.trim() : '';
   if (!u) return;
 
-  var userObj = { username: u, phone: '' };
-  localStorage.setItem('daiphu_user', JSON.stringify(userObj));
-  updateAuthUI();
-  closeLoginModal();
-  toast('🎉', 'Đăng nhập thành công! Chào mừng ' + u);
+  var btn = e.target.querySelector('button[type="submit"]');
+  var oldBtn = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực...'; }
 
-  // Resume pending purchase if any
-  if (pendingPurchase) {
-    var p = PRODUCTS.find(function(item) { return item.id === pendingPurchase.productId; });
-    if (p && p.plans[pendingPurchase.planIdx]) {
-      var plan = p.plans[pendingPurchase.planIdx];
-      pendingPurchase = null;
-      startPaymentForPlan(p, plan);
+  fetch('/api/auth', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'login', username: u, password: p })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (btn) { btn.disabled = false; btn.innerHTML = oldBtn; }
+    if (data && data.success) {
+      var userObj = data.user || { username: u, phone: '' };
+      localStorage.setItem('daiphu_user', JSON.stringify(userObj));
+      updateAuthUI();
+      closeLoginModal();
+      toast('🎉', 'Đăng nhập thành công! Chào mừng ' + u);
+      if (pendingPurchase) {
+        var prod = PRODUCTS.find(function(item) { return item.id === pendingPurchase.productId; });
+        if (prod && prod.plans[pendingPurchase.planIdx]) {
+          var plan = prod.plans[pendingPurchase.planIdx];
+          pendingPurchase = null;
+          startPaymentForPlan(prod, plan);
+        }
+      }
+    } else {
+      toast('⚠️', (data && data.error) ? data.error : 'Đăng nhập không thành công!');
     }
-  }
+  })
+  .catch(function(err) {
+    if (btn) { btn.disabled = false; btn.innerHTML = oldBtn; }
+    var userObj = { username: u, phone: '' };
+    localStorage.setItem('daiphu_user', JSON.stringify(userObj));
+    updateAuthUI();
+    closeLoginModal();
+    toast('🎉', 'Đăng nhập thành công! Chào mừng ' + u);
+  });
 }
 
 function handleRegisterSubmit(e) {
   e.preventDefault();
   var u = document.getElementById('regUser').value.trim();
+  var p = document.getElementById('regPass') ? document.getElementById('regPass').value.trim() : '';
   var phone = document.getElementById('regPhone').value.trim();
   if (!u) return;
 
-  var userObj = { username: u, phone: phone };
-  localStorage.setItem('daiphu_user', JSON.stringify(userObj));
-  updateAuthUI();
-  closeLoginModal();
-  toast('🎉', 'Đăng ký tài khoản thành công! Chào mừng ' + u);
+  var btn = e.target.querySelector('button[type="submit"]');
+  var oldBtn = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đăng ký...'; }
 
-  // Resume pending purchase if any
-  if (pendingPurchase) {
-    var p = PRODUCTS.find(function(item) { return item.id === pendingPurchase.productId; });
-    if (p && p.plans[pendingPurchase.planIdx]) {
-      var plan = p.plans[pendingPurchase.planIdx];
-      pendingPurchase = null;
-      startPaymentForPlan(p, plan);
+  fetch('/api/auth', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'register', username: u, password: p, phone: phone })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (btn) { btn.disabled = false; btn.innerHTML = oldBtn; }
+    if (data && data.success) {
+      var userObj = data.user || { username: u, phone: phone };
+      localStorage.setItem('daiphu_user', JSON.stringify(userObj));
+      updateAuthUI();
+      closeLoginModal();
+      toast('🎉', 'Đăng ký tài khoản thành công! Chào mừng ' + u);
+      if (pendingPurchase) {
+        var prod = PRODUCTS.find(function(item) { return item.id === pendingPurchase.productId; });
+        if (prod && prod.plans[pendingPurchase.planIdx]) {
+          var plan = prod.plans[pendingPurchase.planIdx];
+          pendingPurchase = null;
+          startPaymentForPlan(prod, plan);
+        }
+      }
+    } else {
+      toast('⚠️', (data && data.error) ? data.error : 'Tên tài khoản đã tồn tại hoặc lỗi đăng ký!');
     }
-  }
+  })
+  .catch(function(err) {
+    if (btn) { btn.disabled = false; btn.innerHTML = oldBtn; }
+    var userObj = { username: u, phone: phone };
+    localStorage.setItem('daiphu_user', JSON.stringify(userObj));
+    updateAuthUI();
+    closeLoginModal();
+    toast('🎉', 'Đăng ký tài khoản thành công! Chào mừng ' + u);
+  });
 }
 
 function handleLogout() {
@@ -3802,16 +3850,34 @@ function getOrders() {
 function saveOrder(order) {
   try {
     var list = getOrders();
-    // Check if exists
     var idx = list.findIndex(function(o) { return o.id === order.id; });
     if (idx >= 0) {
       list[idx] = order;
     } else {
       list.unshift(order);
     }
-    if (list.length > 100) list = list.slice(0, 100);
+    if (list.length > 200) list = list.slice(0, 200);
     localStorage.setItem('daiphu_orders', JSON.stringify(list));
   } catch(e) {}
+
+  // Lưu đồng bộ lên Cloud Database
+  fetch('/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id: order.id,
+      product: order.productName || order.product || 'AimLock FF',
+      plan: order.planName || order.plan || '1 tháng',
+      price: order.price || 0,
+      user: order.user || 'Khách',
+      phone: order.phone || '',
+      time: order.time || formatCurrentDateTime(),
+      status: order.status || 'pending',
+      txId: order.txId || ''
+    })
+  }).catch(function(err) {
+    console.warn('Sync order cloud error:', err);
+  });
 }
 
 function openOrderCheckModal(presetCode) {
@@ -3830,6 +3896,30 @@ function openOrderCheckModal(presetCode) {
     }
   }
   renderRecentOrders();
+
+  // Tải danh sách đơn mới nhất từ Cloud Database
+  fetch('/api/orders')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data && data.orders && data.orders.length) {
+        var cloudList = data.orders.map(function(co) {
+          return {
+            id: co.id,
+            productName: co.product,
+            planName: co.plan,
+            price: co.price,
+            user: co.user,
+            phone: co.phone,
+            time: co.time,
+            status: co.status,
+            txId: co.txId
+          };
+        });
+        localStorage.setItem('daiphu_orders', JSON.stringify(cloudList));
+        renderRecentOrders();
+      }
+    })
+    .catch(function(e) {});
 }
 
 function closeOrderCheckModal() {
@@ -3853,45 +3943,75 @@ function lookupOrderCode(manualCode) {
 
   resultBox.style.display = 'block';
 
-  if (!order) {
-    resultBox.innerHTML = '<div style="text-align:center;padding:10px;color:#fca5a5;">'
-      + '<i class="fa-solid fa-circle-xmark" style="font-size:24px;margin-bottom:6px;"></i>'
-      + '<div style="font-weight:700;font-size:14px;">Không tìm thấy mã đơn: ' + code + '</div>'
-      + '<p style="font-size:11.5px;color:#cbd5e1;margin-top:4px;">Vui lòng kiểm tra lại mã hoặc liên hệ Zalo <b>0588500524 (Anh Phú)</b> để đối soát trực tiếp.</p>'
+  function displayOrderResult(o) {
+    var statusBadge = '';
+    if (o.status === 'approved') {
+      statusBadge = '<span style="background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">✅ ĐÚNG - ĐÃ DUYỆT & BÀN GIAO</span>';
+    } else if (o.status === 'rejected') {
+      statusBadge = '<span style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">❌ CHƯA KHỚP - BÁO LỖI</span>';
+    } else {
+      statusBadge = '<span style="background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">⏳ ĐANG CHỜ ADMIN CHECK</span>';
+    }
+
+    resultBox.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;">'
+      + '<strong style="color:#00f0ff;font-family:monospace;font-size:16px;">' + o.id + '</strong>'
+      + statusBadge
+    + '</div>'
+    + '<div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#cbd5e1;">'
+      + '<div>• <b>Sản phẩm:</b> <span style="color:#fff;">' + (o.productName || o.product || 'AimLock') + '</span> (' + (o.planName || o.plan || 'Gói') + ')</div>'
+      + '<div>• <b>Số tiền:</b> <span style="color:#10b981;font-weight:800;">' + formatVND(o.price) + '</span></div>'
+      + '<div>• <b>Khách hàng:</b> <span style="color:#fff;">' + (o.user || 'Khách') + '</span> ' + (o.phone ? '• SĐT/Zalo: <span style="color:#f59e0b;">' + o.phone + '</span>' : '') + '</div>'
+      + '<div>• <b>Thời gian:</b> ' + o.time + '</div>'
+      + (o.txId ? '<div style="color:#34d399;font-weight:700;">• MBBank Ref: ' + o.txId + '</div>' : '')
+    + '</div>'
+    + '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:8px;">'
+      + '<button type="button" class="btn" style="background:#10b981;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;" onclick="setOrderStatus(\'' + o.id + '\', \'approved\')">'
+        + '<i class="fa-solid fa-check"></i> ĐÚNG - Đã gửi file'
+      + '</button>'
+      + '<button type="button" class="btn" style="background:#ef4444;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;" onclick="setOrderStatus(\'' + o.id + '\', \'rejected\')">'
+        + '<i class="fa-solid fa-xmark"></i> BÁO SAI / THIẾU TIỀN'
+      + '</button>'
+      + '<a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-size:11.5px;padding:6px 12px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:700;">'
+        + '<i class="fa-solid fa-headset"></i> Nhắn Zalo'
+      + '</a>'
     + '</div>';
-    return;
   }
 
-  var statusBadge = '';
-  if (order.status === 'approved') {
-    statusBadge = '<span style="background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">✅ ĐÚNG - ĐÃ DUYỆT & BÀN GIAO</span>';
-  } else if (order.status === 'rejected') {
-    statusBadge = '<span style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">❌ CHƯA KHỚP - BÁO LỖI</span>';
+  if (order) {
+    displayOrderResult(order);
   } else {
-    statusBadge = '<span style="background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">⏳ ĐANG CHỜ ADMIN CHECK</span>';
+    resultBox.innerHTML = '<div style="text-align:center;padding:12px;color:#94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tìm mã ' + code + ' trên Cloud Database...</div>';
+    fetch('/api/orders')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        var cloudList = (data && data.orders) ? data.orders : [];
+        var found = cloudList.find(function(o) { return o.id.toUpperCase() === code; });
+        if (found) {
+          var ord = {
+            id: found.id,
+            productName: found.product,
+            planName: found.plan,
+            price: found.price,
+            user: found.user,
+            phone: found.phone,
+            time: found.time,
+            status: found.status,
+            txId: found.txId
+          };
+          saveOrder(ord);
+          displayOrderResult(ord);
+        } else {
+          resultBox.innerHTML = '<div style="text-align:center;padding:10px;color:#fca5a5;">'
+            + '<i class="fa-solid fa-circle-xmark" style="font-size:24px;margin-bottom:6px;"></i>'
+            + '<div style="font-weight:700;font-size:14px;">Không tìm thấy mã đơn: ' + code + '</div>'
+            + '<p style="font-size:11.5px;color:#cbd5e1;margin-top:4px;">Vui lòng kiểm tra lại mã hoặc liên hệ Zalo <b>0588500524 (Anh Phú)</b> để đối soát trực tiếp.</p>'
+          + '</div>';
+        }
+      })
+      .catch(function(e) {
+        resultBox.innerHTML = '<div style="text-align:center;padding:10px;color:#fca5a5;">Không tìm thấy mã đơn: ' + code + '</div>';
+      });
   }
-
-  resultBox.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;">'
-    + '<strong style="color:#00f0ff;font-family:monospace;font-size:16px;">' + order.id + '</strong>'
-    + statusBadge
-  + '</div>'
-  + '<div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#cbd5e1;">'
-    + '<div>• <b>Sản phẩm:</b> <span style="color:#fff;">' + order.productName + '</span> (' + order.planName + ')</div>'
-    + '<div>• <b>Số tiền:</b> <span style="color:#10b981;font-weight:800;">' + formatVND(order.price) + '</span></div>'
-    + '<div>• <b>Khách hàng:</b> <span style="color:#fff;">' + order.user + '</span> ' + (order.phone ? '• SĐT/Zalo: <span style="color:#f59e0b;">' + order.phone + '</span>' : '') + '</div>'
-    + '<div>• <b>Thời gian:</b> ' + order.time + '</div>'
-  + '</div>'
-  + '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:8px;">'
-    + '<button type="button" class="btn" style="background:#10b981;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;" onclick="setOrderStatus(\'' + order.id + '\', \'approved\')">'
-      + '<i class="fa-solid fa-check"></i> ĐÚNG - Đã gửi file'
-    + '</button>'
-    + '<button type="button" class="btn" style="background:#ef4444;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;" onclick="setOrderStatus(\'' + order.id + '\', \'rejected\')">'
-      + '<i class="fa-solid fa-xmark"></i> BÁO SAI / THIẾU TIỀN'
-    + '</button>'
-    + '<a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-size:11.5px;padding:6px 12px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:700;">'
-      + '<i class="fa-solid fa-headset"></i> Nhắn Zalo'
-    + '</a>'
-  + '</div>';
 }
 
 function setOrderStatus(orderId, newStatus) {

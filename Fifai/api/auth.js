@@ -1,0 +1,85 @@
+const { getGist, updateGist } = require('./db');
+
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  try {
+    if (req.method === 'GET') {
+      const { users } = await getGist();
+      // Mask passwords before returning
+      const safeUsers = users.map(u => ({
+        username: u.username,
+        phone: u.phone || '',
+        createdAt: u.createdAt || ''
+      }));
+      return res.status(200).json({ success: true, users: safeUsers });
+    }
+
+    if (req.method === 'POST') {
+      let body = req.body;
+      if (typeof body === 'string') {
+        try { body = JSON.parse(body); } catch(e) {}
+      }
+
+      const action = body.action || 'login';
+      const username = (body.username || '').trim();
+      const password = (body.password || '').trim();
+      const phone = (body.phone || '').trim();
+
+      if (!username) {
+        return res.status(400).json({ success: false, error: 'Vui lòng nhập tên đăng nhập!' });
+      }
+
+      const { users } = await getGist();
+      const existing = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+      if (action === 'register') {
+        if (existing) {
+          return res.status(400).json({ success: false, error: 'Tên tài khoản này đã có người sử dụng!' });
+        }
+
+        const newUser = {
+          username: username,
+          password: password,
+          phone: phone,
+          createdAt: new Date().toLocaleString('vi-VN')
+        };
+        users.unshift(newUser);
+        await updateGist({ users });
+
+        return res.status(200).json({
+          success: true,
+          message: 'Đăng ký tài khoản thành công!',
+          user: { username: newUser.username, phone: newUser.phone }
+        });
+      } else {
+        // Login
+        if (!existing) {
+          // If not registered yet, we can either auto-register or return error
+          // To be friendly: if password is provided, check or auto-register
+          return res.status(400).json({ success: false, error: 'Tài khoản chưa tồn tại! Vui lòng bấm Đăng Ký.' });
+        }
+
+        if (existing.password && existing.password !== password) {
+          return res.status(401).json({ success: false, error: 'Mật khẩu không chính xác!' });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: 'Đăng nhập thành công!',
+          user: { username: existing.username, phone: existing.phone }
+        });
+      }
+    }
+
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+};
