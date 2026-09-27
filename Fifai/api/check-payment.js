@@ -1,5 +1,20 @@
 const https = require('https');
 
+function stripVietnamese(str) {
+  if (!str) return '';
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+}
+
+function cleanToken(str) {
+  if (!str || typeof str !== 'string') return '';
+  const noTones = stripVietnamese(str.trim());
+  return noTones.toUpperCase().replace(/[^A-Z0-9_.-]/g, '');
+}
+
 function fetchSePay(path) {
   return new Promise((resolve, reject) => {
     const options = {
@@ -9,6 +24,7 @@ function fetchSePay(path) {
       rejectUnauthorized: false,
       headers: {
         'Authorization': 'Bearer YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV',
+        'Content-Type': 'application/json',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
     };
@@ -38,20 +54,23 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const { memo, price } = req.query;
+  const { memo, orderId, price, user } = req.query;
 
-  // Strix Security Guard: Strict validation on memo format
-  if (!memo || typeof memo !== 'string') {
-    return res.status(400).json({ paid: false, error: 'Thiếu mã đơn hàng' });
-  }
+  // Strix Security Guard: Clean & validate tokens
+  const cleanMemo = cleanToken(memo);
+  const cleanOrderId = cleanToken(orderId);
+  const cleanUser = cleanToken(user);
 
-  const normalizedMemo = memo.trim().toUpperCase();
+  // Phải có ít nhất 1 mã hợp lệ (độ dài tối thiểu 3 ký tự)
+  const validKeys = [];
+  if (cleanMemo.length >= 3) validKeys.push(cleanMemo);
+  if (cleanOrderId.length >= 3 && !validKeys.includes(cleanOrderId)) validKeys.push(cleanOrderId);
+  if (cleanUser.length >= 3 && !validKeys.includes(cleanUser)) validKeys.push(cleanUser);
 
-  // Chống brute-force hoặc match ký tự ngắn (như 'A', '1', 'MB') làm lộ key giả
-  if (normalizedMemo.length < 5 || normalizedMemo.length > 20 || !/^[A-Z0-9_-]+$/.test(normalizedMemo)) {
+  if (validKeys.length === 0) {
     return res.status(400).json({
       paid: false,
-      error: 'Mã đơn không hợp lệ. Mã đơn phải gồm ít nhất 5 ký tự chữ và số (Ví dụ: DP123456).'
+      error: 'Mã đối soát không hợp lệ. Vui lòng nhập ít nhất 3 ký tự chữ hoặc số.'
     });
   }
 
@@ -64,22 +83,31 @@ module.exports = async function handler(req, res) {
     const transactions = result.data.transactions || [];
     const minAmount = price ? parseFloat(price) : 0;
 
-    // Check if any transaction content contains the order code (e.g. DP708251)
+    // Strix AI Matching Engine: Khớp giao dịch nạp tiền
     const matched = transactions.find(t => {
-      const content = (t.transaction_content || '').toUpperCase();
+      // Chuẩn hóa nội dung chuyển khoản từ MBBank (bỏ dấu tiếng Việt, viết hoa)
+      const rawContent = (t.transaction_content || '');
+      const content = cleanToken(rawContent);
       const amountIn = parseFloat(t.amount_in || 0);
 
-      // Phải có mã đơn và số tiền nạp phải >= 90% giá gói
-      const hasMemo = content.includes(normalizedMemo);
+      // Số tiền thực nhận phải >= 90% giá gói
       const hasValidAmount = (minAmount === 0 || amountIn >= (minAmount * 0.9));
+      if (!hasValidAmount) return false;
 
-      return hasMemo && hasValidAmount;
+      // Khớp một trong các mã hợp lệ (Username hoặc Mã DP...)
+      const matchesKey = validKeys.some(key => {
+        // Khớp trực tiếp trong chuỗi nội dung
+        return content.includes(key);
+      });
+
+      return matchesKey;
     });
 
     if (matched) {
       return res.status(200).json({
         paid: true,
         message: 'Đã xác nhận nhận đủ tiền từ MBBank!',
+        matchedKey: validKeys.find(k => cleanToken(matched.transaction_content || '').includes(k)),
         transaction: {
           id: matched.id,
           amount: matched.amount_in,
@@ -92,7 +120,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       paid: false,
-      message: 'Chưa thấy giao dịch tiền vào khớp mã ' + normalizedMemo + ' trên MBBank.'
+      message: 'Chưa thấy giao dịch tiền vào khớp mã [' + validKeys.join(', ') + '] trên MBBank.'
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });

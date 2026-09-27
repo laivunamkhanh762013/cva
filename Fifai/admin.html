@@ -507,8 +507,9 @@ function checkSePay(orderId, price, btnEl) {
   if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
   const order = allOrders.find(function(o) { return o.id === orderId; });
   const memoToCheck = (order && order.user && order.user !== 'Khách vãng lai') ? order.user : orderId;
+  const userToCheck = (order && order.user) ? order.user : '';
 
-  fetch('/api/check-payment?memo=' + encodeURIComponent(memoToCheck) + '&orderId=' + encodeURIComponent(orderId) + '&price=' + encodeURIComponent(price || 0))
+  fetch('/api/check-payment?memo=' + encodeURIComponent(memoToCheck) + '&orderId=' + encodeURIComponent(orderId) + '&user=' + encodeURIComponent(userToCheck) + '&price=' + encodeURIComponent(price || 0))
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (btnEl) { btnEl.disabled = false; btnEl.innerHTML = '<i class="fa-solid fa-magnifying-glass-dollar"></i> SePay'; }

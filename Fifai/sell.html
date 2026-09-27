@@ -2452,6 +2452,17 @@
 
             <!-- Chi tiết tài khoản ngân hàng -->
             <div class="m-bank-rows">
+              <!-- Dòng 1: MÃ ĐƠN HÀNG (Hiện rõ ràng ngay lập tức cho khách sao chép & đối soát) -->
+              <div class="m-bank-item" style="background:linear-gradient(135deg,rgba(14,165,233,0.18) 0%,rgba(99,102,241,0.18) 100%);border:1.5px solid #0284c7;box-shadow:0 0 15px rgba(2,132,199,0.2);">
+                <div>
+                  <small style="color:#38bdf8;font-weight:900;letter-spacing:.6px;"><i class="fa-solid fa-receipt"></i> MÃ ĐƠN HÀNG CỦA BẠN (LƯU LẠI ĐỂ NHẬN FILE)</small>
+                  <strong id="mStep2OrderId" style="color:#00f0ff;font-family:monospace;font-size:17px;letter-spacing:1px;font-weight:900;">DP...</strong>
+                </div>
+                <button type="button" class="m-copy-btn" onclick="copyText(window.currentOrderId, this)" style="border-color:#0284c7;color:#38bdf8;font-weight:800;background:rgba(2,132,199,0.2);">
+                  <i class="fa-solid fa-copy"></i> Sao chép mã
+                </button>
+              </div>
+
               <div class="m-bank-item">
                 <div><small>NGÂN HÀNG THỤ HƯỞNG</small><strong>MB BANK (Quân Đội)</strong></div>
                 <button class="m-copy-btn" onclick="copyText('MBBANK', this)"><i class="fa-solid fa-copy"></i> Sao chép</button>
@@ -2468,7 +2479,7 @@
                 <button class="m-copy-btn" onclick="copyText(window.currentPayAmountRaw, this)"><i class="fa-solid fa-copy"></i></button>
               </div>
               <div class="m-bank-item m-bank-memo">
-                <div><small style="color:#f87171;">NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC CHÍNH XÁC)</small><strong id="mOrderMemo" style="color:#f87171;font-family:monospace;font-size:15px;letter-spacing:1px;">DP...</strong></div>
+                <div><small style="color:#f87171;font-weight:800;">NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC CHÍNH XÁC)</small><strong id="mOrderMemo" style="color:#f87171;font-family:monospace;font-size:16px;letter-spacing:1px;">DP...</strong></div>
                 <button class="m-copy-btn m-copy-memo" onclick="copyText(window.currentOrderMemoFull || window.currentOrderMemo, this)"><i class="fa-solid fa-copy"></i></button>
               </div>
             </div>
@@ -2482,11 +2493,16 @@
               </div>
             </div>
 
-            <!-- Nút kiểm tra bắt buộc: Chỉ mở khi hệ thống thực sự ghi có tiền vào MBBank -->
+            <!-- Nút kiểm tra SePay -->
             <button type="button" class="btn-paid-done" id="btnCheckPaid" onclick="manualCheckPayment()" style="background:linear-gradient(135deg, #0284c7 0%, #00d4ff 100%);box-shadow:0 4px 18px rgba(0,212,255,0.4);border:none;color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 16px;border-radius:12px;width:100%;cursor:pointer;">
               <i class="fa-solid fa-rotate"></i> Kiểm tra xác nhận tiền vào MBBank ngay
             </button>
             <div id="checkPayFeedback" style="display:none;margin-top:10px;padding:12px 14px;border-radius:12px;font-size:12px;text-align:left;line-height:1.55;"></div>
+
+            <!-- Nút Tôi Đã Chuyển Khoản • Nhận Mã Đơn & Gửi Zalo (Luôn hiển thị để khách lấy mã đơn ngay) -->
+            <button type="button" class="btn-paid-done" id="btnConfirmPaid" onclick="confirmPaid()" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);box-shadow:0 4px 18px rgba(16,185,129,0.35);border:none;color:#fff;font-size:14.5px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 16px;border-radius:12px;width:100%;cursor:pointer;margin-top:10px;">
+              <i class="fa-solid fa-circle-check"></i> Tôi Đã Chuyển Khoản • Xem &amp; Nhận Mã Đơn Ngay
+            </button>
 
             <!-- Hướng dẫn Xác nhận Admin & Bàn giao -->
             <div class="m-bot-box" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.35);margin-top:14px;">
@@ -3833,16 +3849,16 @@ function startPaymentForPlan(p, plan) {
   currentPlan = plan;
   window.currentPayAmountRaw = plan.price;
 
-  // Sinh mã đơn hàng ngẫu nhiên — ẩn đến khi thanh toán xong
+  // Sinh mã đơn hàng ngẫu nhiên — HIỂN THỊ RÕ RÀNG CHO KHÁCH & ADMIN ĐỒNG BỘ 100%
   var orderId = 'DP' + Math.floor(100000 + Math.random() * 900000);
-  window.currentOrderId = orderId; // Lưu riêng, chỉ reveal sau khi CK
+  window.currentOrderId = orderId;
 
   // Lấy thông tin user
   var currentUser = getCurrentUser();
   var username = currentUser && currentUser.username ? currentUser.username : '';
 
-  // Memo gửi cho SePay và hiển thị cho khách = Username (nếu có), fallback orderId
-  var memoForCK = username || orderId;
+  // Memo chuyển khoản: Ưu tiên mã đơn hàng DP... để khớp chuẩn xác trên MBBank và SePay
+  var memoForCK = orderId;
   window.currentOrderMemo = memoForCK;
   window.currentOrderMemoFull = memoForCK;
 
@@ -3853,18 +3869,20 @@ function startPaymentForPlan(p, plan) {
   var payAmt = document.getElementById('mPayAmount');
   var memoEl = document.getElementById('mOrderMemo');
   var adminCodeEl = document.getElementById('mAdminCode');
+  var step2OrderIdEl = document.getElementById('mStep2OrderId');
 
   if (s2Prod) s2Prod.textContent = p.name;
   if (s2Plan) s2Plan.textContent = plan.name;
   if (s2Price) s2Price.textContent = formatVND(plan.price);
   if (payAmt) payAmt.textContent = formatVND(plan.price);
 
-  // Hiển thị memo = Username trên UI (KHÔNG hiện DP code)
-  if (memoEl) memoEl.textContent = memoForCK;
-  if (adminCodeEl) adminCodeEl.textContent = memoForCK;
+  // Hiển thị MÃ ĐƠN HÀNG DP... trên UI cho khách thấy và sao chép ngay
+  if (step2OrderIdEl) step2OrderIdEl.textContent = orderId;
+  if (memoEl) memoEl.textContent = orderId;
+  if (adminCodeEl) adminCodeEl.textContent = orderId;
 
   var cardMemoEl = document.getElementById('mCardOrderMemo');
-  if (cardMemoEl) cardMemoEl.textContent = memoForCK;
+  if (cardMemoEl) cardMemoEl.textContent = orderId;
 
   // Reset về tab Quét QR ngân hàng mặc định
   switchPayMethod('bank');
@@ -3882,7 +3900,7 @@ function startPaymentForPlan(p, plan) {
   };
   saveOrder(newOrder);
 
-  // Tạo mã VietQR — addInfo = username (SePay match bằng username)
+  // Tạo mã VietQR — addInfo = orderId (DP514786)
   var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(memoForCK) + '&accountName=BUI%20VAN%20CAO';
   var qrEl = document.getElementById('mQrCode');
   if (qrEl) qrEl.src = qrUrl;
@@ -3897,7 +3915,7 @@ function startPaymentForPlan(p, plan) {
   var col = document.querySelector('.m-info-col');
   if (col) col.scrollTo({ top: 0, behavior: 'smooth' });
 
-  toast('🛒', 'Đã chọn: ' + plan.name + ' (' + formatVND(plan.price) + '). Vui lòng thanh toán.');
+  toast('🛒', 'Đã tạo đơn ' + orderId + ' · ' + plan.name + ' (' + formatVND(plan.price) + ')');
 }
 
 
@@ -3949,9 +3967,12 @@ function checkPaymentApi(orderId, price, isManual) {
   if (isCheckingPayment || !orderId) return;
   isCheckingPayment = true;
 
+  var currentUser = getCurrentUser();
+  var username = currentUser && currentUser.username ? currentUser.username : '';
   var memoParam = encodeURIComponent(orderId);
-  var orderIdParam = encodeURIComponent(window.currentOrderId || '');
-  fetch('/api/check-payment?memo=' + memoParam + '&orderId=' + orderIdParam + '&price=' + encodeURIComponent(price || 0))
+  var orderIdParam = encodeURIComponent(window.currentOrderId || orderId);
+  var userParam = encodeURIComponent(username);
+  fetch('/api/check-payment?memo=' + memoParam + '&orderId=' + orderIdParam + '&user=' + userParam + '&price=' + encodeURIComponent(price || 0))
     .then(function(res) {
       if (!res.ok) throw new Error('API status ' + res.status);
       return res.json();
@@ -4411,7 +4432,9 @@ function lookupOrderCode(manualCode) {
   }
 
   var list = getOrders();
-  var order = list.find(function(o) { return o.id.toUpperCase() === code; });
+  var order = list.find(function(o) {
+    return (o.id && o.id.toUpperCase() === code) || (o.user && o.user.toUpperCase() === code);
+  });
 
   resultBox.style.display = 'block';
 
@@ -4451,7 +4474,9 @@ function lookupOrderCode(manualCode) {
       .then(function(res) { return res.json(); })
       .then(function(data) {
         var cloudList = (data && data.orders) ? data.orders : [];
-        var found = cloudList.find(function(o) { return o.id.toUpperCase() === code; });
+        var found = cloudList.find(function(o) {
+          return (o.id && o.id.toUpperCase() === code) || (o.user && o.user.toUpperCase() === code);
+        });
         if (found) {
           var ord = {
             id: found.id,
