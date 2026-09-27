@@ -255,6 +255,11 @@
   align-self: start;
 }
 @media(max-width: 840px) {
+  .modal-card.checkout-modal {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    padding: 20px 16px !important;
+  }
   .checkout-grid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -2163,12 +2168,11 @@
 
 
 
-/* ═════ SCROLL REVEAL EFFECTS ═════ */
+/* ═════ SCROLL REVEAL EFFECTS (Nhẹ nhàng, êm dịu, không giật layout trang) ═════ */
 .reveal {
   opacity: 0;
-  transform: translateY(36px);
-  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
   will-change: opacity, transform;
 }
 .reveal.revealed {
@@ -2177,29 +2181,27 @@
 }
 .reveal-left {
   opacity: 0;
-  transform: translateX(-32px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
   will-change: opacity, transform;
 }
 .reveal-left.revealed { opacity: 1; transform: translateX(0); }
 .reveal-right {
   opacity: 0;
-  transform: translateX(32px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
   will-change: opacity, transform;
 }
 .reveal-right.revealed { opacity: 1; transform: translateX(0); }
 
 /* Stagger delay cho card grid */
-.product-grid .product-card:nth-child(1) { transition-delay: 0ms; }
-.product-grid .product-card:nth-child(2) { transition-delay: 60ms; }
-.product-grid .product-card:nth-child(3) { transition-delay: 120ms; }
-.product-grid .product-card:nth-child(4) { transition-delay: 180ms; }
-.product-grid .product-card:nth-child(5) { transition-delay: 240ms; }
-.product-grid .product-card:nth-child(6) { transition-delay: 300ms; }
-.product-grid .product-card:nth-child(n+7) { transition-delay: 360ms; }
+.product-grid .product:nth-child(1) { transition-delay: 0ms; }
+.product-grid .product:nth-child(2) { transition-delay: 50ms; }
+.product-grid .product:nth-child(3) { transition-delay: 100ms; }
+.product-grid .product:nth-child(4) { transition-delay: 150ms; }
+.product-grid .product:nth-child(5) { transition-delay: 200ms; }
+.product-grid .product:nth-child(6) { transition-delay: 250ms; }
+.product-grid .product:nth-child(n+7) { transition-delay: 300ms; }
 
 </style>
 
@@ -2255,7 +2257,7 @@
 <main id="main-content" class="shell page-wrap" tabindex="-1">
 
   <!-- ══ STORE HERO ══ -->
-  <section class="store-hero reveal">
+  <section class="store-hero">
     <div class="hero-copy">
       <span class="store-kicker"><i class="fa-solid fa-circle-check"></i> CỬA HÀNG HỖ TRỢ KÉO TÂM CHUẨN XÁC</span>
       <h1>Chọn sản phẩm phù hợp với nhu cầu của bạn.</h1>
@@ -2276,7 +2278,7 @@
   </section>
 
   <!-- ══ PRODUCTS SECTION ══ -->
-  <section id="products" class="products-section reveal">
+  <section id="products" class="products-section">
     <div class="section-head">
       <div>
         <h2>Sản phẩm</h2>
@@ -2324,7 +2326,7 @@
   </section>
 
   <!-- ══ CUSTOMER FEEDBACK SECTION (14 ẢNH THẬT) ══ -->
-  <section id="feedback" class="products-section reveal" style="margin-top: 50px;">
+  <section id="feedback" class="products-section" style="margin-top: 50px;">
     <div class="section-head">
       <div>
         <h2>Đánh giá từ khách hàng</h2>
@@ -3568,6 +3570,7 @@ function renderProducts() {
   });
 
   grid.innerHTML = html;
+  if (typeof window.triggerReveal === 'function') window.triggerReveal();
 }
 
 /* ═══════ 14 REAL CUSTOMER FEEDBACK ═══════ */
@@ -3587,8 +3590,8 @@ function renderFeedback() {
         + '<div class="fb-title">Feedback Khách Hàng #' + i + '</div>'
       + '</div>'
     + '</div>';
-  }
   grid.innerHTML = html;
+  if (typeof window.triggerReveal === 'function') window.triggerReveal();
 }
 
 /* ═══════ FILTER & SEARCH EVENTS ═══════ */
@@ -3706,15 +3709,16 @@ function openBuyModalById(id, targetPlanIdx) {
     }
   }
 
-  // Open modal & lock scroll
-  document.getElementById('buyModal').classList.add('open');
+  // Open modal
+  var buyModal = document.getElementById('buyModal');
+  if (buyModal) buyModal.classList.add('open');
   document.body.style.overflow = 'hidden';
 
-  // If specific plan was requested, scroll to it
+  // If specific plan was requested, scroll to it smoothly inside modal
   if (typeof targetPlanIdx === 'number' && targetPlanIdx > 0) {
     setTimeout(function() {
       jumpToVersionBlock(p.id, targetPlanIdx);
-    }, 200);
+    }, 180);
   }
 }
 
@@ -3816,13 +3820,15 @@ function jumpToVersionBlock(pId, idx) {
   var activePill = document.getElementById('qnp-' + pId + '-' + idx);
   if (activePill) activePill.classList.add('active');
 
-  // Smooth scroll within modal right column
+  // Smooth scroll CHỈ bên trong cột danh sách của modal, TUYỆT ĐỐI không gọi scrollIntoView làm nhảy cả trang web
   var col = document.querySelector('.m-info-col');
-  if (col) {
+  var modalEl = document.querySelector('.modal-card.checkout-modal');
+  if (col && col.scrollHeight > col.clientHeight) {
     var offset = target.offsetTop - col.offsetTop - 10;
-    col.scrollTo({ top: offset, behavior: 'smooth' });
-  } else {
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    col.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+  } else if (modalEl && modalEl.scrollHeight > modalEl.clientHeight) {
+    var offsetM = target.offsetTop - modalEl.offsetTop - 10;
+    modalEl.scrollTo({ top: Math.max(0, offsetM), behavior: 'smooth' });
   }
 }
 
@@ -4146,6 +4152,9 @@ function closeBuyModal() {
   var m = document.getElementById('buyModal');
   if (m) m.classList.remove('open');
   document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
 }
 
 function confirmPaid() {
@@ -4763,35 +4772,37 @@ renderFeedback();
 
 /* ═══════ SCROLL REVEAL ENGINE ═══════ */
 (function() {
-  function initReveal() {
-    // Áp reveal lên product cards
-    document.querySelectorAll('.product-card').forEach(function(el) {
-      el.classList.add('reveal');
-    });
-
-    var revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-    if (!revealEls.length) return;
-
-    var io = new IntersectionObserver(function(entries) {
+  var io = null;
+  if ('IntersectionObserver' in window) {
+    io = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
-          io.unobserve(entry.target); // chỉ reveal 1 lần
+          io.unobserve(entry.target);
         }
       });
     }, {
-      threshold: 0.08,
-      rootMargin: '0px 0px -40px 0px'
+      threshold: 0.05,
+      rootMargin: '0px 0px -20px 0px'
     });
-
-    revealEls.forEach(function(el) { io.observe(el); });
   }
 
-  // Chạy sau khi DOM + products render xong
+  window.triggerReveal = function() {
+    var cards = document.querySelectorAll('.product:not(.revealed), .fb-card:not(.revealed)');
+    cards.forEach(function(el) {
+      el.classList.add('reveal');
+      if (io) {
+        io.observe(el);
+      } else {
+        el.classList.add('revealed');
+      }
+    });
+  };
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initReveal);
+    document.addEventListener('DOMContentLoaded', window.triggerReveal);
   } else {
-    setTimeout(initReveal, 120); // delay nhỏ để renderProducts() xong trước
+    setTimeout(window.triggerReveal, 80);
   }
 })();
 
