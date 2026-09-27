@@ -1047,6 +1047,121 @@
   color: #ef4444;
   text-decoration: underline;
 }
+
+/* ══ TOPBAR USER DROPDOWN MENU ══ */
+.user-menu-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.user-btn-active {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: #ffffff !important;
+  color: #171a1f !important;
+  border: 1px solid rgba(225, 228, 232, 0.95) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  padding: 8px 14px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+}
+.user-btn-active:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+.user-btn-active .user-arrow {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-left: 2px;
+  transition: transform 0.2s ease;
+}
+.user-menu-wrapper.active .user-btn-active .user-arrow {
+  transform: rotate(180deg);
+}
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 175px;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04);
+  padding: 6px;
+  z-index: 1000;
+  display: none;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.user-dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (hover: hover) and (pointer: fine) {
+  .user-menu-wrapper:hover .user-dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 9px;
+  color: #1e293b;
+  font-size: 13.5px;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+.user-dropdown-item i {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+  color: #64748b;
+  transition: color 0.15s ease;
+}
+.user-dropdown-item:hover {
+  background: #f1f5f9;
+  color: #0284c7;
+}
+.user-dropdown-item:hover i {
+  color: #0284c7;
+}
+.user-dropdown-item.text-danger {
+  color: #ef4444;
+}
+.user-dropdown-item.text-danger i {
+  color: #ef4444;
+}
+.user-dropdown-item.text-danger:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.user-dropdown-item.text-danger:hover i {
+  color: #dc2626;
+}
+.user-dropdown-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 4px 6px;
+}
 .m-lock-note {
   font-size: 11px;
   color: #94a3b8;
@@ -2224,7 +2339,20 @@
       <a href="https://zalo.me/0588500524" target="_blank" rel="noopener">Hỗ trợ Zalo</a>
     </nav>
     <div class="top-actions">
-      <a class="btn btn-ghost" href="javascript:void(0)" onclick="openLogin()" id="topAuthBtn">Đăng nhập</a>
+      <div class="user-menu-wrapper" id="userMenuWrapper">
+        <a class="btn btn-ghost" href="javascript:void(0)" onclick="toggleUserDropdown(event)" id="topAuthBtn">Đăng nhập</a>
+        <div class="user-dropdown-menu" id="userDropdownMenu">
+          <a href="javascript:void(0)" class="user-dropdown-item" onclick="handleMenuHistory(event)">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Lịch sử</span>
+          </a>
+          <div class="user-dropdown-divider"></div>
+          <a href="javascript:void(0)" class="user-dropdown-item text-danger" onclick="handleMenuLogout(event)">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Đăng xuất</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -3299,6 +3427,56 @@ function isLoggedIn() {
   return !!getCurrentUser();
 }
 
+function toggleUserDropdown(e) {
+  var user = getCurrentUser();
+  if (!user || !user.username) {
+    openLogin();
+    return;
+  }
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  var menu = document.getElementById('userDropdownMenu');
+  var wrapper = document.getElementById('userMenuWrapper');
+  if (menu) {
+    menu.classList.toggle('show');
+    if (wrapper) wrapper.classList.toggle('active');
+  }
+}
+
+function closeUserDropdown() {
+  var menu = document.getElementById('userDropdownMenu');
+  var wrapper = document.getElementById('userMenuWrapper');
+  if (menu) menu.classList.remove('show');
+  if (wrapper) wrapper.classList.remove('active');
+}
+
+function handleMenuHistory(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  closeUserDropdown();
+  openMyOrderHistory();
+}
+
+function handleMenuLogout(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  closeUserDropdown();
+  handleLogout();
+}
+
+document.addEventListener('click', function(e) {
+  var wrapper = document.getElementById('userMenuWrapper');
+  if (wrapper && !wrapper.contains(e.target)) {
+    closeUserDropdown();
+  }
+});
+
 function updateAuthUI() {
   var user = getCurrentUser();
   var topBtn = document.getElementById('topAuthBtn');
@@ -3309,9 +3487,10 @@ function updateAuthUI() {
 
   if (user && user.username) {
     if (topBtn) {
-      topBtn.innerHTML = '<i class="fa-solid fa-circle-user"></i> ' + user.username;
-      topBtn.setAttribute('title', 'Bấm để đăng xuất');
-      topBtn.onclick = handleLogout;
+      topBtn.className = 'btn user-btn-active';
+      topBtn.innerHTML = '<i class="fa-solid fa-circle-user"></i> <span>' + escapeHTML(user.username) + '</span> <i class="fa-solid fa-chevron-down user-arrow"></i>';
+      topBtn.setAttribute('title', 'Tài khoản: ' + user.username);
+      topBtn.onclick = toggleUserDropdown;
     }
     if (sideTitle) sideTitle.textContent = 'Chào, ' + user.username + ' ⭐';
     if (sideSub) sideSub.textContent = 'Tài khoản thành viên (SĐT: ' + (user.phone || 'Đã liên kết') + ') đã sẵn sàng mua hàng & nhận key.';
@@ -3321,10 +3500,15 @@ function updateAuthUI() {
     }
     if (sideHistoryBtn) sideHistoryBtn.style.display = 'inline-flex';
   } else {
+    closeUserDropdown();
     if (topBtn) {
+      topBtn.className = 'btn btn-ghost';
       topBtn.innerHTML = 'Đăng nhập';
       topBtn.removeAttribute('title');
-      topBtn.onclick = function() { openLogin(); };
+      topBtn.onclick = function(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        openLogin();
+      };
     }
     if (sideTitle) sideTitle.textContent = 'Đăng nhập để mua hàng';
     if (sideSub) sideSub.textContent = 'Đăng nhập hoặc tạo tài khoản để thanh toán và nhận sản phẩm sau khi mua.';
