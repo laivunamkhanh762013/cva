@@ -7,7 +7,7 @@ function sanitizeText(str, maxLen) {
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
@@ -20,10 +20,41 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true, orders: orders || [] });
     }
 
+    if (req.method === 'DELETE') {
+      const { id } = req.query;
+      let body = req.body;
+      if (typeof body === 'string') {
+        try { body = JSON.parse(body); } catch(e) {}
+      }
+      const targetId = String(id || (body && body.id) || '').replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
+      if (!targetId) {
+        return res.status(400).json({ success: false, error: 'Thiếu mã đơn cần xóa' });
+      }
+      const { orders } = await getGist();
+      const filtered = (orders || []).filter(o => o.id !== targetId);
+      await updateGist({ orders: filtered });
+      return res.status(200).json({ success: true, message: 'Đã xóa vĩnh viễn đơn ' + targetId, remaining: filtered.length });
+    }
+
     if (req.method === 'POST') {
       let body = req.body;
       if (typeof body === 'string') {
         try { body = JSON.parse(body); } catch(e) {}
+      }
+
+      // ── RESET ALL ORDERS ──
+      if (body && body._reset === true) {
+        await updateGist({ orders: [] });
+        return res.status(200).json({ success: true, message: 'All orders cleared.' });
+      }
+
+      // ── XÓA 1 ĐƠN HÀNG QUA POST ──
+      if (body && (body._delete === true || body._action === 'delete') && body.id) {
+        const cleanId = String(body.id).replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
+        const { orders } = await getGist();
+        const filtered = (orders || []).filter(o => o.id !== cleanId);
+        await updateGist({ orders: filtered });
+        return res.status(200).json({ success: true, message: 'Đã xóa vĩnh viễn đơn ' + cleanId, remaining: filtered.length });
       }
 
       if (!body || !body.id) {

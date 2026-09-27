@@ -477,23 +477,19 @@ function loadAllOrders(silent) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       const cloudOrders = (data && data.orders) ? data.orders : [];
-      const localOrders = getStoredOrders();
-      const merged = [...cloudOrders];
-      localOrders.forEach(function(lo) {
-        if (!merged.find(function(co) { return co.id === lo.id; })) merged.push(lo);
-      });
-      merged.sort(function(a, b) {
+      allOrders = cloudOrders;
+      saveStoredOrders(cloudOrders); // Đồng bộ lại localStorage chuẩn theo Cloud để không hồi sinh đơn đã xóa
+      allOrders.sort(function(a, b) {
         return new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime();
       });
-      allOrders = merged;
       renderDashboard();
-      if (!silent) showToast('☁️ Đã tải ' + merged.length + ' đơn từ Cloud + Local!');
+      if (!silent) showToast('☁️ Đã tải ' + allOrders.length + ' đơn từ hệ thống!');
     })
     .catch(function(err) {
       console.warn('Cloud fetch failed:', err);
       allOrders = getStoredOrders();
       renderDashboard();
-      if (!silent) showToast('⚠️ Không kết nối Cloud, hiển thị Local.');
+      if (!silent) showToast('⚠️ Không kết nối Cloud, hiển thị dữ liệu lưu cục bộ.');
     });
 }
 
@@ -707,11 +703,32 @@ function updateOrderStatus(id, newStatus, txId) {
 }
 
 function deleteOrder(id) {
-  if (!confirm('Bạn có chắc muốn xóa đơn hàng ' + id + '?')) return;
+  if (!confirm('Bạn có chắc muốn xóa vĩnh viễn đơn hàng ' + id + '?')) return;
   allOrders = allOrders.filter(function(o) { return o.id !== id; });
-  saveStoredOrders(getStoredOrders().filter(function(o) { return o.id !== id; }));
+  saveStoredOrders(allOrders);
   renderDashboard();
-  showToast('🗑️ Đã xóa đơn ' + id);
+  showToast('🗑️ Đang xóa đơn ' + id + ' khỏi máy chủ...');
+
+  // Gửi request xóa vĩnh viễn trên Cloud Database
+  fetch('/api/orders?id=' + encodeURIComponent(id), {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: id, _delete: true })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.success) {
+      showToast('✅ Đã xóa vĩnh viễn đơn ' + id + '!');
+    }
+  })
+  .catch(function(err) {
+    console.warn('DELETE error, fallback to POST:', err);
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, _delete: true })
+    }).catch(function(){});
+  });
 }
 
 function copyCustomerReply(id) {
