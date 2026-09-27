@@ -657,6 +657,8 @@ function renderDashboard() {
     else if (o.status === 'rejected') badge = '<span class="status-badge rejected"><i class="fa-solid fa-circle-xmark"></i> BÁO SAI</span>';
     else badge = '<span class="status-badge pending"><i class="fa-solid fa-clock"></i> CHỜ DUYỆT</span>';
 
+    const prodName = o.productName || o.product || '—';
+    const planName = o.planName || o.plan || '';
     const cleanId = escapeHTML(o.id);
     const cleanUser = escapeHTML(o.user || 'Khách vãng lai');
     const cleanPhone = escapeHTML(o.phone || '');
