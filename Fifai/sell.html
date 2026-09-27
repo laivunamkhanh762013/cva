@@ -1534,7 +1534,7 @@
 <!-- ══ ANNOUNCEMENT BAR ══ -->
 <div class="announcement-bar">
   <div class="shell">
-    <i class="fa-solid fa-bullhorn"></i> Hoạt động 24/7 • Kích hoạt tự động qua Bot Zalo • Hỗ trợ cài đặt 1:1
+    <i class="fa-solid fa-bullhorn"></i> Hoạt động 24/7 • Kiểm tra đối soát & Bàn giao file trực tiếp 1:1 qua Zalo Admin • Uy tín 100%
   </div>
 </div>
 
@@ -1549,6 +1549,7 @@
       <a class="active" href="index.html">Cửa hàng</a>
       <a href="#products">Sản phẩm</a>
       <a href="#feedback">Đánh giá</a>
+      <a href="javascript:void(0)" onclick="openOrderCheckModal()"><i class="fa-solid fa-clipboard-check"></i> Check Đơn Hàng</a>
       <a href="https://zalo.me/0588500524" target="_blank" rel="noopener">Hỗ trợ Zalo</a>
     </nav>
     <div class="top-actions">
@@ -1565,10 +1566,10 @@
     <div class="hero-copy">
       <span class="store-kicker"><i class="fa-solid fa-circle-check"></i> CỬA HÀNG SIÊU PHẨM KÉO TÂM</span>
       <h1>Chọn sản phẩm phù hợp với nhu cầu của bạn.</h1>
-      <p>Những Siêu Phẩm Bên ĐẠI PHÚ FF Tạo Ra Hoàn Toàn Là Hỗ Trợ Kéo Tâm, Không Liên Quan Đến PMT3 Và Sử Dụng Vĩnh Viễn ✅<br><br><b>ZALO: 0588500524 (Anh Phú) • BOT CSKH: 0964976083</b></p>
+      <p>Những Siêu Phẩm Bên ĐẠI PHÚ FF Tạo Ra Hoàn Toàn Là Hỗ Trợ Kéo Tâm, Không Liên Quan Đến PMT3 Và Sử Dụng Vĩnh Viễn ✅<br><br><b>ZALO ADMIN DUYỆT ĐƠN & HỖ TRỢ: 0588500524 (Anh Phú)</b></p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#products"><i class="fa-solid fa-bag-shopping"></i> Xem sản phẩm</a>
-        <a class="btn btn-ghost" href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i> Liên hệ Zalo</a>
+        <a class="btn btn-ghost" href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i> Liên hệ Zalo Admin</a>
       </div>
     </div>
     <aside class="wallet-summary guest-summary">
@@ -1663,6 +1664,7 @@
 <nav class="mobile-nav" aria-label="Điều hướng trên điện thoại">
   <a class="active" href="index.html"><i class="fa-solid fa-store"></i><span>Cửa hàng</span></a>
   <a href="#products"><i class="fa-solid fa-fire"></i><span>Sản phẩm</span></a>
+  <a href="javascript:void(0)" onclick="openOrderCheckModal()"><i class="fa-solid fa-clipboard-check"></i><span>Check đơn</span></a>
   <a href="#feedback"><i class="fa-solid fa-comments"></i><span>Đánh giá</span></a>
   <a href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i><span>Hỗ trợ</span></a>
 </nav>
@@ -1779,11 +1781,11 @@
             </div>
           </div>
 
-          <!-- Hướng dẫn Bot Zalo -->
-          <div class="m-bot-box">
-            <div class="m-bot-title"><i class="fa-solid fa-robot"></i> Kích hoạt key tự động qua Bot Zalo:</div>
-            <p class="m-bot-desc">
-              Sau khi chuyển khoản, nhắn lệnh <code class="m-code">!done <span id="mBotCode">DP...</span></code> cho <b>Bot Zalo: 0964976083</b> hoặc gửi bill đến Zalo <b>0588500524 (Anh Phú)</b> để nhận file & hướng dẫn cài đặt ngay lập tức!
+          <!-- Hướng dẫn Xác nhận Admin & Bàn giao -->
+          <div class="m-bot-box" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.35);">
+            <div class="m-bot-title" style="color:#38bdf8;"><i class="fa-solid fa-user-shield"></i> Xác nhận đơn hàng &amp; Bàn giao trực tiếp:</div>
+            <p class="m-bot-desc" style="color:#bae6fd;">
+              Sau khi chuyển khoản thành công, hãy gửi mã đơn <code class="m-code" style="background:rgba(6,182,212,0.25);color:#e0f2fe;"><span id="mAdminCode">DP...</span></code> hoặc ảnh bill chuyển khoản đến <b>Zalo Admin: 0588500524 (Anh Phú)</b>. Admin sẽ vào kiểm tra đối soát, nếu đúng tiền sẽ gửi file &amp; key kèm hỗ trợ cài đặt 1:1 ngay!
             </p>
           </div>
 
@@ -1807,15 +1809,15 @@
     <div class="paid-header-box">
       <div class="paid-header-icon">🧾</div>
       <div class="paid-header-title">Mã Xác Nhận Đơn Hàng</div>
-      <div class="paid-header-sub">Gửi mã đơn cho Bot Zalo để tự động đối soát ngân hàng MB Bank &amp; nhận file</div>
+      <div class="paid-header-sub">Gửi mã đơn hoặc ảnh chụp giao dịch cho Zalo Admin để kiểm tra và nhận file cài đặt</div>
     </div>
 
     <!-- Block 2: Syntax Box -->
     <div class="paid-syntax-box">
-      <div class="paid-syntax-title">🤖 CÚ PHÁP GỬI BOT ZALO:</div>
+      <div class="paid-syntax-title">👤 MÃ ĐƠN HÀNG CỦA BẠN:</div>
       <div class="paid-cmd-wrapper">
-        <div class="paid-cmd-pill" id="paidCmdPill" onclick="copyPaidSyntax()" title="Bấm để sao chép cú pháp">
-          <span class="paid-cmd-prefix">!done</span>
+        <div class="paid-cmd-pill" id="paidCmdPill" onclick="copyPaidSyntax()" title="Bấm để sao chép mã đơn">
+          <span class="paid-cmd-prefix">MÃ ĐƠN</span>
           <span class="paid-cmd-code" id="paidConfirmCode">DP487340</span>
         </div>
         <button type="button" class="paid-copy-btn" id="paidCopyBtn" onclick="copyPaidSyntax()">
@@ -1823,7 +1825,10 @@
           <span class="paid-copy-text" id="paidCopyText">Sao chép</span>
         </button>
       </div>
-      <div class="paid-syntax-hint">Chạm vào hộp hoặc bấm nút Sao chép để copy nhanh</div>
+      <div class="paid-syntax-hint">Chạm vào hộp hoặc bấm nút Sao chép để copy mã đơn</div>
+      <a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;">
+        <i class="fa-solid fa-paper-plane"></i> Gửi mã đơn qua Zalo Admin (0588500524)
+      </a>
     </div>
 
     <!-- Block 3: Order Details Box -->
@@ -1846,7 +1851,7 @@
       </div>
       <div class="paid-detail-row">
         <span class="paid-label">Trạng thái:</span>
-        <span class="paid-val paid-status">⏳ Chờ Bot Zalo đối soát MB Bank</span>
+        <span class="paid-val paid-status" style="color:#38bdf8;">⏳ Chờ Admin kiểm tra &amp; Bàn giao file</span>
       </div>
       <div class="paid-detail-row">
         <span class="paid-label">Thời gian:</span>
@@ -1854,17 +1859,51 @@
       </div>
     </div>
 
-    <!-- Block 4: Fraud Warning Box -->
-    <div class="paid-fraud-box">
+    <!-- Block 4: Admin Verification Policy -->
+    <div class="paid-fraud-box" style="background:rgba(56,189,248,0.06);border-color:rgba(56,189,248,0.3);">
       <div class="paid-fraud-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L4 5V11.5C4 16.5 7.5 20.9 12 22C16.5 20.9 20 16.5 20 11.5V5L12 2Z" fill="#38BDF8" fill-opacity="0.25" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12 8V12" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="12" cy="15.5" r="1" fill="#38BDF8"/>
-        </svg>
+        <i class="fa-solid fa-user-check" style="color:#38bdf8;font-size:18px;"></i>
       </div>
       <div class="paid-fraud-text">
-        <strong>Chống gian lận:</strong> Bot Zalo chỉ duyệt gửi file khi ngân hàng đã ghi nhận tiền thực tế khớp mã đơn &amp; số tiền. Mọi lệnh ảo sẽ bị từ chối tự động.
+        <strong style="color:#38bdf8;">Quy trình kiểm tra:</strong> Mình cùng anh Phú và Admin web sẽ trực tiếp vào hệ thống đối soát giao dịch ngân hàng theo mã đơn của bạn. Nếu đúng tiền sẽ gửi file và key ngay, nếu sai lệch sẽ thông báo và hỗ trợ xử lý ngay!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ORDER CHECK / ADMIN MODAL (TRA CỨU & CHECK ĐƠN HÀNG) ══ -->
+<div id="orderCheckModal" class="modal">
+  <div class="modal-backdrop" onclick="closeOrderCheckModal()"></div>
+  <div class="modal-card auth-modal-card" style="max-width:540px;">
+    <button class="modal-close" onclick="closeOrderCheckModal()"><i class="fa-solid fa-xmark"></i></button>
+
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:28px;margin-bottom:6px;">📋</div>
+      <h3 style="font-size:18px;font-weight:800;color:#fff;">Kiểm Tra &amp; Đối Soát Đơn Hàng</h3>
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">Dành cho Khách hàng, Bạn &amp; Anh Phú để check trạng thái đơn hàng</p>
+    </div>
+
+    <!-- Search box by Order Code -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <input type="text" id="checkOrderInput" class="input" placeholder="Nhập mã đơn (Ví dụ: DP123456)..." style="text-transform:uppercase;">
+      <button type="button" class="btn btn-primary" onclick="lookupOrderCode()" style="white-space:nowrap;padding:0 18px;">
+        <i class="fa-solid fa-magnifying-glass"></i> Check
+      </button>
+    </div>
+
+    <!-- Lookup result card -->
+    <div id="lookupResult" style="display:none;background:#14182f;border:1px solid rgba(56,189,248,0.35);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <!-- Dynamic populated -->
+    </div>
+
+    <!-- Recent Orders List -->
+    <div style="border-top:1px solid var(--line);padding-top:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:12.5px;font-weight:700;color:#cbd5e1;"><i class="fa-solid fa-clock-rotate-left"></i> Danh sách đơn gần đây trên web:</span>
+        <button type="button" onclick="clearOrdersHistory()" style="background:none;border:none;color:#ef4444;font-size:11px;cursor:pointer;font-weight:700;">Xóa lịch sử</button>
+      </div>
+      <div id="recentOrdersList" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+        <!-- Populated orders -->
       </div>
     </div>
   </div>
@@ -2927,14 +2966,28 @@ function startPaymentForPlan(p, plan) {
   var s2Price = document.getElementById('mStep2Price');
   var payAmt = document.getElementById('mPayAmount');
   var memoEl = document.getElementById('mOrderMemo');
-  var botCodeEl = document.getElementById('mBotCode');
+  var adminCodeEl = document.getElementById('mAdminCode');
 
   if (s2Prod) s2Prod.textContent = p.name;
   if (s2Plan) s2Plan.textContent = plan.name;
   if (s2Price) s2Price.textContent = formatVND(plan.price);
   if (payAmt) payAmt.textContent = formatVND(plan.price);
   if (memoEl) memoEl.textContent = orderId;
-  if (botCodeEl) botCodeEl.textContent = orderId;
+  if (adminCodeEl) adminCodeEl.textContent = orderId;
+
+  // Lưu đơn hàng vào hệ thống lưu trữ để Admin & Khách có thể check
+  var currentUser = getCurrentUser();
+  var newOrder = {
+    id: orderId,
+    productName: p.name,
+    planName: plan.name,
+    price: plan.price,
+    user: currentUser ? currentUser.username : 'Khách vãng lai',
+    phone: currentUser ? (currentUser.phone || '') : '',
+    time: formatCurrentDateTime(),
+    status: 'pending' // pending | approved | rejected
+  };
+  saveOrder(newOrder);
 
   // Tạo mã VietQR tự động
   var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(orderId) + '&accountName=BUI%20VAN%20CAO';
@@ -3048,17 +3101,16 @@ function closePaidModal() {
 
 function copyPaidSyntax() {
   var memo = window.currentOrderMemo || (document.getElementById('paidConfirmCode') ? document.getElementById('paidConfirmCode').textContent.trim() : 'DP487340');
-  var cmd = '!done ' + memo;
   
   if (!navigator.clipboard) {
     var ta = document.createElement('textarea');
-    ta.value = cmd;
+    ta.value = memo;
     document.body.appendChild(ta);
     ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
   } else {
-    navigator.clipboard.writeText(cmd);
+    navigator.clipboard.writeText(memo);
   }
 
   var copyBtnText = document.getElementById('paidCopyText');
@@ -3069,13 +3121,182 @@ function copyPaidSyntax() {
       copyBtnText.textContent = oldText;
     }, 2000);
   }
-  toast('📋', 'Đã sao chép: ' + cmd + ' (Gửi cho Bot Zalo)');
+  toast('📋', 'Đã sao chép mã đơn: ' + memo + ' (Gửi qua Zalo 0588500524 để nhận file)');
 }
 
 function formatCurrentDateTime() {
   var now = new Date();
   var pad = function(n) { return n < 10 ? '0' + n : n; };
   return pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds()) + ' ' + now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
+}
+
+/* ═══════ ORDERS STORAGE & ADMIN CHECK LOGIC ═══════ */
+function getOrders() {
+  try {
+    var raw = localStorage.getItem('daiphu_orders');
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveOrder(order) {
+  try {
+    var list = getOrders();
+    // Check if exists
+    var idx = list.findIndex(function(o) { return o.id === order.id; });
+    if (idx >= 0) {
+      list[idx] = order;
+    } else {
+      list.unshift(order);
+    }
+    if (list.length > 100) list = list.slice(0, 100);
+    localStorage.setItem('daiphu_orders', JSON.stringify(list));
+  } catch(e) {}
+}
+
+function openOrderCheckModal(presetCode) {
+  var m = document.getElementById('orderCheckModal');
+  if (m) m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  var inp = document.getElementById('checkOrderInput');
+  if (inp) {
+    if (presetCode) {
+      inp.value = presetCode;
+      lookupOrderCode(presetCode);
+    } else if (window.currentOrderMemo) {
+      inp.value = window.currentOrderMemo;
+      lookupOrderCode(window.currentOrderMemo);
+    }
+  }
+  renderRecentOrders();
+}
+
+function closeOrderCheckModal() {
+  var m = document.getElementById('orderCheckModal');
+  if (m) m.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lookupOrderCode(manualCode) {
+  var code = manualCode || (document.getElementById('checkOrderInput') ? document.getElementById('checkOrderInput').value.trim().toUpperCase() : '');
+  var resultBox = document.getElementById('lookupResult');
+  if (!resultBox) return;
+
+  if (!code) {
+    toast('⚠️', 'Vui lòng nhập mã đơn cần kiểm tra!');
+    return;
+  }
+
+  var list = getOrders();
+  var order = list.find(function(o) { return o.id.toUpperCase() === code; });
+
+  resultBox.style.display = 'block';
+
+  if (!order) {
+    resultBox.innerHTML = '<div style="text-align:center;padding:10px;color:#fca5a5;">'
+      + '<i class="fa-solid fa-circle-xmark" style="font-size:24px;margin-bottom:6px;"></i>'
+      + '<div style="font-weight:700;font-size:14px;">Không tìm thấy mã đơn: ' + code + '</div>'
+      + '<p style="font-size:11.5px;color:#cbd5e1;margin-top:4px;">Vui lòng kiểm tra lại mã hoặc liên hệ Zalo <b>0588500524 (Anh Phú)</b> để đối soát trực tiếp.</p>'
+    + '</div>';
+    return;
+  }
+
+  var statusBadge = '';
+  if (order.status === 'approved') {
+    statusBadge = '<span style="background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">✅ ĐÚNG - ĐÃ DUYỆT & BÀN GIAO</span>';
+  } else if (order.status === 'rejected') {
+    statusBadge = '<span style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">❌ CHƯA KHỚP - BÁO LỖI</span>';
+  } else {
+    statusBadge = '<span style="background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">⏳ ĐANG CHỜ ADMIN CHECK</span>';
+  }
+
+  resultBox.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;">'
+    + '<strong style="color:#00f0ff;font-family:monospace;font-size:16px;">' + order.id + '</strong>'
+    + statusBadge
+  + '</div>'
+  + '<div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#cbd5e1;">'
+    + '<div>• <b>Sản phẩm:</b> <span style="color:#fff;">' + order.productName + '</span> (' + order.planName + ')</div>'
+    + '<div>• <b>Số tiền:</b> <span style="color:#10b981;font-weight:800;">' + formatVND(order.price) + '</span></div>'
+    + '<div>• <b>Khách hàng:</b> <span style="color:#fff;">' + order.user + '</span> ' + (order.phone ? '• SĐT/Zalo: <span style="color:#f59e0b;">' + order.phone + '</span>' : '') + '</div>'
+    + '<div>• <b>Thời gian:</b> ' + order.time + '</div>'
+  + '</div>'
+  + '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:8px;">'
+    + '<button type="button" class="btn" style="background:#10b981;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;" onclick="setOrderStatus(\'' + order.id + '\', \'approved\')">'
+      + '<i class="fa-solid fa-check"></i> ĐÚNG - Đã gửi file'
+    + '</button>'
+    + '<button type="button" class="btn" style="background:#ef4444;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;" onclick="setOrderStatus(\'' + order.id + '\', \'rejected\')">'
+      + '<i class="fa-solid fa-xmark"></i> BÁO SAI / THIẾU TIỀN'
+    + '</button>'
+    + '<a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-size:11.5px;padding:6px 12px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:700;">'
+      + '<i class="fa-solid fa-headset"></i> Nhắn Zalo'
+    + '</a>'
+  + '</div>';
+}
+
+function setOrderStatus(orderId, newStatus) {
+  var list = getOrders();
+  var order = list.find(function(o) { return o.id === orderId; });
+  if (!order) return;
+
+  order.status = newStatus;
+  saveOrder(order);
+  lookupOrderCode(orderId);
+  renderRecentOrders();
+
+  if (newStatus === 'approved') {
+    toast('✅', 'Đã xác nhận đơn hàng ' + orderId + ' ĐÚNG và bàn giao file!');
+  } else {
+    toast('❌', 'Đã đánh dấu đơn hàng ' + orderId + ' là CHƯA KHỚP / SAI TIỀN!');
+  }
+}
+
+function renderRecentOrders() {
+  var container = document.getElementById('recentOrdersList');
+  if (!container) return;
+
+  var list = getOrders();
+  if (list.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:12px;font-size:12px;color:var(--muted);">Chưa có đơn hàng nào được ghi nhận.</div>';
+    return;
+  }
+
+  var html = '';
+  list.forEach(function(o) {
+    var statusText = '⏳ Chờ check';
+    var statusColor = '#38bdf8';
+    if (o.status === 'approved') {
+      statusText = '✅ ĐÚNG';
+      statusColor = '#4ade80';
+    } else if (o.status === 'rejected') {
+      statusText = '❌ SAI';
+      statusColor = '#f87171';
+    }
+
+    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="lookupOrderCode(\'' + o.id + '\')">'
+      + '<div>'
+        + '<div style="display:flex;align-items:center;gap:6px;">'
+          + '<strong style="color:#00f0ff;font-family:monospace;font-size:12.5px;">' + o.id + '</strong>'
+          + '<span style="font-size:10px;color:' + statusColor + ';font-weight:700;">' + statusText + '</span>'
+        + '</div>'
+        + '<div style="font-size:11px;color:#94a3b8;margin-top:2px;">' + o.productName + ' (' + formatVND(o.price) + ') • ' + o.time + '</div>'
+      + '</div>'
+      + '<button type="button" class="btn" style="background:rgba(255,255,255,0.08);color:#fff;font-size:11px;padding:4px 8px;border-radius:5px;border:none;cursor:pointer;">Check</button>'
+    + '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function clearOrdersHistory() {
+  if (confirm('Bạn có chắc muốn xóa lịch sử đơn hàng trên trình duyệt này?')) {
+    localStorage.removeItem('daiphu_orders');
+    renderRecentOrders();
+    var resultBox = document.getElementById('lookupResult');
+    if (resultBox) resultBox.style.display = 'none';
+    toast('🗑️', 'Đã xóa lịch sử đơn hàng.');
+  }
 }
 
 /* ═══════ COPY TEXT FUNCTION ═══════ */
