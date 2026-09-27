@@ -3290,8 +3290,8 @@ function updateAuthUI() {
 }
 
 function switchAuthTab(tab) {
-  var tabLogin = document.getElementById('tabLogin');
-  var tabRegister = document.getElementById('tabRegister');
+  var tabLogin = document.getElementById('tabBtnLogin') || document.getElementById('tabLogin');
+  var tabRegister = document.getElementById('tabBtnRegister') || document.getElementById('tabRegister');
   var formLogin = document.getElementById('formLogin');
   var formRegister = document.getElementById('formRegister');
 
