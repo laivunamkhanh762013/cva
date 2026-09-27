@@ -2168,40 +2168,14 @@
 
 
 
-/* ═════ SCROLL REVEAL EFFECTS (Nhẹ nhàng, êm dịu, không giật layout trang) ═════ */
-.reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  will-change: opacity, transform;
+/* Clean subtle hover animations for cards */
+.product {
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease !important;
 }
-.reveal.revealed {
-  opacity: 1;
-  transform: translateY(0);
+.product:hover {
+  transform: translateY(-4px) !important;
 }
-.reveal-left {
-  opacity: 0;
-  transform: translateX(-16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  will-change: opacity, transform;
-}
-.reveal-left.revealed { opacity: 1; transform: translateX(0); }
-.reveal-right {
-  opacity: 0;
-  transform: translateX(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  will-change: opacity, transform;
-}
-.reveal-right.revealed { opacity: 1; transform: translateX(0); }
 
-/* Stagger delay cho card grid */
-.product-grid .product:nth-child(1) { transition-delay: 0ms; }
-.product-grid .product:nth-child(2) { transition-delay: 50ms; }
-.product-grid .product:nth-child(3) { transition-delay: 100ms; }
-.product-grid .product:nth-child(4) { transition-delay: 150ms; }
-.product-grid .product:nth-child(5) { transition-delay: 200ms; }
-.product-grid .product:nth-child(6) { transition-delay: 250ms; }
-.product-grid .product:nth-child(n+7) { transition-delay: 300ms; }
 
 </style>
 
@@ -3570,7 +3544,6 @@ function renderProducts() {
   });
 
   grid.innerHTML = html;
-  if (typeof window.triggerReveal === 'function') window.triggerReveal();
 }
 
 /* ═══════ 14 REAL CUSTOMER FEEDBACK ═══════ */
@@ -3591,7 +3564,6 @@ function renderFeedback() {
       + '</div>'
     + '</div>';
   grid.innerHTML = html;
-  if (typeof window.triggerReveal === 'function') window.triggerReveal();
 }
 
 /* ═══════ FILTER & SEARCH EVENTS ═══════ */
@@ -4769,43 +4741,6 @@ window.addEventListener('scroll', function() {
 updateAuthUI();
 renderProducts();
 renderFeedback();
-
-/* ═══════ SCROLL REVEAL ENGINE ═══════ */
-(function() {
-  var io = null;
-  if ('IntersectionObserver' in window) {
-    io = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          io.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.05,
-      rootMargin: '0px 0px -20px 0px'
-    });
-  }
-
-  window.triggerReveal = function() {
-    var cards = document.querySelectorAll('.product:not(.revealed), .fb-card:not(.revealed)');
-    cards.forEach(function(el) {
-      el.classList.add('reveal');
-      if (io) {
-        io.observe(el);
-      } else {
-        el.classList.add('revealed');
-      }
-    });
-  };
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', window.triggerReveal);
-  } else {
-    setTimeout(window.triggerReveal, 80);
-  }
-})();
-
 </script>
 </body>
 </html>
