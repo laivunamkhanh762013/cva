@@ -2030,7 +2030,7 @@ var PRODUCTS = [
       {
         name: 'AimLock Forget 3.0',
         price: 500000,
-        badge: 'VIP Cực Phẩm',
+        badge: 'VIP',
         action: 'Đỉnh cao công nghệ AimLock, tự động ghim đầu đối thủ với độ trễ 0ms.',
         fix: '3.0 khắc phục như ảnh và tăng tỷ lệ bám đầu buff fps.',
         pros: 'Buff FPS cực mượt, mở khóa toàn bộ sức mạnh ghìm tâm, bách phát bách trúng.',
@@ -2090,11 +2090,11 @@ var PRODUCTS = [
       {
         name: 'Forget Hex V5',
         price: 799000,
-        badge: 'Cực Phẩm',
+        badge: 'VIP',
         action: 'Đỉnh cao Make URL Code Hex độc quyền số 1 VN, bách phát bách trúng.',
         fix: 'Khắc phục hoàn toàn mọi lỗi lệch tâm, trượt đạn, rung giật màn hình.',
         pros: 'Tỷ lệ headshot lên tới 98%, buff FPS mượt mà không gây nóng máy.',
-        note: 'Bản cực phẩm độc quyền của Shop Đại Phú FF, hỗ trợ kỹ thuật 1:1 trọn đời.'
+        note: 'Bản cao cấp độc quyền của Shop Đại Phú FF, hỗ trợ kỹ thuật 1:1 trọn đời.'
       }
     ]
   },
@@ -2753,7 +2753,6 @@ function getBadgeClass(badge) {
   if (b.includes('khuyên dùng')) return 'm-badge-recom';
   if (b.includes('vip')) return 'm-badge-vip';
   if (b.includes('bán chạy') || b.includes('đề xuất')) return 'm-badge-hot';
-  if (b.includes('cực phẩm')) return 'm-badge-super';
   return 'm-badge-popular';
 }
 
