@@ -412,6 +412,16 @@ let searchQuery = '';
 let allOrders = [];
 let autoRefreshTimer = null;
 
+function escapeHTML(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function checkAuth() {
   const isAuth = sessionStorage.getItem('daiphu_admin_auth');
   const loginOverlay = document.getElementById('loginOverlay');
@@ -647,32 +657,35 @@ function renderDashboard() {
     else if (o.status === 'rejected') badge = '<span class="status-badge rejected"><i class="fa-solid fa-circle-xmark"></i> BÁO SAI</span>';
     else badge = '<span class="status-badge pending"><i class="fa-solid fa-clock"></i> CHỜ DUYỆT</span>';
 
+    const cleanId = escapeHTML(o.id);
+    const cleanUser = escapeHTML(o.user || 'Khách vãng lai');
+    const cleanPhone = escapeHTML(o.phone || '');
+    const cleanProd = escapeHTML(prodName);
+    const cleanPlan = escapeHTML(planName);
     const zalo = o.phone ? o.phone.replace(/[^0-9]/g, '') : '0588500524';
-    const txInfo = o.txId ? '<div style="font-size:10px;color:#34d399;margin-top:2px;">Ref: ' + o.txId + '</div>' : '';
-    const prodName = o.productName || o.product || '—';
-    const planName = o.planName || o.plan || '';
+    const txInfo = o.txId ? '<div style="font-size:10px;color:#34d399;margin-top:2px;">Ref: ' + escapeHTML(o.txId) + '</div>' : '';
 
     html += '<tr>' +
-      '<td><span class="order-code-badge">' + o.id + '</span>' + txInfo + '</td>' +
-      '<td style="color:#94a3b8;font-size:11px;">' + (o.time || 'Vừa xong') + '</td>' +
-      '<td><strong style="color:#fff;">' + (o.user || 'Khách vãng lai') + '</strong>' +
-        (o.phone ? '<div style="font-size:11px;color:#f59e0b;"><i class="fa-solid fa-phone"></i> ' + o.phone + '</div>' : '') +
+      '<td><span class="order-code-badge">' + cleanId + '</span>' + txInfo + '</td>' +
+      '<td style="color:#94a3b8;font-size:11px;">' + escapeHTML(o.time || 'Vừa xong') + '</td>' +
+      '<td><strong style="color:#fff;">' + cleanUser + '</strong>' +
+        (cleanPhone ? '<div style="font-size:11px;color:#f59e0b;"><i class="fa-solid fa-phone"></i> ' + cleanPhone + '</div>' : '') +
       '</td>' +
-      '<td><span style="color:#fff;font-weight:700;">' + prodName + '</span>' +
-        (planName ? '<div style="font-size:11px;color:#c4b5fd;">' + planName + '</div>' : '') +
+      '<td><span style="color:#fff;font-weight:700;">' + cleanProd + '</span>' +
+        (cleanPlan ? '<div style="font-size:11px;color:#c4b5fd;">' + cleanPlan + '</div>' : '') +
       '</td>' +
       '<td><strong style="color:#10b981;font-size:13px;">' + formatVND(o.price) + '</strong></td>' +
       '<td>' + badge + '</td>' +
       '<td style="text-align:right;">' +
         '<div class="actions-group" style="justify-content:flex-end;">' +
-          '<button class="btn-action" style="background:rgba(0,240,255,0.12);color:#00f0ff;border-color:rgba(0,240,255,0.3);" onclick="checkSePay(\'' + o.id + '\',' + (o.price||0) + ',this)" title="Kiểm tra tiền SePay"><i class="fa-solid fa-magnifying-glass-dollar"></i> SePay</button>' +
-          '<button class="btn-action approve" onclick="updateOrderStatus(\'' + o.id + '\',\'approved\')" title="Đúng tiền & Đã gửi file"><i class="fa-solid fa-check"></i> Đúng</button>' +
-          '<button class="btn-action reject" onclick="updateOrderStatus(\'' + o.id + '\',\'rejected\')" title="Sai tiền"><i class="fa-solid fa-xmark"></i> Sai</button>' +
-          '<button class="btn-action" onclick="copyCustomerReply(\'' + o.id + '\')" title="Mẫu tin Zalo"><i class="fa-solid fa-copy"></i> Mẫu tin</button>' +
+          '<button class="btn-action" style="background:rgba(0,240,255,0.12);color:#00f0ff;border-color:rgba(0,240,255,0.3);" onclick="checkSePay(\'' + cleanId + '\',' + (o.price||0) + ',this)" title="Kiểm tra tiền SePay"><i class="fa-solid fa-magnifying-glass-dollar"></i> SePay</button>' +
+          '<button class="btn-action approve" onclick="updateOrderStatus(\'' + cleanId + '\',\'approved\')" title="Đúng tiền & Đã gửi file"><i class="fa-solid fa-check"></i> Đúng</button>' +
+          '<button class="btn-action reject" onclick="updateOrderStatus(\'' + cleanId + '\',\'rejected\')" title="Sai tiền"><i class="fa-solid fa-xmark"></i> Sai</button>' +
+          '<button class="btn-action" onclick="copyCustomerReply(\'' + cleanId + '\')" title="Mẫu tin Zalo"><i class="fa-solid fa-copy"></i> Mẫu tin</button>' +
           '<a href="https://zalo.me/' + zalo + '" target="_blank" rel="noopener" class="btn-action zalo"><i class="fa-solid fa-comment-dots"></i> Zalo</a>' +
-          '<button class="btn-action" style="color:#f87171;" onclick="deleteOrder(\'' + o.id + '\')"><i class="fa-solid fa-trash"></i></button>' +
+          '<button class="btn-action" style="color:#f87171;" onclick="deleteOrder(\'' + cleanId + '\')"><i class="fa-solid fa-trash"></i></button>' +
         '</div>' +
-        '<div class="sepay-result" id="sr-' + o.id + '"></div>' +
+        '<div class="sepay-result" id="sr-' + cleanId + '"></div>' +
       '</td>' +
     '</tr>';
   });
@@ -696,7 +709,11 @@ function updateOrderStatus(id, newStatus, txId) {
   const lo = local.find(function(o) { return o.id === id; });
   if (lo) { lo.status = newStatus; if (txId) lo.txId = txId; } else { local.push(order); }
   saveStoredOrders(local);
-  fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(order) }).catch(function(){});
+  fetch('/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_SECRET },
+    body: JSON.stringify(Object.assign({}, order, { adminKey: ADMIN_SECRET }))
+  }).catch(function(){});
   renderDashboard();
   if (newStatus === 'approved') showToast('✅ Đã duyệt đơn ' + id + ': Đúng tiền & Đã bàn giao file!');
   else showToast('❌ Đã đánh dấu đơn ' + id + ': Báo sai tiền.');
@@ -710,10 +727,10 @@ function deleteOrder(id) {
   showToast('🗑️ Đang xóa đơn ' + id + ' khỏi máy chủ...');
 
   // Gửi request xóa vĩnh viễn trên Cloud Database
-  fetch('/api/orders?id=' + encodeURIComponent(id), {
+  fetch('/api/orders?id=' + encodeURIComponent(id) + '&adminKey=' + encodeURIComponent(ADMIN_SECRET), {
     method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id: id, _delete: true })
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_SECRET },
+    body: JSON.stringify({ id: id, _delete: true, adminKey: ADMIN_SECRET })
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
@@ -725,8 +742,8 @@ function deleteOrder(id) {
     console.warn('DELETE error, fallback to POST:', err);
     fetch('/api/orders', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: id, _delete: true })
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_SECRET },
+      body: JSON.stringify({ id: id, _delete: true, adminKey: ADMIN_SECRET })
     }).catch(function(){});
   });
 }
@@ -758,11 +775,11 @@ function clearAllOrders() {
   allOrders = [];
   renderDashboard();
 
-  // Xóa cloud Gist qua API
+  // Xóa cloud Gist qua API kèm admin auth
   fetch('/api/orders', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ _reset: true, id: 'RESET_ALL' })
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_SECRET },
+    body: JSON.stringify({ _reset: true, id: 'RESET_ALL', adminKey: ADMIN_SECRET })
   }).catch(function(){});
 
   showToast('🗑️ Đã xóa toàn bộ đơn hàng. Hệ thống bắt đầu mới!');

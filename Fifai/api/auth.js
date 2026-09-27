@@ -46,6 +46,10 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Tên đăng nhập phải có ít nhất 3 ký tự!' });
       }
 
+      if (!password || password.length < 3) {
+        return res.status(400).json({ success: false, error: 'Mật khẩu phải có ít nhất 3 ký tự!' });
+      }
+
       const { users } = await getGist();
       const existing = users.find(u => u.username.toLowerCase() === username.toLowerCase());
 
@@ -61,7 +65,8 @@ module.exports = async function handler(req, res) {
           createdAt: new Date().toLocaleString('vi-VN')
         };
         users.unshift(newUser);
-        await updateGist({ users });
+        const trimmedUsers = users.slice(0, 500);
+        await updateGist({ users: trimmedUsers });
 
         return res.status(200).json({
           success: true,

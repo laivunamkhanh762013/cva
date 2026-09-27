@@ -5,14 +5,31 @@ function sanitizeText(str, maxLen) {
   return String(str).replace(/[<>'"]/g, '').trim().substring(0, maxLen || 50);
 }
 
+function checkIsAdmin(req, body) {
+  const queryKey = req.query && req.query.adminKey;
+  const headerKey = req.headers && (req.headers['x-admin-key'] || req.headers['authorization']);
+  const bodyKey = body && body.adminKey;
+  const provided = queryKey || headerKey || bodyKey || '';
+  const clean = String(provided).replace(/^Bearer\s+/i, '').trim();
+  return clean === 'daiphu2026' || clean === 'daiphu@admin2025';
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-key');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch(e) {}
+  }
+  body = body || {};
+
+  const isAdmin = checkIsAdmin(req, body);
 
   try {
     if (req.method === 'GET') {
@@ -21,12 +38,10 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      const { id } = req.query;
-      let body = req.body;
-      if (typeof body === 'string') {
-        try { body = JSON.parse(body); } catch(e) {}
+      if (!isAdmin) {
+        return res.status(403).json({ success: false, error: 'Strix Guard: Bạn không có quyền xóa đơn hàng!' });
       }
-      const targetId = String(id || (body && body.id) || '').replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
+      const targetId = String(req.query.id || body.id || '').replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
       if (!targetId) {
         return res.status(400).json({ success: false, error: 'Thiếu mã đơn cần xóa' });
       }
@@ -37,19 +52,20 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      let body = req.body;
-      if (typeof body === 'string') {
-        try { body = JSON.parse(body); } catch(e) {}
-      }
-
-      // ── RESET ALL ORDERS ──
-      if (body && body._reset === true) {
+      // ── RESET ALL ORDERS (Chỉ Admin) ──
+      if (body._reset === true) {
+        if (!isAdmin) {
+          return res.status(403).json({ success: false, error: 'Strix Guard: Cần quyền Admin để xóa toàn bộ đơn hàng!' });
+        }
         await updateGist({ orders: [] });
         return res.status(200).json({ success: true, message: 'All orders cleared.' });
       }
 
-      // ── XÓA 1 ĐƠN HÀNG QUA POST ──
-      if (body && (body._delete === true || body._action === 'delete') && body.id) {
+      // ── XÓA 1 ĐƠN HÀNG QUA POST (Chỉ Admin) ──
+      if ((body._delete === true || body._action === 'delete') && body.id) {
+        if (!isAdmin) {
+          return res.status(403).json({ success: false, error: 'Strix Guard: Cần quyền Admin để xóa đơn hàng!' });
+        }
         const cleanId = String(body.id).replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
         const { orders } = await getGist();
         const filtered = (orders || []).filter(o => o.id !== cleanId);
@@ -57,7 +73,7 @@ module.exports = async function handler(req, res) {
         return res.status(200).json({ success: true, message: 'Đã xóa vĩnh viễn đơn ' + cleanId, remaining: filtered.length });
       }
 
-      if (!body || !body.id) {
+      if (!body.id) {
         return res.status(400).json({ success: false, error: 'Thiếu mã đơn hàng' });
       }
 
@@ -67,12 +83,18 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Mã đơn không hợp lệ' });
       }
 
-      const { orders, users } = await getGist();
+      const { orders } = await getGist();
       const existingIdx = orders.findIndex(o => o.id === cleanId);
 
-      const validStatuses = ['pending', 'approved', 'rejected'];
-      const rawStatus = (body.status || 'pending').toLowerCase();
-      const status = validStatuses.includes(rawStatus) ? rawStatus : 'pending';
+      // Strix Security Guard: Chỉ Admin mới có quyền duyệt đơn (approved / rejected)
+      let status = 'pending';
+      if (isAdmin && body.status) {
+        const validStatuses = ['pending', 'approved', 'rejected'];
+        const rawStatus = String(body.status).toLowerCase();
+        if (validStatuses.includes(rawStatus)) status = rawStatus;
+      } else if (existingIdx >= 0) {
+        status = orders[existingIdx].status || 'pending';
+      }
 
       const orderItem = {
         id: cleanId,
@@ -83,7 +105,7 @@ module.exports = async function handler(req, res) {
         phone: sanitizeText(body.phone, 15) || '',
         time: body.time ? sanitizeText(body.time, 35) : new Date().toLocaleString('vi-VN'),
         status: status,
-        txId: sanitizeText(body.txId, 40) || ''
+        txId: sanitizeText(body.txId, 40) || (existingIdx >= 0 ? orders[existingIdx].txId : '')
       };
 
       if (existingIdx >= 0) {

@@ -1,5 +1,12 @@
 const https = require('https');
 
+// Danh sách từ cấm / từ thông dụng trong ngân hàng không được dùng làm từ khóa đối soát
+const STOP_WORDS = new Set([
+  'MB', 'BANK', 'MBBANK', 'NAPAS', 'QR', 'VIETQR', 'CK', 'CHUYEN', 'TIEN',
+  'KHOAN', 'GD', 'VND', 'DONG', 'NGAN', 'HANG', 'THE', 'CAO', 'MUA', 'HANG',
+  'ADMIN', 'DAIPHU', 'THANHTOAN', 'NGAY', 'THANG', 'NAM'
+]);
+
 function stripVietnamese(str) {
   if (!str) return '';
   return str
@@ -17,13 +24,14 @@ function cleanToken(str) {
 
 function fetchSePay(path) {
   return new Promise((resolve, reject) => {
+    const apiKey = process.env.SEPAY_API_KEY || 'YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV';
     const options = {
       hostname: 'my.sepay.vn',
       path: path,
       method: 'GET',
       rejectUnauthorized: false,
       headers: {
-        'Authorization': 'Bearer YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV',
+        'Authorization': 'Bearer ' + apiKey,
         'Content-Type': 'application/json',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
@@ -61,16 +69,18 @@ module.exports = async function handler(req, res) {
   const cleanOrderId = cleanToken(orderId);
   const cleanUser = cleanToken(user);
 
-  // Phải có ít nhất 1 mã hợp lệ (độ dài tối thiểu 3 ký tự)
+  // Phải có ít nhất 1 mã hợp lệ (độ dài >= 3 và không nằm trong STOP_WORDS)
   const validKeys = [];
-  if (cleanMemo.length >= 3) validKeys.push(cleanMemo);
-  if (cleanOrderId.length >= 3 && !validKeys.includes(cleanOrderId)) validKeys.push(cleanOrderId);
-  if (cleanUser.length >= 3 && !validKeys.includes(cleanUser)) validKeys.push(cleanUser);
+  [cleanMemo, cleanOrderId, cleanUser].forEach(k => {
+    if (k && k.length >= 3 && !STOP_WORDS.has(k) && !validKeys.includes(k)) {
+      validKeys.push(k);
+    }
+  });
 
   if (validKeys.length === 0) {
     return res.status(400).json({
       paid: false,
-      error: 'Mã đối soát không hợp lệ. Vui lòng nhập ít nhất 3 ký tự chữ hoặc số.'
+      error: 'Mã đối soát không hợp lệ. Vui lòng sử dụng mã đơn hàng hoặc tên tài khoản (tối thiểu 3 ký tự).'
     });
   }
 
@@ -81,7 +91,8 @@ module.exports = async function handler(req, res) {
     }
 
     const transactions = result.data.transactions || [];
-    const minAmount = price ? parseFloat(price) : 0;
+    const parsedPrice = parseFloat(price);
+    const minAmount = (!isNaN(parsedPrice) && parsedPrice > 0) ? parsedPrice : 0;
 
     // Strix AI Matching Engine: Khớp giao dịch nạp tiền
     const matched = transactions.find(t => {
@@ -90,13 +101,12 @@ module.exports = async function handler(req, res) {
       const content = cleanToken(rawContent);
       const amountIn = parseFloat(t.amount_in || 0);
 
-      // Số tiền thực nhận phải >= 90% giá gói
-      const hasValidAmount = (minAmount === 0 || amountIn >= (minAmount * 0.9));
+      // Số tiền thực nhận phải >= 90% giá gói (nếu có giá), tối thiểu >= 10.000đ để tránh spam 1đ
+      const hasValidAmount = (minAmount > 0) ? (amountIn >= (minAmount * 0.9)) : (amountIn >= 10000);
       if (!hasValidAmount) return false;
 
       // Khớp một trong các mã hợp lệ (Username hoặc Mã DP...)
       const matchesKey = validKeys.some(key => {
-        // Khớp trực tiếp trong chuỗi nội dung
         return content.includes(key);
       });
 

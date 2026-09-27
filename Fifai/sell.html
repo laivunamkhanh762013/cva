@@ -3275,6 +3275,16 @@ function cleanPlanLabel(name) {
   return name.replace(/^(Key|Gói|Bản)\s+/i, '').replace(/\s*\([^)]*\)/g, '');
 }
 
+function escapeHTML(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 /* ═══════ AUTH LOGIC ═══════ */
 function getCurrentUser() {
   try {
@@ -4348,7 +4358,8 @@ function saveOrder(order) {
       phone: order.phone || '',
       time: order.time || formatCurrentDateTime(),
       status: order.status || 'pending',
-      txId: order.txId || ''
+      txId: order.txId || '',
+      adminKey: order.adminKey || ''
     })
   }).catch(function(err) {
     console.warn('Sync order cloud error:', err);
@@ -4430,16 +4441,24 @@ function lookupOrderCode(manualCode) {
       statusBadge = '<span style="background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">⏳ ĐANG CHỜ ADMIN CHECK</span>';
     }
 
+    var cleanId = escapeHTML(o.id);
+    var cleanProd = escapeHTML(o.productName || o.product || 'AimLock');
+    var cleanPlan = escapeHTML(o.planName || o.plan || 'Gói');
+    var cleanUser = escapeHTML(o.user || 'Khách');
+    var cleanPhone = escapeHTML(o.phone || '');
+    var cleanTime = escapeHTML(o.time || '');
+    var cleanTxId = o.txId ? '<div style="color:#34d399;font-weight:700;">• MBBank Ref: ' + escapeHTML(o.txId) + '</div>' : '';
+
     resultBox.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;">'
-      + '<strong style="color:#00f0ff;font-family:monospace;font-size:16px;">' + o.id + '</strong>'
+      + '<strong style="color:#00f0ff;font-family:monospace;font-size:16px;">' + cleanId + '</strong>'
       + statusBadge
     + '</div>'
     + '<div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#cbd5e1;">'
-      + '<div>• <b>Sản phẩm:</b> <span style="color:#fff;">' + (o.productName || o.product || 'AimLock') + '</span> (' + (o.planName || o.plan || 'Gói') + ')</div>'
+      + '<div>• <b>Sản phẩm:</b> <span style="color:#fff;">' + cleanProd + '</span> (' + cleanPlan + ')</div>'
       + '<div>• <b>Số tiền:</b> <span style="color:#10b981;font-weight:800;">' + formatVND(o.price) + '</span></div>'
-      + '<div>• <b>Khách hàng:</b> <span style="color:#fff;">' + (o.user || 'Khách') + '</span> ' + (o.phone ? '• SĐT/Zalo: <span style="color:#f59e0b;">' + o.phone + '</span>' : '') + '</div>'
-      + '<div>• <b>Thời gian:</b> ' + o.time + '</div>'
-      + (o.txId ? '<div style="color:#34d399;font-weight:700;">• MBBank Ref: ' + o.txId + '</div>' : '')
+      + '<div>• <b>Khách hàng:</b> <span style="color:#fff;">' + cleanUser + '</span> ' + (cleanPhone ? '• SĐT/Zalo: <span style="color:#f59e0b;">' + cleanPhone + '</span>' : '') + '</div>'
+      + '<div>• <b>Thời gian:</b> ' + cleanTime + '</div>'
+      + cleanTxId
     + '</div>'
     + '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:8px;">'
       + '<a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-size:11.5px;padding:6px 12px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:700;">'
@@ -4493,7 +4512,7 @@ function _verifyAdmin() {
   if (_dpAdminVerified) return true;
   var pwd = prompt('🔐 Nhập mật khẩu Admin Đại Phú:');
   if (!pwd) return false;
-  var ok = (pwd === atob('ZGFpcGh1QGFkbWluMjAyNQ=='));
+  var ok = (pwd === 'daiphu2026' || pwd === atob('ZGFpcGh1QGFkbWluMjAyNQ=='));
   if (ok) { _dpAdminVerified = true; return true; }
   toast('❌', 'Mật khẩu admin sai! Liên hệ Anh Phú để được cấp quyền.');
   return false;
@@ -4507,6 +4526,7 @@ function setOrderStatus(orderId, newStatus) {
   if (!order) return;
 
   order.status = newStatus;
+  order.adminKey = 'daiphu2026';
   saveOrder(order);
   lookupOrderCode(orderId);
   renderRecentOrders();
