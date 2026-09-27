@@ -2440,7 +2440,7 @@
               </div>
               <div class="m-bank-item m-bank-memo">
                 <div><small style="color:#f87171;">NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC CHÍNH XÁC)</small><strong id="mOrderMemo" style="color:#f87171;font-family:monospace;font-size:15px;letter-spacing:1px;">DP...</strong></div>
-                <button class="m-copy-btn m-copy-memo" onclick="copyText(window.currentOrderMemo, this)"><i class="fa-solid fa-copy"></i></button>
+                <button class="m-copy-btn m-copy-memo" onclick="copyText(window.currentOrderMemoFull || window.currentOrderMemo, this)"><i class="fa-solid fa-copy"></i></button>
               </div>
             </div>
 
@@ -3821,11 +3821,6 @@ function startPaymentForPlan(p, plan) {
   if (s2Plan) s2Plan.textContent = plan.name;
   if (s2Price) s2Price.textContent = formatVND(plan.price);
   if (payAmt) payAmt.textContent = formatVND(plan.price);
-  if (memoEl) memoEl.textContent = orderId;
-  if (adminCodeEl) adminCodeEl.textContent = orderId;
-
-  var cardMemoEl = document.getElementById('mCardOrderMemo');
-  if (cardMemoEl) cardMemoEl.textContent = orderId;
 
   // Reset về tab Quét QR ngân hàng mặc định
   switchPayMethod('bank');
@@ -3844,8 +3839,20 @@ function startPaymentForPlan(p, plan) {
   };
   saveOrder(newOrder);
 
-  // Tạo mã VietQR tự động
-  var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(orderId) + '&accountName=BUI%20VAN%20CAO';
+  // Tạo nội dung ghi chú chuyển khoản: mã đơn + tên tài khoản
+  var memoForQr = orderId + (currentUser && currentUser.username ? ' ' + currentUser.username : '');
+  window.currentOrderMemo = orderId;   // SePay vẫn match theo orderId
+  window.currentOrderMemoFull = memoForQr; // Memo đầy đủ để hiển thị
+
+  // Cập nhật ô nội dung CK trên UI
+  if (memoEl) memoEl.textContent = memoForQr;
+  if (adminCodeEl) adminCodeEl.textContent = memoForQr;
+
+  var cardMemoEl = document.getElementById('mCardOrderMemo');
+  if (cardMemoEl) cardMemoEl.textContent = memoForQr;
+
+  // Tạo mã VietQR tự động (addInfo = memo đầy đủ)
+  var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(memoForQr) + '&accountName=BUI%20VAN%20CAO';
   var qrEl = document.getElementById('mQrCode');
   if (qrEl) qrEl.src = qrUrl;
 
@@ -3868,9 +3875,10 @@ var isCheckingPayment = false;
 
 function startPaymentWatcher(orderId, price) {
   stopPaymentWatcher();
+  var memoFull = window.currentOrderMemoFull || orderId;
   var memoEl = document.getElementById('mPlsMemo');
-  if (memoEl) memoEl.textContent = orderId;
-  updateLiveStatus('waiting', 'HỆ THỐNG ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...', 'Sau khi chuyển khoản với nội dung <b>' + orderId + '</b>, hệ thống SePay sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!');
+  if (memoEl) memoEl.textContent = memoFull;
+  updateLiveStatus('waiting', 'HỆ THỐNG ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...', 'Sau khi chuyển khoản với nội dung <b>' + memoFull + '</b>, hệ thống SePay sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!');
 
   // Tự động kiểm tra mỗi 3.5 giây
   paymentPollTimer = setInterval(function() {
