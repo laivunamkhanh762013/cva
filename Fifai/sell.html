@@ -1,0 +1,3164 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SHOP ĐẠI PHÚ FF • CỬA HÀNG SIÊU PHẨM KÉO TÂM</title>
+<meta name="description" content="Shop Đại Phú FF — Chuyên cung cấp TrollModz, SX2 Team External, Proxy iOS Nova X / Delta, AimLock Forget, Forget Hex V1-V5, Menu Migul, Panel Android.">
+<meta name="keywords" content="trollmodz, sx2, proxy ios, novax, delta, aimlock forget, forget hex, migul, panel android, shop đại phú ff">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#171a1f">
+<link rel="icon" type="image/png" href="assets/uploads/logos/aizen-logo.png">
+<link rel="shortcut icon" href="assets/uploads/logos/aizen-logo.png">
+<link rel="apple-touch-icon" href="assets/uploads/logos/aizen-logo.png">
+<!-- Font Awesome 6.5.2 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- Google Fonts: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- VipGoNoPro Core Styles -->
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+:root {
+  --accent: #171a1f;
+  --brand: #171a1f;
+  --brand-2: #171a1f;
+  --on-accent: #ffffff;
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f5f6f8;
+  --text: #171a1f;
+  --muted: #69707a;
+  --line: #e1e4e8;
+  --radius: 24px;
+  --radius-sm: 11px;
+  --product-columns: 4;
+  --image-fit: cover;
+}
+
+/* 4 columns desktop layout */
+.product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 14px !important;
+}
+@media(max-width: 1000px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+@media(max-width: 720px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+
+/* Product Card */
+.product {
+  position: relative !important;
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+  padding: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 380px !important;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease !important;
+  cursor: pointer !important;
+}
+.product:hover {
+  transform: translateY(-4px) !important;
+  border-color: #d2d6db !important;
+  box-shadow: 0 16px 36px rgba(20,24,31,.09) !important;
+}
+
+/* Product thumb & images */
+.product-thumb {
+  position: relative !important;
+  width: 100% !important;
+  height: 142px !important;
+  border-radius: var(--radius-sm) !important;
+  overflow: hidden !important;
+  background: var(--bg) !important;
+  margin-bottom: 10px !important;
+}
+.product-thumb img.js-product-image {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: var(--radius-sm) !important;
+  transition: transform .3s ease !important;
+}
+.product:hover .product-thumb img.js-product-image {
+  transform: scale(1.05) !important;
+}
+.thumb-no-img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  background: linear-gradient(135deg, #161b33 0%, #0d1020 100%) !important;
+  border-radius: var(--radius-sm) !important;
+  color: #a78bfa !important;
+  user-select: none !important;
+}
+.thumb-no-img i {
+  font-size: 26px !important;
+  color: #8b5cf6 !important;
+  filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.45)) !important;
+}
+.thumb-no-img span {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: #94a3b8 !important;
+  letter-spacing: .5px !important;
+  text-transform: uppercase !important;
+}
+
+/* Mini plan chips directly on Product Card */
+.card-plans {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 8px 0 10px;
+}
+.card-plan-chip {
+  background: #f1f3f5;
+  border: 1px solid var(--line);
+  color: #4b5563;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .15s ease;
+  user-select: none;
+  line-height: 1.3;
+}
+.card-plan-chip:hover {
+  background: #e2e8f0;
+  color: #111827;
+  border-color: #cbd5e1;
+}
+.card-plan-chip.active {
+  background: #171a1f;
+  color: #ffffff;
+  border-color: #171a1f;
+  box-shadow: 0 2px 6px rgba(23,26,31,.25);
+}
+.plan-label {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* ══ MODAL BASE & BACKDROP ══ */
+.modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity .22s ease, visibility .22s ease !important;
+}
+.modal.open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: all !important;
+}
+.modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(8,11,22,.76) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Default Modal Card (e.g. Login) */
+.modal-card {
+  position: relative !important;
+  width: min(480px, calc(100% - 24px)) !important;
+  max-height: 88vh !important;
+  margin: auto !important;
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+  box-shadow: 0 30px 90px rgba(0,0,0,.45) !important;
+  overflow-y: auto !important;
+  z-index: 10 !important;
+  transform: translateY(14px) scale(.98) !important;
+  transition: transform .22s ease !important;
+}
+.modal.open .modal-card {
+  transform: none !important;
+}
+
+/* ══ CHECKOUT MODAL (DARK THEME FINTECH MATCHING VIPGONOPRO & SCREENSHOT) ══ */
+.modal-card.checkout-modal {
+  width: min(960px, calc(100% - 24px)) !important;
+  max-width: 960px !important;
+  max-height: 92vh !important;
+  background: #0d1020 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 22px !important;
+  padding: 26px !important;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.15) !important;
+  color: #f1f5f9 !important;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+.m-info-col {
+  max-height: calc(88vh - 55px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+.m-info-col::-webkit-scrollbar {
+  width: 5px;
+}
+.m-info-col::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.35);
+  border-radius: 4px;
+}
+.m-gallery-col {
+  position: sticky;
+  top: 0;
+  align-self: start;
+}
+@media(max-width: 840px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .m-info-col {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .m-gallery-col {
+    position: static;
+  }
+}
+
+.m-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .2s ease;
+  z-index: 20;
+}
+.m-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  transform: rotate(90deg);
+}
+
+/* Left Column - Gallery Preview */
+.m-gallery-col {
+  display: flex;
+  flex-direction: column;
+}
+.m-preview-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #080b16;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.m-preview-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity .2s ease;
+}
+.m-preview-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(6, 182, 212, 0.22);
+  border: 1px solid #06b6d4;
+  color: #22d3ee;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+}
+.m-preview-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: radial-gradient(circle at center, #181d38 0%, #070914 100%);
+  color: #a78bfa;
+  text-align: center;
+  padding: 20px;
+  z-index: 1;
+}
+.m-preview-empty i {
+  font-size: 38px;
+  color: #8b5cf6;
+  filter: drop-shadow(0 0 16px rgba(139, 92, 246, 0.6));
+}
+.m-preview-empty span {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.m-preview-empty small {
+  font-size: 11px;
+  color: #94a3b8;
+}
+.m-preview-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 12px 10px;
+  background: linear-gradient(to top, rgba(10,13,26,0.94) 0%, rgba(10,13,26,0.6) 65%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 2;
+}
+.m-preview-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.m-preview-zoom-btn {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #f1f5f9;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 8px;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all .16s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.m-preview-zoom-btn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+/* Feature Thumbnails */
+.m-thumbs-header {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin: 14px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.m-thumbs-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.m-thumb-item {
+  background: #12162a;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .18s ease;
+  padding: 3px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.m-thumb-item:hover {
+  border-color: rgba(6, 182, 212, 0.5);
+  transform: translateY(-2px);
+}
+.m-thumb-item.active {
+  border: 2px solid #06b6d4;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.45);
+  background: rgba(6, 182, 212, 0.12);
+}
+.m-thumb-img {
+  width: 100%;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 5px;
+  display: block;
+}
+.m-thumb-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+.m-thumb-item.active .m-thumb-title {
+  color: #22d3ee;
+  font-weight: 800;
+}
+
+/* Right Column - Info & Plans */
+.m-info-col {
+  display: flex;
+  flex-direction: column;
+}
+.m-prod-title {
+  font-size: 23px !important;
+  font-weight: 850 !important;
+  color: #ffffff !important;
+  margin: 0 0 4px !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.3px !important;
+}
+.m-prod-sub {
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  margin-bottom: 16px !important;
+  line-height: 1.4 !important;
+}
+.m-step-header {
+  font-size: 11.5px !important;
+  font-weight: 800 !important;
+  color: #94a3b8 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  margin-bottom: 10px !important;
+}
+.modal-card::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-card::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.modal-card::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+.modal-card::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+.m-plans-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.m-plan-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border-radius: 12px;
+  background: #13172c;
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all .16s ease;
+  user-select: none;
+}
+.m-plan-row:hover {
+  background: #181d38;
+  border-color: rgba(139, 92, 246, 0.35);
+}
+.m-plan-row.active {
+  background: #1c183a;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 1px #8b5cf6, 0 4px 20px rgba(139, 92, 246, 0.25);
+}
+.m-plan-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.m-plan-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.m-plan-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  line-height: 1.2;
+}
+.m-badge-save { background: #059669; color: #fff; }
+.m-badge-popular { background: #0891b2; color: #fff; }
+.m-badge-recom { background: #0d9488; color: #fff; }
+.m-badge-vip { background: #10b981; color: #fff; }
+.m-badge-hot { background: #e11d48; color: #fff; }
+.m-badge-super { background: #f59e0b; color: #000; }
+
+.m-plan-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: #8b5cf6;
+  transition: color .16s ease;
+  white-space: nowrap;
+}
+.m-plan-row.active .m-plan-price {
+  color: #a78bfa;
+}
+
+.btn-proceed {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all .2s ease;
+}
+.btn-proceed:hover {
+  box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
+  transform: translateY(-2px);
+}
+
+/* ══ CARD PRICE RANGE DISPLAY ══ */
+.card-price-range {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+}
+.range-box {
+  display: flex;
+  flex-direction: column;
+}
+.range-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.range-val {
+  font-size: 15.5px;
+  font-weight: 900;
+  color: #10b981;
+  letter-spacing: -.2px;
+}
+.versions-pill {
+  font-size: 10px;
+  font-weight: 800;
+  color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* ══ MODAL PRICE RANGE BANNER ══ */
+.m-range-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 10px 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.m-range-text {
+  font-size: 13px;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+.m-range-text strong {
+  color: #34d399;
+  font-size: 15px;
+  font-weight: 800;
+  margin-left: 4px;
+}
+.m-range-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a78bfa;
+  background: rgba(139, 92, 246, 0.15);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* Quick Jump Navigation */
+.m-quick-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 8px 0 12px;
+}
+.quick-nav-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.quick-nav-pill:hover, .quick-nav-pill.active {
+  background: rgba(139, 92, 246, 0.22);
+  border-color: #8b5cf6;
+  color: #c084fc;
+}
+
+/* ══ VERSION BLOCKS ARCHITECTURE IN BUY MODAL ══ */
+.m-version-blocks-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+.version-block-card {
+  background: linear-gradient(135deg, rgba(22, 28, 52, 0.75) 0%, rgba(13, 16, 32, 0.9) 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 15px 16px 14px;
+  transition: all .2s ease;
+  position: relative;
+}
+.version-block-card:hover {
+  border-color: rgba(139, 92, 246, 0.55);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
+  transform: translateY(-2px);
+}
+.version-block-card.featured {
+  border-color: rgba(6, 182, 212, 0.35);
+  background: linear-gradient(135deg, rgba(25, 34, 62, 0.85) 0%, rgba(14, 19, 38, 0.95) 100%);
+}
+.vb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  margin-bottom: 11px;
+  flex-wrap: wrap;
+}
+.vb-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.vb-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+}
+.vb-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.vb-price {
+  font-size: 17px;
+  font-weight: 900;
+  color: #10b981;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+}
+.vb-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+.vb-spec-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.vb-spec-label {
+  color: #94a3b8;
+  font-weight: 700;
+  min-width: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.vb-spec-label i {
+  color: #a78bfa;
+  font-size: 11px;
+}
+.vb-spec-val {
+  color: #e2e8f0;
+  flex: 1;
+}
+.btn-version-buy {
+  width: 100%;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all .18s ease;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+}
+.btn-version-buy:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.55);
+  transform: translateY(-1px);
+}
+.highlight-pulse {
+  animation: pulseHighlight 1.2s ease;
+}
+@keyframes pulseHighlight {
+  0% { box-shadow: 0 0 0 rgba(139, 92, 246, 0); border-color: #8b5cf6; }
+  50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7); border-color: #38bdf8; }
+  100% { box-shadow: 0 0 0 rgba(139, 92, 246, 0); }
+}
+
+/* ══ AUTH MODAL (LOGIN & REGISTER TABS) ══ */
+.auth-modal-card {
+  width: min(440px, calc(100% - 24px)) !important;
+  max-width: 440px !important;
+  background: #0d1020 !important;
+  border: 1px solid #1e2540 !important;
+  color: #f1f5f9 !important;
+}
+.auth-modal-card .input {
+  background: #14182e !important;
+  border-color: #272f52 !important;
+  color: #ffffff !important;
+}
+.auth-modal-card .label {
+  color: #cbd5e1 !important;
+}
+.auth-tabs {
+  display: flex;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 18px;
+}
+.auth-tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #94a3b8;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all .2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.auth-tab.active {
+  color: #38bdf8;
+  border-bottom-color: #38bdf8;
+}
+.auth-notice {
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #fde047;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.auth-notice i {
+  font-size: 15px;
+  color: #facc15;
+  flex-shrink: 0;
+}
+.user-profile-btn {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.user-profile-btn:hover {
+  background: rgba(56, 189, 248, 0.22);
+}
+.btn-logout-link {
+  color: #f87171;
+  background: none;
+  border: none;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  padding-left: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+.btn-logout-link:hover {
+  color: #ef4444;
+  text-decoration: underline;
+}
+.m-lock-note {
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Step 2 QR Payment Styling */
+.btn-step-back {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .16s ease;
+}
+.btn-step-back:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+.m-step2-badge {
+  background: rgba(139, 92, 246, 0.18);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #c4b5fd;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+.m-selected-summary {
+  background: #14182f;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.m-summary-plan {
+  font-size: 12px;
+  color: #cbd5e1;
+}
+.m-summary-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: #a78bfa;
+}
+.m-qr-box {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.m-qr-box img {
+  width: 175px;
+  height: 175px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
+.m-qr-hint {
+  font-size: 10.5px;
+  color: #64748b;
+  margin-top: 6px;
+}
+.m-bank-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.m-bank-item {
+  background: #13172c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.m-bank-item small {
+  font-size: 9px;
+  font-weight: 700;
+  color: #94a3b8;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+.m-bank-item strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+.m-bank-memo {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+.m-copy-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all .16s ease;
+}
+.m-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+.m-copy-memo {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+.m-bot-box {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+.m-bot-title {
+  color: #4ade80;
+  font-size: 11.5px;
+  font-weight: 800;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.m-bot-desc {
+  color: #86efac;
+  font-size: 11px;
+  line-height: 1.45;
+  margin: 0;
+}
+.m-code {
+  background: rgba(34, 197, 94, 0.2);
+  color: #bbf7d0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+.btn-paid-done {
+  background: #10b981;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transition: all .16s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-paid-done:hover {
+  background: #059669;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  transform: translateY(-1px);
+}
+
+/* ══ PAID CONFIRMATION MODAL (MÃ XÁC NHẬN ĐƠN HÀNG) ══ */
+.paid-modal-card {
+  position: relative !important;
+  width: min(490px, calc(100% - 24px)) !important;
+  max-width: 490px !important;
+  max-height: 94vh !important;
+  margin: auto !important;
+  background: #0c1020 !important;
+  border: 1px solid #1e2540 !important;
+  border-radius: 20px !important;
+  padding: 24px 20px 20px !important;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9), 0 0 35px rgba(139, 92, 246, 0.15) !important;
+  overflow-y: auto !important;
+  z-index: 10 !important;
+  color: #f1f5f9 !important;
+  transform: translateY(14px) scale(.98) !important;
+  transition: transform .22s ease !important;
+}
+.modal.open .paid-modal-card {
+  transform: none !important;
+}
+
+.paid-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all .18s ease;
+  z-index: 20;
+}
+.paid-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* Header Box */
+.paid-header-box {
+  background: linear-gradient(180deg, rgba(6, 78, 59, 0.22) 0%, rgba(4, 47, 46, 0.28) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 14px;
+  padding: 22px 14px 18px;
+  text-align: center;
+}
+.paid-header-icon {
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+.paid-header-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #10b981;
+  margin-bottom: 6px;
+  letter-spacing: .2px;
+}
+.paid-header-sub {
+  font-size: 12.5px;
+  color: #94a3b8;
+  line-height: 1.45;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* Syntax Box */
+.paid-syntax-box {
+  margin-top: 14px;
+  background: rgba(139, 92, 246, 0.05);
+  border: 1.5px dashed #8b5cf6;
+  border-radius: 14px;
+  padding: 15px 14px 12px;
+  text-align: center;
+}
+.paid-syntax-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #c084fc;
+  letter-spacing: .5px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.paid-cmd-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.paid-cmd-pill {
+  background: #081a29;
+  border: 1.5px solid #0891b2;
+  border-radius: 9px;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all .2s;
+  user-select: all;
+}
+.paid-cmd-pill:hover {
+  border-color: #00f0ff;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+  transform: translateY(-1px);
+}
+.paid-cmd-prefix {
+  color: #00f0ff;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 16px;
+  font-weight: 700;
+}
+.paid-cmd-code {
+  color: #00f0ff;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+.paid-copy-btn {
+  background: rgba(8, 145, 178, 0.15);
+  border: 1.5px solid #0891b2;
+  border-radius: 9px;
+  padding: 8px 14px;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .2s;
+}
+.paid-copy-btn:hover {
+  background: #0891b2;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(8, 145, 178, 0.5);
+}
+.paid-syntax-hint {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Order Details Box */
+.paid-details-box {
+  margin-top: 14px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 6px 18px;
+}
+.paid-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 12px;
+}
+.paid-detail-row:last-child {
+  border-bottom: none;
+}
+.paid-label {
+  color: #94a3b8;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.paid-val {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13.5px;
+  text-align: right;
+  word-break: break-word;
+}
+.paid-val.paid-code {
+  color: #00f0ff;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 15px;
+  font-weight: 800;
+}
+.paid-val.paid-price {
+  color: #10b981;
+  font-size: 15px;
+  font-weight: 800;
+}
+.paid-val.paid-status {
+  color: #f59e0b;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+/* Fraud Alert Box */
+.paid-fraud-box {
+  margin-top: 14px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 12px;
+  padding: 11px 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.paid-fraud-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.paid-fraud-text {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+.paid-fraud-text strong {
+  color: #f87171;
+  font-weight: 800;
+}
+
+/* Feedback Grid Section */
+.fb-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+@media(max-width: 1000px) {
+  .fb-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media(max-width: 720px) {
+  .fb-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+.fb-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.fb-card:hover {
+  transform: translateY(-4px);
+  border-color: #d2d6db;
+  box-shadow: 0 16px 36px rgba(20,24,31,.09);
+}
+.fb-card-thumb {
+  position: relative;
+  width: 100%;
+  height: 230px;
+  background: #f1f3f5;
+  overflow: hidden;
+}
+.fb-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform .3s ease;
+}
+.fb-card:hover .fb-card-thumb img {
+  transform: scale(1.05);
+}
+.fb-card-body {
+  padding: 10px 12px 12px;
+}
+.fb-badge {
+  font-size: 10px;
+  font-weight: 750;
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.fb-stars {
+  color: #f59e0b;
+  font-size: 10px;
+  margin-top: 3px;
+}
+.fb-title {
+  font-size: 12px;
+  font-weight: 750;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+/* Lightbox Modal */
+.lb-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15,18,22,.88);
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.lb-modal.open {
+  display: flex;
+}
+.lb-wrap {
+  position: relative;
+  max-width: 92vw;
+  max-height: 92vh;
+}
+.lb-wrap img {
+  max-width: 100%;
+  max-height: 88vh;
+  border-radius: 16px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.6);
+  object-fit: contain;
+}
+.lb-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: #171a1f;
+  font-size: 16px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,.3);
+}
+
+/* 3D Floating Neon Toast */
+.toasts {
+  position: fixed;
+  bottom: 75px;
+  right: 20px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast-item {
+  position: relative;
+  background: linear-gradient(135deg, rgba(22,29,49,.97) 0%, rgba(12,16,30,.98) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(56,189,248,.65);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  box-shadow: 0 20px 48px -10px rgba(0,0,0,.85), 0 0 25px rgba(6,182,212,.35), inset 0 1px 1px rgba(255,255,255,.3);
+  pointer-events: all;
+  cursor: pointer;
+  min-width: 270px;
+  max-width: 390px;
+  overflow: hidden;
+  animation: tIn .38s cubic-bezier(.34,1.56,.64,1) both;
+  transition: all .25s ease;
+}
+.toast-item:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(56,189,248,.85);
+}
+.toast-item.out {
+  animation: tOut .25s ease both;
+}
+@keyframes tIn {
+  0% { opacity: 0; transform: translateY(24px) scale(.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes tOut {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(16px) scale(.92); }
+}
+.t-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #38bdf8, #8b5cf6);
+  box-shadow: 0 0 10px #38bdf8;
+}
+.t-ico-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, rgba(56,189,248,.2), rgba(139,92,246,.25));
+  border: 1px solid rgba(56,189,248,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.t-content {
+  flex: 1;
+  min-width: 0;
+}
+.t-msg {
+  font-size: .84rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.4;
+}
+.t-close-btn {
+  background: rgba(255,255,255,.1);
+  border: none;
+  color: rgba(255,255,255,.7);
+  font-size: .78rem;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.t-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2.5px;
+  width: 100%;
+  background: linear-gradient(90deg, #38bdf8, #a855f7);
+  animation: tProg 3.6s linear forwards;
+}
+@keyframes tProg {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+</style>
+</head>
+
+<body class="storefront">
+<a class="skip-link" href="#main-content">Chuyển đến nội dung chính</a>
+<div id="nav-progress" class="nav-progress"></div>
+<div id="toast" class="toast"></div>
+
+<!-- ══ ANNOUNCEMENT BAR ══ -->
+<div class="announcement-bar">
+  <div class="shell">
+    <i class="fa-solid fa-bullhorn"></i> Hoạt động 24/7 • Kích hoạt tự động qua Bot Zalo • Hỗ trợ cài đặt 1:1
+  </div>
+</div>
+
+<!-- ══ TOPBAR ══ -->
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img class="website-logo" src="assets/uploads/logos/aizen-logo.png" alt="Logo Shop Đại Phú FF" style="border-radius:50%;object-fit:cover;"></span>
+      <span><b>SHOP ĐẠI PHÚ FF</b><small>SẢN PHẨM SỐ</small></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Điều hướng chính">
+      <a class="active" href="index.html">Cửa hàng</a>
+      <a href="#products">Sản phẩm</a>
+      <a href="#feedback">Đánh giá</a>
+      <a href="https://zalo.me/0588500524" target="_blank" rel="noopener">Hỗ trợ Zalo</a>
+    </nav>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="javascript:void(0)" onclick="openLogin()" id="topAuthBtn">Đăng nhập</a>
+    </div>
+  </div>
+</header>
+
+<!-- ══ MAIN CONTENT ══ -->
+<main id="main-content" class="shell page-wrap" tabindex="-1">
+
+  <!-- ══ STORE HERO ══ -->
+  <section class="store-hero reveal">
+    <div class="hero-copy">
+      <span class="store-kicker"><i class="fa-solid fa-circle-check"></i> CỬA HÀNG SIÊU PHẨM KÉO TÂM</span>
+      <h1>Chọn sản phẩm phù hợp với nhu cầu của bạn.</h1>
+      <p>Những Siêu Phẩm Bên ĐẠI PHÚ FF Tạo Ra Hoàn Toàn Là Hỗ Trợ Kéo Tâm, Không Liên Quan Đến PMT3 Và Sử Dụng Vĩnh Viễn ✅<br><br><b>ZALO: 0588500524 (Anh Phú) • BOT CSKH: 0964976083</b></p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#products"><i class="fa-solid fa-bag-shopping"></i> Xem sản phẩm</a>
+        <a class="btn btn-ghost" href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i> Liên hệ Zalo</a>
+      </div>
+    </div>
+    <aside class="wallet-summary guest-summary">
+      <div class="wallet-icon"><i class="fa-solid fa-user-lock"></i></div>
+      <span class="label">Tài khoản thành viên</span>
+      <strong id="sideUserTitle">Đăng nhập để mua hàng</strong>
+      <p id="sideUserSub">Đăng nhập hoặc tạo tài khoản để thanh toán và nhận sản phẩm sau khi mua.</p>
+      <a class="btn btn-primary btn-block" href="javascript:void(0)" onclick="openLogin()" id="sideAuthBtn">Đăng nhập / Đăng ký</a>
+    </aside>
+  </section>
+
+  <!-- ══ PRODUCTS SECTION ══ -->
+  <section id="products" class="products-section reveal">
+    <div class="section-head">
+      <div>
+        <h2>Sản phẩm</h2>
+        <p>Bấm chọn gói thời hạn trực tiếp trên thẻ hoặc bấm Xem sản phẩm để mở thanh toán.</p>
+      </div>
+      <div class="product-tools">
+        <label class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="product-search" type="search" placeholder="Tìm sản phẩm..." autocomplete="off">
+          <kbd>/</kbd>
+        </label>
+        <select id="product-sort" class="select">
+          <option value="default">Mặc định</option>
+          <option value="price-asc">Giá thấp → cao</option>
+          <option value="price-desc">Giá cao → thấp</option>
+          <option value="name">Tên A → Z</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-wrap">
+      <div class="filters">
+        <button class="filter-btn active" data-category-filter="all">Tất cả</button>
+        <button class="filter-btn" data-category-filter="AimLock">AimLock</button>
+        <button class="filter-btn" data-category-filter="Forget Hex">Forget Hex</button>
+        <button class="filter-btn" data-category-filter="Proxy iOS">Proxy iOS</button>
+        <button class="filter-btn" data-category-filter="SX2 & Panel">SX2 & Panel</button>
+        <button class="filter-btn" data-category-filter="Menu & Mod">Menu & Mod</button>
+      </div>
+      <span id="product-count" class="result-count">9 sản phẩm</span>
+    </div>
+
+    <!-- Product Grid (Exact 4 columns matching vipgonopro.shop) -->
+    <div class="product-grid" id="product-grid">
+      <!-- Injected via JavaScript -->
+    </div>
+
+    <div id="product-empty" class="empty-state hidden">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <h3>Không tìm thấy sản phẩm</h3>
+      <p>Thử từ khóa khác hoặc chọn lại danh mục.</p>
+      <button class="btn btn-ghost" id="reset-products">Xóa bộ lọc</button>
+    </div>
+  </section>
+
+  <!-- ══ CUSTOMER FEEDBACK SECTION (14 ẢNH THẬT) ══ -->
+  <section id="feedback" class="products-section reveal" style="margin-top: 50px;">
+    <div class="section-head">
+      <div>
+        <h2>Đánh giá từ khách hàng</h2>
+        <p>Bấm vào ảnh để xem toàn màn hình phản hồi thực tế từ cộng đồng game thủ.</p>
+      </div>
+      <span class="result-count"><i class="fa-solid fa-certificate" style="color:var(--success)"></i> 100% Khách Hàng Hài Lòng</span>
+    </div>
+
+    <div class="fb-grid" id="fb-grid">
+      <!-- 14 Real Feedback Cards -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="shell footer-inner">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <img src="assets/uploads/logos/aizen-logo.png" alt="Logo Shop Đại Phú FF" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid var(--line);">
+      <div>
+        <b>SHOP ĐẠI PHÚ FF</b>
+        <p>Sản phẩm số • Kéo tâm đỉnh cao • Thanh toán nhanh • Hỗ trợ khi cần</p>
+      </div>
+    </div>
+    <a href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i> Liên hệ Zalo hỗ trợ</a>
+  </div>
+</footer>
+
+<!-- ══ MOBILE BOTTOM NAVIGATION ══ -->
+<nav class="mobile-nav" aria-label="Điều hướng trên điện thoại">
+  <a class="active" href="index.html"><i class="fa-solid fa-store"></i><span>Cửa hàng</span></a>
+  <a href="#products"><i class="fa-solid fa-fire"></i><span>Sản phẩm</span></a>
+  <a href="#feedback"><i class="fa-solid fa-comments"></i><span>Đánh giá</span></a>
+  <a href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i><span>Hỗ trợ</span></a>
+</nav>
+
+<!-- ══ BUY & PAYMENT MODAL (CHỌN GÓI + XEM ẢNH TÍNH NĂNG + VIETQR) ══ -->
+<div id="buyModal" class="modal">
+  <div class="modal-backdrop" onclick="closeBuyModal()"></div>
+  <div class="modal-card checkout-modal">
+    <button class="m-close-btn" onclick="closeBuyModal()" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+
+    <div class="checkout-grid">
+      <!-- CỘT TRÁI: PREVIEW & ẢNH TÍNH NĂNG -->
+      <div class="m-gallery-col">
+        <div class="m-preview-card">
+          <span class="m-preview-badge" id="mPreviewBadge">ESP Ghim Đầu</span>
+          <img id="mPreviewImg" src="proxy-ios.png" alt="Preview tính năng">
+          <div class="m-preview-empty" id="mPreviewEmpty" style="display:none;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Chờ Cập Nhật Banner Mới</span>
+            <small>Sản phẩm này đang được thiết kế banner chính thức</small>
+          </div>
+          <div class="m-preview-bottom">
+            <div class="m-preview-title" id="mPreviewTitle">ESP AIMCHECK R8 - Định Vị Ghim Đầu</div>
+            <button type="button" class="m-preview-zoom-btn" id="mZoomBtn" onclick="zoomCurrentPreview()">
+              <i class="fa-solid fa-magnifying-glass-plus"></i> Phóng to
+            </button>
+          </div>
+        </div>
+
+        <div class="m-thumbs-header" id="mThumbsHeader">
+          <i class="fa-solid fa-camera"></i> ẢNH TÍNH NĂNG (CHẠM ĐỂ XEM):
+        </div>
+        <div class="m-thumbs-grid" id="mThumbsGrid">
+          <!-- Injected thumbnails -->
+        </div>
+      </div>
+
+      <!-- CỘT PHẢI: CHỌN GÓI (BƯỚC 1) HOẶC QUÉT QR (BƯỚC 2) -->
+      <div class="m-info-col">
+        <!-- BƯỚC 1: DANH SÁCH CHI TIẾT TỪNG PHIÊN BẢN (1.0, 2.0, 3.0...) -->
+        <div id="mStep1">
+          <h2 class="m-prod-title" id="mProdTitle">AimLock Forget</h2>
+          <div class="m-prod-sub" id="mProdSub">AimLock · iOS &amp; Adr · Đã bán 3.1k+</div>
+
+          <!-- Khoảng giá sản phẩm -->
+          <div class="m-range-banner" id="mRangeBanner">
+            <span class="m-range-text"><i class="fa-solid fa-tags"></i> Khoảng giá: <strong id="mRangePrice">50.000đ → 500.000đ</strong></span>
+            <span class="m-range-sub" id="mRangeCount">3 phiên bản</span>
+          </div>
+
+          <!-- Quick Navigation giữa các phiên bản -->
+          <div class="m-quick-nav" id="mQuickNav">
+            <!-- Injected version pills -->
+          </div>
+
+          <div class="m-step-header" style="margin-top:14px;color:#a78bfa;font-size:12px;">
+            <i class="fa-solid fa-layer-group"></i> CHI TIẾT &amp; MUA TỪNG PHIÊN BẢN
+          </div>
+
+          <!-- Container từng khối phiên bản riêng biệt -->
+          <div class="m-version-blocks-wrap" id="mVersionBlocks">
+            <!-- Injected version blocks with full specs & dedicated buy button -->
+          </div>
+        </div>
+
+        <!-- BƯỚC 2: QUÉT MÃ QR THANH TOÁN -->
+        <div id="mStep2" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-right:38px;">
+            <button type="button" class="btn-step-back" onclick="goToStep(1)">
+              <i class="fa-solid fa-arrow-left"></i> Quay lại chọn gói khác
+            </button>
+            <span class="m-step2-badge">BƯỚC 2 / 2</span>
+          </div>
+
+          <div class="m-step-header" style="color:#a78bfa;font-size:12px;margin-bottom:10px;">
+            <i class="fa-solid fa-qrcode"></i> QUÉT MÃ QR THANH TOÁN TỰ ĐỘNG
+          </div>
+
+          <!-- Tóm tắt gói đã chọn -->
+          <div class="m-selected-summary">
+            <div style="font-weight:800;color:#fff;font-size:13.5px;" id="mStep2ProdName">Proxy Aim iOS</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
+              <span class="m-summary-plan" id="mStep2PlanName">Key 1 ngày</span>
+              <span class="m-summary-price" id="mStep2Price">20.000đ</span>
+            </div>
+          </div>
+
+          <!-- Khung VietQR -->
+          <div class="m-qr-box">
+            <img id="mQrCode" src="" alt="VietQR MBBank">
+            <div class="m-qr-hint">Mở App ngân hàng bất kỳ (MBBank, Vietcombank, Momo...) quét để thanh toán tự động</div>
+          </div>
+
+          <!-- Chi tiết tài khoản ngân hàng -->
+          <div class="m-bank-rows">
+            <div class="m-bank-item">
+              <div><small>NGÂN HÀNG THỤ HƯỞNG</small><strong>MB BANK (Quân Đội)</strong></div>
+              <button class="m-copy-btn" onclick="copyText('MBBANK', this)"><i class="fa-solid fa-copy"></i> Sao chép</button>
+            </div>
+            <div class="m-bank-item">
+              <div><small>SỐ TÀI KHOẢN</small><strong>0941414448</strong></div>
+              <button class="m-copy-btn" onclick="copyText('0941414448', this)"><i class="fa-solid fa-copy"></i> Sao chép</button>
+            </div>
+            <div class="m-bank-item">
+              <div><small>CHỦ TÀI KHOẢN</small><strong>BUI VAN CAO</strong></div>
+            </div>
+            <div class="m-bank-item">
+              <div><small>SỐ TIỀN CẦN THANH TOÁN</small><strong id="mPayAmount" style="color:#f87171;font-size:15px;">20.000 đ</strong></div>
+              <button class="m-copy-btn" onclick="copyText(window.currentPayAmountRaw, this)"><i class="fa-solid fa-copy"></i></button>
+            </div>
+            <div class="m-bank-item m-bank-memo">
+              <div><small style="color:#f87171;">NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC CHÍNH XÁC)</small><strong id="mOrderMemo" style="color:#f87171;font-family:monospace;font-size:15px;letter-spacing:1px;">DP...</strong></div>
+              <button class="m-copy-btn m-copy-memo" onclick="copyText(window.currentOrderMemo, this)"><i class="fa-solid fa-copy"></i></button>
+            </div>
+          </div>
+
+          <!-- Hướng dẫn Bot Zalo -->
+          <div class="m-bot-box">
+            <div class="m-bot-title"><i class="fa-solid fa-robot"></i> Kích hoạt key tự động qua Bot Zalo:</div>
+            <p class="m-bot-desc">
+              Sau khi chuyển khoản, nhắn lệnh <code class="m-code">!done <span id="mBotCode">DP...</span></code> cho <b>Bot Zalo: 0964976083</b> hoặc gửi bill đến Zalo <b>0588500524 (Anh Phú)</b> để nhận file & hướng dẫn cài đặt ngay lập tức!
+            </p>
+          </div>
+
+          <!-- Nút xác nhận -->
+          <button type="button" class="btn-paid-done" onclick="confirmPaid()">
+            <i class="fa-solid fa-circle-check"></i> Tôi đã chuyển khoản thành công
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAID SUCCESS CONFIRMATION MODAL (MÃ XÁC NHẬN ĐƠN HÀNG) ══ -->
+<div id="paidModal" class="modal">
+  <div class="modal-backdrop" onclick="closePaidModal()"></div>
+  <div class="paid-modal-card">
+    <button type="button" class="paid-close-btn" onclick="closePaidModal()" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+
+    <!-- Block 1: Receipt Header -->
+    <div class="paid-header-box">
+      <div class="paid-header-icon">🧾</div>
+      <div class="paid-header-title">Mã Xác Nhận Đơn Hàng</div>
+      <div class="paid-header-sub">Gửi mã đơn cho Bot Zalo để tự động đối soát ngân hàng MB Bank &amp; nhận file</div>
+    </div>
+
+    <!-- Block 2: Syntax Box -->
+    <div class="paid-syntax-box">
+      <div class="paid-syntax-title">🤖 CÚ PHÁP GỬI BOT ZALO:</div>
+      <div class="paid-cmd-wrapper">
+        <div class="paid-cmd-pill" id="paidCmdPill" onclick="copyPaidSyntax()" title="Bấm để sao chép cú pháp">
+          <span class="paid-cmd-prefix">!done</span>
+          <span class="paid-cmd-code" id="paidConfirmCode">DP487340</span>
+        </div>
+        <button type="button" class="paid-copy-btn" id="paidCopyBtn" onclick="copyPaidSyntax()">
+          <span class="paid-copy-icon">📑</span>
+          <span class="paid-copy-text" id="paidCopyText">Sao chép</span>
+        </button>
+      </div>
+      <div class="paid-syntax-hint">Chạm vào hộp hoặc bấm nút Sao chép để copy nhanh</div>
+    </div>
+
+    <!-- Block 3: Order Details Box -->
+    <div class="paid-details-box">
+      <div class="paid-detail-row">
+        <span class="paid-label">Mã đơn hàng:</span>
+        <span class="paid-val paid-code" id="paidDetailCode">DP487340</span>
+      </div>
+      <div class="paid-detail-row">
+        <span class="paid-label">Sản phẩm:</span>
+        <span class="paid-val" id="paidDetailProd">AimLock iOS</span>
+      </div>
+      <div class="paid-detail-row">
+        <span class="paid-label">Gói thời hạn:</span>
+        <span class="paid-val" id="paidDetailPlan">Gói 1 tháng</span>
+      </div>
+      <div class="paid-detail-row">
+        <span class="paid-label">Số tiền:</span>
+        <span class="paid-val paid-price" id="paidDetailPrice">50.000đ</span>
+      </div>
+      <div class="paid-detail-row">
+        <span class="paid-label">Trạng thái:</span>
+        <span class="paid-val paid-status">⏳ Chờ Bot Zalo đối soát MB Bank</span>
+      </div>
+      <div class="paid-detail-row">
+        <span class="paid-label">Thời gian:</span>
+        <span class="paid-val" id="paidDetailTime">23:10:45 26/9/2026</span>
+      </div>
+    </div>
+
+    <!-- Block 4: Fraud Warning Box -->
+    <div class="paid-fraud-box">
+      <div class="paid-fraud-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L4 5V11.5C4 16.5 7.5 20.9 12 22C16.5 20.9 20 16.5 20 11.5V5L12 2Z" fill="#38BDF8" fill-opacity="0.25" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 8V12" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="15.5" r="1" fill="#38BDF8"/>
+        </svg>
+      </div>
+      <div class="paid-fraud-text">
+        <strong>Chống gian lận:</strong> Bot Zalo chỉ duyệt gửi file khi ngân hàng đã ghi nhận tiền thực tế khớp mã đơn &amp; số tiền. Mọi lệnh ảo sẽ bị từ chối tự động.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AUTH MODAL (ĐĂNG NHẬP / ĐĂNG KÝ) ══ -->
+<div id="loginModal" class="modal">
+  <div class="modal-backdrop" onclick="closeLoginModal()"></div>
+  <div class="modal-card auth-modal-card">
+    <button class="modal-close" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+
+    <!-- Notice if redirected from buy button -->
+    <div id="authNotice" class="auth-notice" style="display:none;">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span id="authNoticeText">Vui lòng đăng nhập hoặc đăng ký tài khoản để tiếp tục mua hàng!</span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tabBtnLogin" onclick="switchAuthTab('login')">
+        <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+      </div>
+      <div class="auth-tab" id="tabBtnRegister" onclick="switchAuthTab('register')">
+        <i class="fa-solid fa-user-plus"></i> Đăng Ký
+      </div>
+    </div>
+
+    <!-- FORM ĐĂNG NHẬP -->
+    <form id="formLogin" onsubmit="handleLoginSubmit(event)">
+      <div class="form-group">
+        <label class="label">Tên tài khoản hoặc Email</label>
+        <input type="text" id="loginUser" class="input" placeholder="Nhập tên tài khoản..." required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="label">Mật khẩu</label>
+        <input type="password" id="loginPass" class="input" placeholder="Nhập mật khẩu..." required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;">
+        <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập ngay
+      </button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);">
+        Chưa có tài khoản? <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:var(--primary);font-weight:700;">Đăng ký miễn phí</a>
+      </div>
+    </form>
+
+    <!-- FORM ĐĂNG KÝ -->
+    <form id="formRegister" onsubmit="handleRegisterSubmit(event)" style="display:none;">
+      <div class="form-group">
+        <label class="label">Tên tài khoản mong muốn</label>
+        <input type="text" id="regUser" class="input" placeholder="Ví dụ: KhanhhFF..." required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="label">Mật khẩu</label>
+        <input type="password" id="regPass" class="input" placeholder="Tối thiểu 6 ký tự..." required autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label class="label">Số điện thoại hoặc Zalo (để nhận key &amp; hỗ trợ)</label>
+        <input type="tel" id="regPhone" class="input" placeholder="Ví dụ: 0941414448..." required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;">
+        <i class="fa-solid fa-user-check"></i> Hoàn tất đăng ký &amp; Tiếp tục mua
+      </button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);">
+        Đã có tài khoản? <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:var(--primary);font-weight:700;">Đăng nhập ngay</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══ LIGHTBOX MODAL ══ -->
+<div id="lbModal" class="lb-modal" onclick="closeLB()">
+  <div class="lb-wrap" onclick="event.stopPropagation()">
+    <button class="lb-close" onclick="closeLB()">✕</button>
+    <img id="lbImg" src="" alt="Feedback chi tiết">
+  </div>
+</div>
+
+<!-- ══ TOAST CONTAINER ══ -->
+<div id="tc" class="toasts"></div>
+
+<!-- ══ APP SCRIPTS ══ -->
+<script>
+/* ═══════ REAL PRODUCTS DATA (SHOP ĐẠI PHÚ FF) ═══════ */
+var PRODUCTS = [
+  {
+    id: 'aimlock-forget',
+    category: 'AimLock',
+    plat: 'Android & iOS',
+    buyers: '3.1k+ Đã mua',
+    name: 'AimLock Forget (Adr · iOS)',
+    shortDesc: '1.0 khắc phục lố rung lạc đạn delay. 2.0 & 3.0 bám đầu cực đỉnh, buff FPS.',
+    fullDesc: 'AimLock Forget 1.0 - 2.0 - 3.0 (Android & iOS) — Đột phá kĩ năng, nâng tầm trải nghiệm:\n• Bản 1.0 (50k): Khắc phục lố, rung tâm, lạc đạn và delay khi kéo tâm.\n• Bản 2.0 (200k): Khắc phục chuẩn theo banner: kéo tâm siêu chuẩn, fix rung tâm ổn định, bám đầu cực đỉnh, an toàn tuyệt đối.\n• Bản 3.0 (500k): Khắc phục toàn diện như ảnh, tăng tỷ lệ bám đầu tối đa, buff FPS siêu mượt, bách phát bách trúng.',
+    priceMin: 50000,
+    priceMax: 500000,
+    image: 'assets/uploads/products/aimlock-forget.jpg',
+    images: [
+      { src: 'assets/uploads/products/aimlock-forget.jpg', label: 'AimLock 3D', title: 'AimLock Forget 1.0 - 2.0 - 3.0 Full Khắc Phục Lỗi' }
+    ],
+    plans: [
+      {
+        name: 'AimLock Forget 1.0',
+        price: 50000,
+        action: 'Hỗ trợ kéo tâm nhạy, ghìm tâm chuẩn xác khi giao tranh tầm gần và tầm xa.',
+        fix: '1.0 khắc phục lố rung lạc đạn delay khi vuốt tâm.',
+        pros: 'Cài đặt nhanh gọn, nhẹ máy, giao diện đơn giản cho người mới bắt đầu.',
+        note: 'Hỗ trợ toàn bộ dòng máy Android & iOS (iPhone/iPad). Không can thiệp sâu.'
+      },
+      {
+        name: 'AimLock Forget 2.0',
+        price: 200000,
+        badge: 'Bán chạy',
+        action: 'Kéo tâm siêu chuẩn, tự động ôm đầu ổn định trong mọi tình huống đối đầu.',
+        fix: '2.0 khắc phục giống ảnh: kéo tâm siêu chuẩn, fix rung tâm ổn định, bám đầu cực đỉnh, an toàn tuyệt đối.',
+        pros: 'Tự động ghìm tâm chuẩn xác khi đối thủ di chuyển liên tục, chống lệch hướng đạn.',
+        note: 'Tương thích 100% mọi dòng máy Android & iOS, bao mượt và an toàn leo rank.'
+      },
+      {
+        name: 'AimLock Forget 3.0',
+        price: 500000,
+        badge: 'VIP Cực Phẩm',
+        action: 'Đỉnh cao công nghệ AimLock, tự động ghim đầu đối thủ với độ trễ 0ms.',
+        fix: '3.0 khắc phục như ảnh và tăng tỷ lệ bám đầu buff fps.',
+        pros: 'Buff FPS cực mượt, mở khóa toàn bộ sức mạnh ghìm tâm, bách phát bách trúng.',
+        note: 'Bản quyền cao cấp nhất, cập nhật trọn đời phiên bản, hỗ trợ kỹ thuật 1:1 từ Admin.'
+      }
+    ]
+  },
+  {
+    id: 'forget-hex',
+    category: 'Forget Hex',
+    plat: 'Android & iOS',
+    buyers: '2.8k+ Đã mua',
+    name: 'Forget Hex VIP (V1 - V5)',
+    shortDesc: 'Forget Hex V1 đến V5 hỗ trợ iOS & Android, bám dính đầu 100%.',
+    fullDesc: 'Hệ thống Forget Hex độc quyền hỗ trợ Android & iOS:\n- Forget Hex V1 (49.000đ)\n- Forget Hex V2 (99.000đ)\n- Forget Hex V3 (199.000đ)\n- Forget Hex V4 (399.000đ)\n- Forget Hex V5 (799.000đ)',
+    priceMin: 49000,
+    priceMax: 799000,
+    image: 'assets/uploads/products/forget-hex.jpg',
+    images: [
+      { src: 'assets/uploads/products/forget-hex.jpg', label: 'Forget Hex V1-V5', title: 'Forget Hex VIP V1 - V5 - Make URL Code Xịn Nhất VN' }
+    ],
+    plans: [
+      {
+        name: 'Forget Hex V1',
+        price: 49000,
+        action: 'Make URL Code Hex tăng độ nhạy màn hình, hỗ trợ bám tâm cơ bản.',
+        fix: 'Khắc phục tản đạn, hạn chế tối đa đạn văng ra ngoài tâm ngắm khi sấy.',
+        pros: 'Cấu hình URL gọn nhẹ, kích hoạt tức thì chỉ sau 30 giây cài đặt.',
+        note: 'Hỗ trợ mọi hệ điều hành iOS & Android, không cần cài đặt phần mềm bên thứ 3.'
+      },
+      {
+        name: 'Forget Hex V2',
+        price: 99000,
+        action: 'Tối ưu độ trễ cảm ứng, tăng tốc độ phản hồi vuốt tâm siêu nhạy.',
+        fix: 'Khắc phục delay vuốt màn hình, ghìm tâm chắc tay và giảm rung lắc.',
+        pros: 'Giúp đường đạn đi thẳng và tập trung hơn vào phần thân trên của mục tiêu.',
+        note: 'Dùng mượt mà cho tất cả các khẩu súng sấy và shotgun.'
+      },
+      {
+        name: 'Forget Hex V3',
+        price: 199000,
+        badge: 'Đề xuất',
+        action: 'Mã Hex chuyên sâu hỗ trợ ghìm chặt tâm vào vùng đầu đối thủ.',
+        fix: 'Khắc phục hiện tượng lố đầu khi vuốt tâm ở cự ly gần và tầm trung.',
+        pros: 'Khả năng bám đầu nhạy bén, giúp người chơi phản xạ nhanh và dứt điểm mục tiêu.',
+        note: 'Khuyên dùng cho game thủ leo rank Kim Cương - Huyền Thoại.'
+      },
+      {
+        name: 'Forget Hex V4',
+        price: 399000,
+        badge: 'VIP',
+        action: 'Cấu hình Hex nâng cao, mở rộng góc bám tâm và tối ưu cảm ứng đa điểm.',
+        fix: 'Khắc phục triệt để rung lag màn hình, giữ khung hình ổn định cực cao.',
+        pros: 'Đường đạn tự tìm đầu đối phương với tỷ lệ chính xác vượt trội.',
+        note: 'Chuyên dụng cho các giải đấu cọ xát và leo rank Thách Đấu.'
+      },
+      {
+        name: 'Forget Hex V5',
+        price: 799000,
+        badge: 'Cực Phẩm',
+        action: 'Đỉnh cao Make URL Code Hex độc quyền số 1 VN, bách phát bách trúng.',
+        fix: 'Khắc phục hoàn toàn mọi lỗi lệch tâm, trượt đạn, rung giật màn hình.',
+        pros: 'Tỷ lệ headshot lên tới 98%, buff FPS mượt mà không gây nóng máy.',
+        note: 'Bản cực phẩm độc quyền của Shop Đại Phú FF, hỗ trợ kỹ thuật 1:1 trọn đời.'
+      }
+    ]
+  },
+  {
+    id: 'trollmodz',
+    category: 'Menu & Mod',
+    plat: 'Adr · iOS · PC',
+    buyers: '2.4k+ Đã mua',
+    name: 'TrollModz (Adr · iOS · PC)',
+    shortDesc: 'Ngưng đọng thời gian, nhảy dù nhanh, định vị gắn đầu, Aimbot.',
+    fullDesc: 'TrollModz bản quyền chính hãng hỗ trợ Android, iOS và PC.\nTính năng: Ngưng đọng thời gian, nhảy dù đáp đất tức thì, định vị gắn đầu, Aimbot tự động ghim, bypass an toàn tuyệt đối.',
+    priceMin: 10000,
+    priceMax: 250000,
+    image: 'trollmodz.png',
+    images: [
+      { src: 'trollmodz.png', label: 'TrollModz', title: 'TrollModz - Menu Siêu Cấp Adr · iOS · PC' }
+    ],
+    plans: [
+      {
+        name: 'Key 1 Giờ (Test)',
+        price: 10000,
+        action: 'Dùng thử trọn bộ tính năng siêu cấp: Ngưng đọng thời gian, nhảy dù tức thì.',
+        fix: 'Bypass qua mặt hệ thống kiểm tra, chống lag giật tối đa.',
+        pros: 'Chi phí cực rẻ để trải nghiệm sức mạnh trước khi mua dài hạn.',
+        note: 'Hỗ trợ Android, iOS và PC giả lập.'
+      },
+      {
+        name: 'Key 1 Ngày',
+        price: 25000,
+        action: 'Aimbot tự động ghim, định vị gắn đầu, ngưng đọng thời gian liên tục 24h.',
+        fix: 'Khắc phục delay tiếp đất, nhặt súng trước đối thủ trong chớp mắt.',
+        pros: 'Bản quyền cập nhật mới nhất, leo rank thoải mái suốt ngày.',
+        note: 'Hỗ trợ Android, iOS và PC.'
+      },
+      {
+        name: 'Key 7 Ngày (1 Tuần)',
+        price: 100000,
+        badge: 'Tiết kiệm',
+        action: 'Bản quyền 7 ngày với đầy đủ quyền năng mod menu bá đạo nhất.',
+        fix: 'Khắc phục lỗi văng game, tối ưu hóa đường truyền mạng.',
+        pros: 'Tiết kiệm chi phí, hỗ trợ fix lỗi và cập nhật key mới 24/7.',
+        note: 'Hỗ trợ Android, iOS và PC.'
+      },
+      {
+        name: 'Key 15 Ngày',
+        price: 150000,
+        action: 'Gói nửa tháng trải nghiệm đầy đủ menu TrollModz đỉnh cao.',
+        fix: 'Cập nhật bypass liên tục theo từng bản vá nhỏ của game.',
+        pros: 'Tự do tùy chỉnh bật/tắt từng tính năng theo ý muốn.',
+        note: 'Hỗ trợ Android, iOS và PC.'
+      },
+      {
+        name: 'Key 30 Ngày (1 Tháng)',
+        price: 250000,
+        badge: 'Phổ biến',
+        action: 'Gói tháng toàn diện, chiến game thả ga cả mùa giải xếp hạng.',
+        fix: 'Bảo vệ tài khoản tối đa với cơ chế chống report nâng cao.',
+        pros: 'Gói được đông đảo anh em game thủ tin tưởng lựa chọn nhất.',
+        note: 'Hỗ trợ Android, iOS và PC.'
+      }
+    ]
+  },
+  {
+    id: 'sx2-dinhvi',
+    category: 'SX2 & Panel',
+    plat: 'Android No Root',
+    buyers: '1.9k+ Đã mua',
+    name: 'Sx2 Team External No root v1.0',
+    shortDesc: 'Radar định vị, ESP xuyên tường, Freeze Player, Aim Lag, No Root 100%.',
+    fullDesc: 'Sx2 Team External No root v1.0 (Android) — Phiên bản không cần Root máy:\n• Freeze Player: Đóng băng / làm chậm cử động đối thủ.\n• Radar Enemy: Quét và định vị toàn bộ vị trí kẻ địch trên bản đồ.\n• Esp: Vẽ khung viền, khoảng cách định vị xuyên vật cản.\n• Aim Lag: Giảm độ trễ vuốt tâm, đạn bám dính mục tiêu cực nhạy.\n• Ghost Hack: Tàng hình di chuyển, đánh lừa tầm nhìn đối phương.\n• Scoop Freez: Cố định tâm súng, khóa góc bắn chuẩn xác khi bật Scope.\n• New Moco (Off): Chế độ Moco tùy biến nâng cao, an toàn tuyệt đối.',
+    priceMin: 30000,
+    priceMax: 400000,
+    image: 'assets/uploads/products/sx2-external.jpg',
+    images: [
+      { src: 'assets/uploads/products/sx2-external.jpg', label: 'Radar Enemy', title: 'Sx2 External - Radar Định Vị & ESP Xuyên Tường' }
+    ],
+    plans: [
+      {
+        name: 'Gói 1 Ngày',
+        price: 30000,
+        action: 'Radar Enemy quét địch, ESP vẽ khung xuyên tường, Freeze Player làm chậm đối phương.',
+        fix: 'Khắc phục điểm mù, phát hiện đối thủ nấp bụi cỏ hoặc sau vật cản.',
+        pros: 'Không cần Root máy (No Root 100%), cài đặt đơn giản trong 1 phút.',
+        note: 'Dành riêng cho các thiết bị Android No Root.'
+      },
+      {
+        name: 'Gói 7 Ngày (1 Tuần)',
+        price: 80000,
+        badge: 'Khuyên dùng',
+        action: 'Full tính năng: Radar, ESP, Aim Lag bám dính mục tiêu, Ghost Hack, Scoop Freez.',
+        fix: 'Khắc phục độ trễ vuốt tâm, khóa góc bắn chuẩn xác khi bật Scope.',
+        pros: 'Tiết kiệm chi phí, an toàn tuyệt đối khi leo rank tuần.',
+        note: 'Hỗ trợ Android No Root.'
+      },
+      {
+        name: 'Gói 30 Ngày (1 Tháng)',
+        price: 200000,
+        badge: 'Phổ biến',
+        action: 'Trọn bộ External cao cấp 1 tháng, hỗ trợ cập nhật phiên bản mới liên tục.',
+        fix: 'Tối ưu độ mượt mà, chế độ New Moco tùy biến chống phát hiện.',
+        pros: 'Gói cày rank chuyên nghiệp, ổn định dài lâu.',
+        note: 'Hỗ trợ Android No Root.'
+      },
+      {
+        name: 'Gói Vĩnh Viễn',
+        price: 400000,
+        badge: 'VIP',
+        action: 'Sở hữu vĩnh viễn không giới hạn thời gian mọi tính năng của Sx2 External.',
+        fix: 'Bảo hành cập nhật trọn đời máy, đổi key miễn phí khi đổi máy.',
+        pros: 'Đầu tư 1 lần dùng mãi mãi, hỗ trợ kỹ thuật ưu tiên 1:1 từ Admin.',
+        note: 'Hỗ trợ Android No Root trọn đời.'
+      }
+    ]
+  },
+  {
+    id: 'proxy-ios-novax',
+    category: 'Proxy iOS',
+    plat: 'iPhone · iPad',
+    buyers: '2.1k+ Đã mua',
+    name: 'Proxy iOS - Nova X',
+    shortDesc: 'Aimdrag, Aim cổ, Aimbody, Aim Magic, ESP Ghim đầu nhẹ tâm iOS.',
+    fullDesc: 'Proxy iOS Nova X - Công nghệ kéo tâm cao cấp nhất cho iPhone / iPad.\nTính năng: Aimdrag, Aim cổ, Aimbody, Aim Magic (đạn ma thuật), ESP Aimcheck định vị ghim đầu, kéo tâm cực nhẹ và mượt mà.',
+    priceMin: 20000,
+    priceMax: 200000,
+    image: 'assets/uploads/products/novax.jpg',
+    images: [
+      { src: 'assets/uploads/products/novax.jpg', label: 'Nova X VIP', title: 'Proxy iOS Nova X - Đỉnh Cao Kéo Tâm iPhone & iPad' },
+      { src: 'proxy-ios.png', label: 'ESP Ghim Đầu', title: 'ESP AIMCHECK R8 - Định Vị Ghim Đầu' },
+      { src: 'proxy-ios-aimdrag.png', label: 'Aim Drag', title: 'Aim Drag - Kéo Tâm Chuẩn Xác' },
+      { src: 'proxy-ios-magic.png', label: 'Aim Magic', title: 'Aim Magic - Đạn Ma Thuật' },
+      { src: 'proxy-ios-co.png', label: 'Aim Cổ', title: 'Aim Cổ - Khóa Góc Cổ Địch' }
+    ],
+    plans: [
+      {
+        name: 'Key 1 Ngày',
+        price: 20000,
+        action: 'Aimdrag, Aim cổ, Aimbody, Aim Magic (đạn ma thuật), ESP Aimcheck R8.',
+        fix: 'Khắc phục tâm bị nặng, vuốt khó lên đầu trên iPhone & iPad.',
+        pros: 'Kéo tâm cực nhẹ, mượt mà chuẩn như tuyển thủ thi đấu chuyên nghiệp.',
+        note: 'Hỗ trợ mọi đời máy iPhone và iPad, không cần Jailbreak.'
+      },
+      {
+        name: 'Key 7 Ngày (1 Tuần)',
+        price: 50000,
+        badge: 'Tiết kiệm',
+        action: 'Trải nghiệm 7 ngày công nghệ Proxy kéo tâm đỉnh cao nhất cho iOS.',
+        fix: 'Khắc phục trễ lệnh cảm ứng, đạn ôm đầu tự nhiên không lộ liễu.',
+        pros: 'Tiết kiệm hơn 60% so với mua lẻ theo từng ngày.',
+        note: 'Dành riêng cho iPhone và iPad.'
+      },
+      {
+        name: 'Key 30 Ngày (1 Tháng)',
+        price: 100000,
+        badge: 'Phổ biến',
+        action: 'Gói tháng trọn vẹn, cấu hình Proxy riêng biệt tốc độ cao không lag giật.',
+        fix: 'Chống giật lag ping, giữ tâm ổn định suốt cả mùa rank.',
+        pros: 'Lựa chọn số 1 của cộng đồng game thủ iOS.',
+        note: 'Dành riêng cho iPhone và iPad.'
+      },
+      {
+        name: 'Key Vĩnh Viễn',
+        price: 200000,
+        badge: 'VIP',
+        action: 'Sử dụng trọn đời phiên bản Proxy Nova X, không lo hết hạn key.',
+        fix: 'Cập nhật máy chủ Proxy trọn đời, bảo vệ tài khoản an toàn 100%.',
+        pros: 'Gói VIP kinh tế nhất, dùng thoải mái không giới hạn.',
+        note: 'Dành riêng cho iPhone và iPad, bảo hành trọn đời.'
+      }
+    ]
+  },
+  {
+    id: 'proxy-ios-delta',
+    category: 'Proxy iOS',
+    plat: 'iPhone · iPad',
+    buyers: '2.3k+ Đã mua',
+    name: 'Proxy Aim iOS - Delta',
+    shortDesc: 'Aimdrag, Aim cổ, Aimbody, Aim Magic, ESP Aimcheck R8 định vị ghim đầu.',
+    fullDesc: 'Proxy iOS Delta - Bản kéo tâm tối ưu đường truyền mượt mà.\nTính năng: Hỗ trợ kéo tâm không giật lag, tự động ôm đầu, ổn định cho mọi phiên bản iOS (Không hỗ trợ gói vĩnh viễn).',
+    priceMin: 20000,
+    priceMax: 100000,
+    image: 'proxy-ios.png',
+    images: [
+      { src: 'proxy-ios.png', label: 'ESP Ghim Đầu', title: 'ESP AIMCHECK R8 - Định Vị Ghim Đầu' },
+      { src: 'proxy-ios-aimdrag.png', label: 'Aim Drag', title: 'Aim Drag - Kéo Tâm Chuẩn Xác' },
+      { src: 'proxy-ios-magic.png', label: 'Aim Magic', title: 'Aim Magic - Đạn Ma Thuật' },
+      { src: 'proxy-ios-co.png', label: 'Aim Cổ', title: 'Aim Cổ - Khóa Góc Cổ Địch' },
+      { src: 'proxy-ios-body.png', label: 'AimBody', title: 'AimBody - Bám Thân Trúng Đạn 100%' }
+    ],
+    plans: [
+      {
+        name: 'Key 1 Ngày',
+        price: 20000,
+        action: 'Aimdrag, Aim cổ, Aimbody, Aim Magic, ESP Aimcheck R8 định vị ghim đầu.',
+        fix: 'Khắc phục giật lag, kéo tâm không mượt trên hệ điều hành iOS.',
+        pros: 'Đường truyền tối ưu mượt mà, ôm đầu tức thì khi vừa chạm nút bắn.',
+        note: 'Hỗ trợ iOS, không có phiên bản vĩnh viễn.'
+      },
+      {
+        name: 'Key 1 Tuần (7 Ngày)',
+        price: 50000,
+        badge: 'Tiết kiệm',
+        action: 'Full bộ tính năng kéo tâm Delta mượt mà trong suốt 7 ngày.',
+        fix: 'Khắc phục tình trạng đạn lạc, hỗ trợ ghìm tâm tầm trung và gần.',
+        pros: 'Chi phí hợp lý, dễ dàng kích hoạt chỉ trong 1 nốt nhạc.',
+        note: 'Hỗ trợ toàn bộ dòng máy iPhone / iPad.'
+      },
+      {
+        name: 'Key 1 Tháng (30 Ngày)',
+        price: 100000,
+        badge: 'Phổ biến',
+        action: 'Cấu hình Delta chuyên dụng 30 ngày cho cày cuốc leo rank cao.',
+        fix: 'Ổn định tâm súng tối đa, không rung giật màn hình khi giao tranh căng thẳng.',
+        pros: 'Gói tháng tiết kiệm và tiện lợi nhất cho bản Delta.',
+        note: 'Hỗ trợ toàn bộ dòng máy iPhone / iPad.'
+      }
+    ]
+  },
+  {
+    id: 'panel-adr',
+    category: 'SX2 & Panel',
+    plat: 'Android',
+    buyers: '1.6k+ Đã mua',
+    name: 'Panel External (Android)',
+    shortDesc: 'Panel định vị radar, ESP, kéo tâm mượt không rung giật lag.',
+    fullDesc: 'Panel External cao cấp dành cho thiết bị Android:\n- Radar overlay, ESP gắn đầu, hiển thị khoảng cách địch.\n- Tối ưu độ nhạy màn hình cảm ứng, kéo tâm bám đầu tức thì.',
+    priceMin: 150000,
+    priceMax: 450000,
+    image: 'assets/uploads/products/sx2-external.jpg',
+    images: [
+      { src: 'assets/uploads/products/sx2-external.jpg', label: 'Panel SX2', title: 'Panel External Android No Root' }
+    ],
+    plans: [
+      {
+        name: 'Gói 7 Ngày (1 Tuần)',
+        price: 150000,
+        badge: 'Tiết kiệm',
+        action: 'Radar overlay định vị địch, ESP gắn đầu, hiển thị khoảng cách mục tiêu.',
+        fix: 'Khắc phục giật lag cảm ứng trên Android, tối ưu hóa độ nhạy vuốt tâm.',
+        pros: 'Giao diện Panel trực quan, bật tắt tính năng ngay trong trận đấu.',
+        note: 'Dành riêng cho các dòng máy Android No Root.'
+      },
+      {
+        name: 'Gói 30 Ngày (1 Tháng)',
+        price: 450000,
+        badge: 'Phổ biến',
+        action: 'Full quyền sử dụng Panel External 30 ngày với máy chủ định vị cao cấp.',
+        fix: 'Khắc phục hoàn toàn hiện tượng lệch tâm khi đối thủ chạy xe hoặc di chuyển nhanh.',
+        pros: 'Được hỗ trợ cập nhật tính năng mới liên tục trong suốt tháng.',
+        note: 'Dành riêng cho các dòng máy Android No Root.'
+      }
+    ]
+  },
+  {
+    id: 'migul-lite',
+    category: 'Menu & Mod',
+    plat: 'iOS',
+    buyers: '1.4k+ Đã mua',
+    name: 'Menu Migul Lite (iOS)',
+    shortDesc: 'Nhẹ, mượt, Aimbot, Visuals ESP, chống khóa acc cực tốt.',
+    fullDesc: 'Menu Migul Lite dành riêng cho iOS:\n- Dung lượng siêu nhẹ, không tụt FPS.\n- Aimbot tự động ghim, Visuals ESP định vị chuẩn xác.\n- Chống khóa tài khoản, an toàn khi leo rank.',
+    priceMin: 50000,
+    priceMax: 350000,
+    image: 'menu-lite.png',
+    images: [
+      { src: 'menu-lite.png', label: 'Migul Lite', title: 'Menu Migul Lite Siêu Nhẹ Cho iOS' }
+    ],
+    plans: [
+      {
+        name: 'Key 1 Ngày',
+        price: 50000,
+        action: 'Aimbot tự động ghim mục tiêu, Visuals ESP định vị chuẩn xác qua vật cản.',
+        fix: 'Khắc phục tụt FPS, dung lượng siêu nhẹ không gây nóng máy.',
+        pros: 'Bypass an toàn, chống khóa tài khoản cực tốt khi chiến đấu.',
+        note: 'Hỗ trợ các thiết bị iOS.'
+      },
+      {
+        name: 'Key 7 Ngày (1 Tuần)',
+        price: 150000,
+        badge: 'Tiết kiệm',
+        action: 'Bản quyền 7 ngày Menu Migul Lite mượt mà, định vị và ghìm tâm cực chuẩn.',
+        fix: 'Chống quét tài khoản khi tham gia leo rank cường độ cao.',
+        pros: 'Giao diện trực quan, dễ bật tắt các tính năng theo ý muốn.',
+        note: 'Hỗ trợ các thiết bị iOS.'
+      },
+      {
+        name: 'Key 30 Ngày (1 Tháng)',
+        price: 350000,
+        badge: 'Phổ biến',
+        action: 'Trải nghiệm 1 tháng liên tục menu mod siêu nhẹ dành riêng cho iOS.',
+        fix: 'Duy trì hiệu năng máy ổn định, không lo giật lag hay văng game.',
+        pros: 'Gói tháng tiết kiệm cho game thủ cày rank dài hạn.',
+        note: 'Hỗ trợ các thiết bị iOS.'
+      }
+    ]
+  },
+  {
+    id: 'migul-pro',
+    category: 'Menu & Mod',
+    plat: 'iOS',
+    buyers: '2.2k+ Đã mua',
+    name: 'Menu Migul Pro (iOS)',
+    shortDesc: 'Bản Pro cao cấp nhất, full tính năng bá đạo, bypass an toàn.',
+    fullDesc: 'Menu Migul Pro cao cấp nhất cho iOS:\n- Đầy đủ tính năng: Aimbot 360 độ, ESP name/box/line, Teleport, Auto Kill.\n- Hệ thống Bypass bảo vệ chống quét 100% an toàn.',
+    priceMin: 10000,
+    priceMax: 450000,
+    image: 'menu-lite.png',
+    images: [
+      { src: 'menu-lite.png', label: 'Migul Pro', title: 'Menu Migul Pro Full Tính Năng Vip iOS' }
+    ],
+    plans: [
+      {
+        name: 'Key 1 Giờ (Test)',
+        price: 10000,
+        action: 'Trải nghiệm thử toàn bộ tính năng siêu cấp: Aimbot 360, ESP, Teleport, Auto Kill.',
+        fix: 'Kiểm tra độ tương thích và mượt mà trên thiết bị trước khi mua dài hạn.',
+        pros: 'Chỉ 10k để trải nghiệm menu mod pro cao cấp nhất.',
+        note: 'Hỗ trợ các thiết bị iOS.'
+      },
+      {
+        name: 'Key 1 Ngày',
+        price: 70000,
+        action: 'Aimbot 360 độ, ESP name/box/line, Teleport, Auto Kill trọn vẹn 24 giờ.',
+        fix: 'Hệ thống Bypass cao cấp bảo vệ an toàn 100% trước đợt quét.',
+        pros: 'Sức mạnh tuyệt đối, hạ gục đối thủ dễ dàng trong nháy mắt.',
+        note: 'Hỗ trợ các thiết bị iOS.'
+      },
+      {
+        name: 'Key 7 Ngày (1 Tuần)',
+        price: 215000,
+        badge: 'Tiết kiệm',
+        action: 'Gói tuần bá đạo, thống trị mọi trận đấu trong chế độ Sinh Tồn và Tử Chiến.',
+        fix: 'Khắc phục mọi hạn chế của game, tối ưu tỷ lệ chiến thắng tối đa.',
+        pros: 'Tiết kiệm hơn 50% so với mua key ngày.',
+        note: 'Hỗ trợ các thiết bị iOS.'
+      },
+      {
+        name: 'Key 30 Ngày (1 Tháng)',
+        price: 450000,
+        badge: 'VIP',
+        action: 'Bản quyền 1 tháng full tính năng VIP cao cấp nhất của dòng họ Migul.',
+        fix: 'Bảo vệ tài khoản liên tục với hệ thống cập nhật bypass tự động.',
+        pros: 'Đặc quyền hỗ trợ VIP 1:1 từ Admin Shop Đại Phú FF.',
+        note: 'Hỗ trợ các thiết bị iOS.'
+      }
+    ]
+  }
+];
+
+/* ═══════ STATE ═══════ */
+var activeCategory = 'all';
+var searchQuery = '';
+var sortOrder = 'default';
+var currentProduct = null;
+var currentPlan = null;
+var currentOrderMemo = '';
+var currentPayAmountRaw = 0;
+var cardSelectedPlan = {}; // productId -> planIndex
+var pendingPurchase = null; // { productId, planIdx }
+
+/* ═══════ HELPERS ═══════ */
+function formatVND(n) {
+  if (typeof n !== 'number') n = Number(n) || 0;
+  return n.toLocaleString('vi-VN') + 'đ';
+}
+
+function cleanPlanLabel(name) {
+  return name.replace(/^(Key|Gói|Bản)\s+/i, '').replace(/\s*\([^)]*\)/g, '');
+}
+
+/* ═══════ AUTH LOGIC ═══════ */
+function getCurrentUser() {
+  try {
+    var raw = localStorage.getItem('daiphu_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function isLoggedIn() {
+  return !!getCurrentUser();
+}
+
+function updateAuthUI() {
+  var user = getCurrentUser();
+  var topBtn = document.getElementById('topAuthBtn');
+  var sideTitle = document.getElementById('sideUserTitle');
+  var sideSub = document.getElementById('sideUserSub');
+  var sideBtn = document.getElementById('sideAuthBtn');
+
+  if (user && user.username) {
+    if (topBtn) {
+      topBtn.innerHTML = '<i class="fa-solid fa-circle-user"></i> ' + user.username;
+      topBtn.setAttribute('title', 'Bấm để đăng xuất');
+      topBtn.onclick = handleLogout;
+    }
+    if (sideTitle) sideTitle.textContent = 'Chào, ' + user.username + ' ⭐';
+    if (sideSub) sideSub.textContent = 'Tài khoản thành viên VIP (SĐT: ' + (user.phone || 'Đã liên kết') + ') đã sẵn sàng mua hàng & nhận key.';
+    if (sideBtn) {
+      sideBtn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Đăng xuất';
+      sideBtn.onclick = handleLogout;
+    }
+  } else {
+    if (topBtn) {
+      topBtn.innerHTML = 'Đăng nhập';
+      topBtn.removeAttribute('title');
+      topBtn.onclick = function() { openLogin(); };
+    }
+    if (sideTitle) sideTitle.textContent = 'Đăng nhập để mua hàng';
+    if (sideSub) sideSub.textContent = 'Đăng nhập hoặc tạo tài khoản để thanh toán và nhận sản phẩm sau khi mua.';
+    if (sideBtn) {
+      sideBtn.innerHTML = 'Đăng nhập / Đăng ký';
+      sideBtn.onclick = function() { openLogin(); };
+    }
+  }
+}
+
+function switchAuthTab(tab) {
+  var tabLogin = document.getElementById('tabLogin');
+  var tabRegister = document.getElementById('tabRegister');
+  var formLogin = document.getElementById('formLogin');
+  var formRegister = document.getElementById('formRegister');
+
+  if (tab === 'login') {
+    if (tabLogin) tabLogin.classList.add('active');
+    if (tabRegister) tabRegister.classList.remove('active');
+    if (formLogin) formLogin.style.display = 'block';
+    if (formRegister) formRegister.style.display = 'none';
+  } else {
+    if (tabLogin) tabLogin.classList.remove('active');
+    if (tabRegister) tabRegister.classList.add('active');
+    if (formLogin) formLogin.style.display = 'none';
+    if (formRegister) formRegister.style.display = 'block';
+  }
+}
+
+function openLogin(noticeHtml) {
+  var noticeEl = document.getElementById('authNotice');
+  if (noticeEl) {
+    if (noticeHtml) {
+      noticeEl.innerHTML = noticeHtml;
+      noticeEl.style.display = 'flex';
+    } else {
+      noticeEl.style.display = 'none';
+    }
+  }
+  document.body.style.overflow = 'hidden';
+  var m = document.getElementById('loginModal');
+  if (m) m.classList.add('open');
+}
+
+function closeLoginModal() {
+  document.body.style.overflow = '';
+  var m = document.getElementById('loginModal');
+  if (m) m.classList.remove('open');
+  if (!isLoggedIn()) {
+    pendingPurchase = null;
+  }
+}
+
+function handleLoginSubmit(e) {
+  e.preventDefault();
+  var u = document.getElementById('loginUser').value.trim();
+  if (!u) return;
+
+  var userObj = { username: u, phone: '' };
+  localStorage.setItem('daiphu_user', JSON.stringify(userObj));
+  updateAuthUI();
+  closeLoginModal();
+  toast('🎉', 'Đăng nhập thành công! Chào mừng ' + u);
+
+  // Resume pending purchase if any
+  if (pendingPurchase) {
+    var p = PRODUCTS.find(function(item) { return item.id === pendingPurchase.productId; });
+    if (p && p.plans[pendingPurchase.planIdx]) {
+      var plan = p.plans[pendingPurchase.planIdx];
+      pendingPurchase = null;
+      startPaymentForPlan(p, plan);
+    }
+  }
+}
+
+function handleRegisterSubmit(e) {
+  e.preventDefault();
+  var u = document.getElementById('regUser').value.trim();
+  var phone = document.getElementById('regPhone').value.trim();
+  if (!u) return;
+
+  var userObj = { username: u, phone: phone };
+  localStorage.setItem('daiphu_user', JSON.stringify(userObj));
+  updateAuthUI();
+  closeLoginModal();
+  toast('🎉', 'Đăng ký tài khoản thành công! Chào mừng ' + u);
+
+  // Resume pending purchase if any
+  if (pendingPurchase) {
+    var p = PRODUCTS.find(function(item) { return item.id === pendingPurchase.productId; });
+    if (p && p.plans[pendingPurchase.planIdx]) {
+      var plan = p.plans[pendingPurchase.planIdx];
+      pendingPurchase = null;
+      startPaymentForPlan(p, plan);
+    }
+  }
+}
+
+function handleLogout() {
+  localStorage.removeItem('daiphu_user');
+  updateAuthUI();
+  toast('👋', 'Đã đăng xuất khỏi tài khoản.');
+}
+
+/* ═══════ RENDER PRODUCTS WITH PRICE RANGE ═══════ */
+function renderProducts() {
+  var grid = document.getElementById('product-grid');
+  var empty = document.getElementById('product-empty');
+  var countEl = document.getElementById('product-count');
+  if (!grid) return;
+
+  var filtered = PRODUCTS.filter(function(p) {
+    var matchCat = (activeCategory === 'all' || p.category === activeCategory);
+    var q = searchQuery.toLowerCase().trim();
+    var matchSearch = !q || p.name.toLowerCase().includes(q) || p.shortDesc.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+
+  if (sortOrder === 'price-asc') {
+    filtered.sort(function(a, b) { return a.priceMin - b.priceMin; });
+  } else if (sortOrder === 'price-desc') {
+    filtered.sort(function(a, b) { return b.priceMin - a.priceMin; });
+  } else if (sortOrder === 'name') {
+    filtered.sort(function(a, b) { return a.name.localeCompare(b.name); });
+  }
+
+  countEl.textContent = filtered.length + ' sản phẩm';
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  var html = '';
+  filtered.forEach(function(p) {
+    // Build mini plan chips for the card
+    var chipsHtml = '<div class="card-plans">';
+    p.plans.forEach(function(plan, idx) {
+      var badgeCls = plan.badge ? ' ' + getBadgeClass(plan.badge) : '';
+      chipsHtml += '<span class="card-plan-chip' + badgeCls + '" data-pid="' + p.id + '" onclick="event.stopPropagation();openBuyModalById(\'' + p.id + '\', ' + idx + ')">'
+        + cleanPlanLabel(plan.name) + ' · ' + formatVND(plan.price)
+      + '</span>';
+    });
+    chipsHtml += '</div>';
+
+    var thumbHtml = '';
+    if (p.image) {
+      thumbHtml = '<img class="js-product-image" src="' + p.image + '" alt="' + p.name + '" loading="lazy">';
+    } else {
+      thumbHtml = '<div class="thumb-no-img"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Chờ Cập Nhật Ảnh</span></div>';
+    }
+
+    // Khoảng giá từ thấp đến cao (50.000đ → 500.000đ)
+    var priceRangeHtml = '<div class="card-price-range">'
+      + '<div class="card-price-val">' + formatVND(p.priceMin) + ' <span class="card-price-arrow">→</span> ' + formatVND(p.priceMax) + '</div>'
+      + '<div class="card-price-sub">' + p.plans.length + ' phiên bản lựa chọn</div>'
+    + '</div>';
+
+    html += '<article class="product product-clickable" data-category="' + p.category + '" data-price="' + p.priceMin + '" data-name="' + p.name.toLowerCase() + '" onclick="openBuyModalById(\'' + p.id + '\')">'
+      + '<div class="product-thumb">'
+        + '<span class="tag">' + p.buyers + '</span>'
+        + thumbHtml
+        + '<i class="fa-solid fa-crown image-fallback"></i>'
+      + '</div>'
+      + '<div class="product-meta"><span>' + p.category + '</span><i class="fa-solid fa-circle"></i><span>' + (p.plat || 'iOS & Adr') + '</span></div>'
+      + '<h3>' + p.name + '</h3>'
+      + '<p>' + p.shortDesc + '</p>'
+      + chipsHtml
+      + priceRangeHtml
+      + '<a class="btn btn-buy btn-block" style="margin-top:10px;" href="javascript:void(0)" onclick="event.stopPropagation();openBuyModalById(\'' + p.id + '\')">'
+        + '<span>Xem chi tiết & Mua</span><i class="fa-solid fa-arrow-right"></i>'
+      + '</a>'
+    + '</article>';
+  });
+
+  grid.innerHTML = html;
+}
+
+/* ═══════ 14 REAL CUSTOMER FEEDBACK ═══════ */
+function renderFeedback() {
+  var grid = document.getElementById('fb-grid');
+  if (!grid) return;
+  var html = '';
+  for (var i = 1; i <= 14; i++) {
+    var imgSrc = 'feedback-' + i + '.jpg';
+    html += '<div class="fb-card" onclick="openLB(\'' + imgSrc + '\')">'
+      + '<div class="fb-card-thumb">'
+        + '<img src="' + imgSrc + '" alt="Khách hàng feedback ' + i + '" loading="lazy">'
+      + '</div>'
+      + '<div class="fb-card-body">'
+        + '<div class="fb-badge"><i class="fa-solid fa-circle-check"></i> Đã Mua & Sử Dụng Tốt</div>'
+        + '<div class="fb-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>'
+        + '<div class="fb-title">Feedback Khách Hàng #' + i + '</div>'
+      + '</div>'
+    + '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+/* ═══════ FILTER & SEARCH EVENTS ═══════ */
+document.querySelectorAll('.filter-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    activeCategory = btn.getAttribute('data-category-filter');
+    renderProducts();
+  });
+});
+
+var searchInput = document.getElementById('product-search');
+if (searchInput) {
+  searchInput.addEventListener('input', function(e) {
+    searchQuery = e.target.value;
+    renderProducts();
+  });
+}
+
+var sortSelect = document.getElementById('product-sort');
+if (sortSelect) {
+  sortSelect.addEventListener('change', function(e) {
+    sortOrder = e.target.value;
+    renderProducts();
+  });
+}
+
+var resetBtn = document.getElementById('reset-products');
+if (resetBtn) {
+  resetBtn.addEventListener('click', function() {
+    activeCategory = 'all';
+    searchQuery = '';
+    sortOrder = 'default';
+    if (searchInput) searchInput.value = '';
+    if (sortSelect) sortSelect.value = 'default';
+    document.querySelectorAll('.filter-btn').forEach(function(b) {
+      b.classList.toggle('active', b.getAttribute('data-category-filter') === 'all');
+    });
+    renderProducts();
+  });
+}
+
+/* ═══════ BADGE CLASS HELPER ═══════ */
+function getBadgeClass(badge) {
+  if (!badge) return '';
+  var b = badge.toLowerCase();
+  if (b.includes('tiết kiệm')) return 'm-badge-save';
+  if (b.includes('phổ biến')) return 'm-badge-popular';
+  if (b.includes('khuyên dùng')) return 'm-badge-recom';
+  if (b.includes('vip')) return 'm-badge-vip';
+  if (b.includes('bán chạy') || b.includes('đề xuất')) return 'm-badge-hot';
+  if (b.includes('cực phẩm')) return 'm-badge-super';
+  return 'm-badge-popular';
+}
+
+/* ═══════ MODAL BUY & VERSION BLOCKS & VIETQR ═══════ */
+function openBuyModalById(id, targetPlanIdx) {
+  var p = PRODUCTS.find(function(item) { return item.id === id; });
+  if (!p) return;
+  currentProduct = p;
+
+  // Reset to step 1
+  goToStep(1);
+
+  // Populate title & subtitle
+  var titleEl = document.getElementById('mProdTitle');
+  var subEl = document.getElementById('mProdSub');
+  if (titleEl) titleEl.textContent = p.name;
+  if (subEl) {
+    var rawName = p.name.split(' (')[0];
+    subEl.textContent = rawName + ' · ' + (p.plat || 'iOS & Adr') + ' · ' + p.buyers;
+  }
+
+  // Populate Range Banner
+  var rangePriceEl = document.getElementById('mRangePrice');
+  var rangeCountEl = document.getElementById('mRangeCount');
+  if (rangePriceEl) rangePriceEl.textContent = formatVND(p.priceMin) + ' → ' + formatVND(p.priceMax);
+  if (rangeCountEl) rangeCountEl.textContent = p.plans.length + ' phiên bản riêng biệt';
+
+  // Render Version Blocks & Quick Nav Pills
+  renderModalVersionBlocks(p, targetPlanIdx || 0);
+
+  // Populate gallery & thumbnails
+  var imgs = (p.images && p.images.length > 0) ? p.images : (
+    p.image ? [{ src: p.image, label: p.name.split(' (')[0], title: p.shortDesc }] : []
+  );
+
+  // Set default main preview
+  if (imgs.length > 0) {
+    selectModalThumb(imgs[0].src, imgs[0].label || 'Tính năng', imgs[0].title || p.name, null);
+  } else {
+    selectModalThumb('', 'Chờ Cập Nhật', p.name, null);
+  }
+
+  // Render thumbnail list
+  var thumbsHeader = document.getElementById('mThumbsHeader');
+  var thumbsGrid = document.getElementById('mThumbsGrid');
+  if (thumbsGrid) {
+    if (imgs.length > 1) {
+      if (thumbsHeader) thumbsHeader.style.display = 'flex';
+      thumbsGrid.style.display = 'grid';
+      var thumbsHtml = '';
+      imgs.forEach(function(imgItem, i) {
+        var isAct = i === 0 ? ' active' : '';
+        thumbsHtml += '<div class="m-thumb-item' + isAct + '" onclick="selectModalThumb(\'' + imgItem.src + '\', \'' + (imgItem.label || '').replace(/'/g, "\\'") + '\', \'' + (imgItem.title || '').replace(/'/g, "\\'") + '\', this)">'
+          + '<img class="m-thumb-img" src="' + imgItem.src + '" alt="' + (imgItem.label || '') + '">'
+          + '<span class="m-thumb-title">' + (imgItem.label || '') + '</span>'
+        + '</div>';
+      });
+      thumbsGrid.innerHTML = thumbsHtml;
+    } else {
+      if (thumbsHeader) thumbsHeader.style.display = 'none';
+      thumbsGrid.style.display = 'none';
+      thumbsGrid.innerHTML = '';
+    }
+  }
+
+  // Open modal & lock scroll
+  document.getElementById('buyModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // If specific plan was requested, scroll to it
+  if (typeof targetPlanIdx === 'number' && targetPlanIdx > 0) {
+    setTimeout(function() {
+      jumpToVersionBlock(p.id, targetPlanIdx);
+    }, 200);
+  }
+}
+
+/* RENDER TỪNG KHỐI PHIÊN BẢN RIÊNG BIỆT (BLOCK 1.0, BLOCK 2.0...) */
+function renderModalVersionBlocks(p, activeIdx) {
+  var quickNavEl = document.getElementById('mQuickNav');
+  var blocksEl = document.getElementById('mVersionBlocks');
+  if (!blocksEl) return;
+
+  var quickHtml = '';
+  var blocksHtml = '';
+
+  p.plans.forEach(function(plan, idx) {
+    var isTarget = idx === activeIdx;
+    var pillAct = isTarget ? ' active' : '';
+
+    // Quick nav pill
+    quickHtml += '<button type="button" class="quick-nav-pill' + pillAct + '" id="qnp-' + p.id + '-' + idx + '" onclick="jumpToVersionBlock(\'' + p.id + '\', ' + idx + ')">'
+      + cleanPlanLabel(plan.name) + ' · ' + formatVND(plan.price)
+    + '</button>';
+
+    // Version Block Card
+    var badgeHtml = plan.badge ? '<span class="vb-badge-pill ' + getBadgeClass(plan.badge) + '">' + plan.badge + '</span>' : '';
+    
+    // Specs items
+    var specsHtml = '';
+    if (plan.action) {
+      specsHtml += '<div class="vb-spec-row">'
+        + '<div class="vb-spec-icon"><i class="fa-solid fa-bolt"></i></div>'
+        + '<div class="vb-spec-content">'
+          + '<div class="vb-spec-label">Tác dụng:</div>'
+          + '<div class="vb-spec-text">' + plan.action + '</div>'
+        + '</div>'
+      + '</div>';
+    }
+    if (plan.fix) {
+      specsHtml += '<div class="vb-spec-row">'
+        + '<div class="vb-spec-icon"><i class="fa-solid fa-shield-virus"></i></div>'
+        + '<div class="vb-spec-content">'
+          + '<div class="vb-spec-label">Khắc phục:</div>'
+          + '<div class="vb-spec-text">' + plan.fix + '</div>'
+        + '</div>'
+      + '</div>';
+    }
+    if (plan.pros) {
+      specsHtml += '<div class="vb-spec-row">'
+        + '<div class="vb-spec-icon"><i class="fa-solid fa-star"></i></div>'
+        + '<div class="vb-spec-content">'
+          + '<div class="vb-spec-label">Điểm mạnh nổi bật:</div>'
+          + '<div class="vb-spec-text">' + plan.pros + '</div>'
+        + '</div>'
+      + '</div>';
+    }
+    if (plan.note) {
+      specsHtml += '<div class="vb-spec-row">'
+        + '<div class="vb-spec-icon"><i class="fa-solid fa-circle-info"></i></div>'
+        + '<div class="vb-spec-content">'
+          + '<div class="vb-spec-label">Lưu ý & Thiết bị hỗ trợ:</div>'
+          + '<div class="vb-spec-text">' + plan.note + '</div>'
+        + '</div>'
+      + '</div>';
+    }
+
+    blocksHtml += '<div class="version-block-card" id="vb-' + p.id + '-' + idx + '">'
+      + '<div class="vb-header">'
+        + '<div class="vb-title-wrap">'
+          + '<h3 class="vb-title">' + plan.name + '</h3>'
+          + '<div class="vb-meta-row">'
+            + '<span class="vb-plat-badge"><i class="fa-solid fa-microchip"></i> ' + (p.plat || 'iOS & Android') + '</span>'
+            + badgeHtml
+          + '</div>'
+        + '</div>'
+        + '<div class="vb-price-box">'
+          + '<div class="vb-price">' + formatVND(plan.price) + '</div>'
+          + '<div class="vb-price-sub">Thanh toán 1 lần</div>'
+        + '</div>'
+      + '</div>'
+      + '<div class="vb-specs">'
+        + specsHtml
+      + '</div>'
+      + '<button type="button" class="btn-version-buy" onclick="handleBuyVersionClick(\'' + p.id + '\', ' + idx + ')">'
+        + '<i class="fa-solid fa-cart-shopping"></i> Mua Ngay ' + cleanPlanLabel(plan.name) + ' · ' + formatVND(plan.price)
+      + '</button>'
+    + '</div>';
+  });
+
+  if (quickNavEl) quickNavEl.innerHTML = quickHtml;
+  blocksEl.innerHTML = blocksHtml;
+}
+
+function jumpToVersionBlock(pId, idx) {
+  var target = document.getElementById('vb-' + pId + '-' + idx);
+  if (!target) return;
+
+  // Highlight pill
+  document.querySelectorAll('.quick-nav-pill').forEach(function(pill) {
+    pill.classList.remove('active');
+  });
+  var activePill = document.getElementById('qnp-' + pId + '-' + idx);
+  if (activePill) activePill.classList.add('active');
+
+  // Smooth scroll within modal right column
+  var col = document.querySelector('.m-info-col');
+  if (col) {
+    var offset = target.offsetTop - col.offsetTop - 10;
+    col.scrollTo({ top: offset, behavior: 'smooth' });
+  } else {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+/* XỬ LÝ KHI KHÁCH BẤM "MUA NGAY" Ở BẤT KỲ KHỐI PHIÊN BẢN NÀO */
+function handleBuyVersionClick(pId, planIdx) {
+  var p = PRODUCTS.find(function(item) { return item.id === pId; });
+  if (!p || !p.plans[planIdx]) return;
+  var plan = p.plans[planIdx];
+
+  // KIỂM TRA ĐĂNG NHẬP / ĐĂNG KÝ THEO YÊU CẦU ANH PHÚ
+  if (!isLoggedIn()) {
+    pendingPurchase = { productId: pId, planIdx: planIdx };
+    var noticeHtml = '<i class="fa-solid fa-triangle-exclamation"></i> Vui lòng <b>đăng nhập</b> hoặc <b>đăng ký tài khoản</b> để tiếp tục mua gói <strong>' + plan.name + ' (' + formatVND(plan.price) + ')</strong>.';
+    openLogin(noticeHtml);
+    toast('⚠️', 'Vui lòng đăng nhập hoặc tạo tài khoản để mua hàng!');
+    return;
+  }
+
+  // ĐÃ ĐĂNG NHẬP -> CHUYỂN QUA BƯỚC 2 QUÉT QR THANH TOÁN
+  startPaymentForPlan(p, plan);
+}
+
+function startPaymentForPlan(p, plan) {
+  currentProduct = p;
+  currentPlan = plan;
+  window.currentPayAmountRaw = plan.price;
+
+  // Sinh mã đơn hàng ngẫu nhiên duy nhất
+  var orderId = 'DP' + Math.floor(100000 + Math.random() * 900000);
+  window.currentOrderMemo = orderId;
+
+  // Điền thông tin vào Step 2
+  var s2Prod = document.getElementById('mStep2ProdName');
+  var s2Plan = document.getElementById('mStep2PlanName');
+  var s2Price = document.getElementById('mStep2Price');
+  var payAmt = document.getElementById('mPayAmount');
+  var memoEl = document.getElementById('mOrderMemo');
+  var botCodeEl = document.getElementById('mBotCode');
+
+  if (s2Prod) s2Prod.textContent = p.name;
+  if (s2Plan) s2Plan.textContent = plan.name;
+  if (s2Price) s2Price.textContent = formatVND(plan.price);
+  if (payAmt) payAmt.textContent = formatVND(plan.price);
+  if (memoEl) memoEl.textContent = orderId;
+  if (botCodeEl) botCodeEl.textContent = orderId;
+
+  // Tạo mã VietQR tự động
+  var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(orderId) + '&accountName=BUI%20VAN%20CAO';
+  var qrEl = document.getElementById('mQrCode');
+  if (qrEl) qrEl.src = qrUrl;
+
+  // Chuyển sang Bước 2
+  goToStep(2);
+
+  // Cuộn lên đầu cột chi tiết
+  var col = document.querySelector('.m-info-col');
+  if (col) col.scrollTo({ top: 0, behavior: 'smooth' });
+
+  toast('🛒', 'Đã chọn: ' + plan.name + ' (' + formatVND(plan.price) + '). Vui lòng quét QR.');
+}
+
+function selectModalThumb(imgSrc, label, title, thumbEl) {
+  var mainImg = document.getElementById('mPreviewImg');
+  var emptyEl = document.getElementById('mPreviewEmpty');
+  var zoomBtn = document.getElementById('mZoomBtn');
+  var badgeEl = document.getElementById('mPreviewBadge');
+  var titleEl = document.getElementById('mPreviewTitle');
+
+  if (imgSrc) {
+    if (mainImg) {
+      mainImg.style.display = 'block';
+      mainImg.style.opacity = '0.35';
+      setTimeout(function() {
+        mainImg.src = imgSrc;
+        mainImg.style.opacity = '1';
+      }, 120);
+    }
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (zoomBtn) zoomBtn.style.display = 'inline-flex';
+  } else {
+    if (mainImg) mainImg.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'flex';
+    if (zoomBtn) zoomBtn.style.display = 'none';
+  }
+
+  if (badgeEl) badgeEl.textContent = label || (imgSrc ? 'Tính năng' : 'Chờ Cập Nhật');
+  if (titleEl) titleEl.textContent = title || '';
+
+  if (thumbEl) {
+    document.querySelectorAll('.m-thumb-item').forEach(function(t) {
+      t.classList.remove('active');
+    });
+    thumbEl.classList.add('active');
+  }
+}
+
+function zoomCurrentPreview() {
+  var img = document.getElementById('mPreviewImg');
+  if (img && img.src && img.style.display !== 'none' && !img.src.endsWith('/')) {
+    openLB(img.src);
+  }
+}
+
+function goToStep(step) {
+  var s1 = document.getElementById('mStep1');
+  var s2 = document.getElementById('mStep2');
+  if (!s1 || !s2) return;
+  if (step === 1) {
+    s1.style.display = 'block';
+    s2.style.display = 'none';
+  } else if (step === 2) {
+    s1.style.display = 'none';
+    s2.style.display = 'block';
+  }
+}
+
+function closeBuyModal() {
+  var m = document.getElementById('buyModal');
+  if (m) m.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function confirmPaid() {
+  closeBuyModal();
+  openPaidModal();
+}
+
+function openPaidModal() {
+  var memo = window.currentOrderMemo || ('DP' + Math.floor(100000 + Math.random() * 900000));
+  window.currentOrderMemo = memo;
+
+  var confirmCodeEl = document.getElementById('paidConfirmCode');
+  var detailCodeEl = document.getElementById('paidDetailCode');
+  var detailProdEl = document.getElementById('paidDetailProd');
+  var detailPlanEl = document.getElementById('paidDetailPlan');
+  var detailPriceEl = document.getElementById('paidDetailPrice');
+  var detailTimeEl = document.getElementById('paidDetailTime');
+
+  if (confirmCodeEl) confirmCodeEl.textContent = memo;
+  if (detailCodeEl) detailCodeEl.textContent = memo;
+  if (detailProdEl) detailProdEl.textContent = currentProduct ? currentProduct.name : 'AimLock iOS';
+  if (detailPlanEl) detailPlanEl.textContent = currentPlan ? currentPlan.name : 'Gói 1 tháng';
+  if (detailPriceEl) detailPriceEl.textContent = currentPlan ? formatVND(currentPlan.price) : '50.000đ';
+  if (detailTimeEl) detailTimeEl.textContent = formatCurrentDateTime();
+
+  var m = document.getElementById('paidModal');
+  if (m) m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePaidModal() {
+  var m = document.getElementById('paidModal');
+  if (m) m.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function copyPaidSyntax() {
+  var memo = window.currentOrderMemo || (document.getElementById('paidConfirmCode') ? document.getElementById('paidConfirmCode').textContent.trim() : 'DP487340');
+  var cmd = '!done ' + memo;
+  
+  if (!navigator.clipboard) {
+    var ta = document.createElement('textarea');
+    ta.value = cmd;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  } else {
+    navigator.clipboard.writeText(cmd);
+  }
+
+  var copyBtnText = document.getElementById('paidCopyText');
+  if (copyBtnText) {
+    var oldText = copyBtnText.textContent;
+    copyBtnText.textContent = 'Đã chép!';
+    setTimeout(function() {
+      copyBtnText.textContent = oldText;
+    }, 2000);
+  }
+  toast('📋', 'Đã sao chép: ' + cmd + ' (Gửi cho Bot Zalo)');
+}
+
+function formatCurrentDateTime() {
+  var now = new Date();
+  var pad = function(n) { return n < 10 ? '0' + n : n; };
+  return pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds()) + ' ' + now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
+}
+
+/* ═══════ COPY TEXT FUNCTION ═══════ */
+function copyText(str, btn) {
+  if (!navigator.clipboard) {
+    var ta = document.createElement('textarea');
+    ta.value = str;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  } else {
+    navigator.clipboard.writeText(str);
+  }
+  toast('📋', 'Đã sao chép: ' + str);
+  if (btn) {
+    var oldHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    setTimeout(function() { btn.innerHTML = oldHtml; }, 1500);
+  }
+}
+
+/* ═══════ LIGHTBOX ═══════ */
+function openLB(src) {
+  document.body.style.overflow = 'hidden';
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lbModal').classList.add('open');
+}
+function closeLB() {
+  document.body.style.overflow = '';
+  document.getElementById('lbModal').classList.remove('open');
+}
+
+/* ═══════ 3D FLOATING NEON TOAST ═══════ */
+function toast(ico, msg) {
+  var c = document.getElementById('tc');
+  if (!c) return;
+  var t = document.createElement('div');
+  t.className = 'toast-item';
+  t.innerHTML =
+    '<div class="t-accent"></div>'
+    + '<div class="t-ico-box">' + ico + '</div>'
+    + '<div class="t-content"><div class="t-msg">' + msg + '</div></div>'
+    + '<button class="t-close-btn" onclick="event.stopPropagation();this.closest(\'.toast-item\').remove();">✕</button>'
+    + '<div class="t-progress"></div>';
+  t.onclick = function() { t.classList.add('out'); setTimeout(function(){ t.remove(); }, 250); };
+  c.appendChild(t);
+  setTimeout(function() {
+    if (t.parentNode) {
+      t.classList.add('out');
+      setTimeout(function(){ t.remove(); }, 250);
+    }
+  }, 3600);
+}
+
+/* ═══════ ANTI-INSPECT SECURITY ═══════ */
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+  toast('🔒', 'Hệ thống kích hoạt chế độ bảo mật bản quyền & chống sao chép.');
+});
+document.addEventListener('keydown', function(e) {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+    e.preventDefault();
+    toast('🔒', 'Chế độ bảo mật chống gian lận & sao chép đang bật.');
+    return false;
+  }
+  if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
+    e.preventDefault();
+    var s = document.getElementById('product-search');
+    if (s) s.focus();
+  }
+});
+
+/* ═══════ SCROLL LISTENER ═══════ */
+window.addEventListener('scroll', function() {
+  var topbar = document.querySelector('.topbar');
+  if (topbar) topbar.classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+
+/* ═══════ INIT ═══════ */
+updateAuthUI();
+renderProducts();
+renderFeedback();
+</script>
+</body>
+</html>
