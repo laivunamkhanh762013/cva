@@ -3805,9 +3805,18 @@ function startPaymentForPlan(p, plan) {
   currentPlan = plan;
   window.currentPayAmountRaw = plan.price;
 
-  // Sinh mã đơn hàng ngẫu nhiên duy nhất
+  // Sinh mã đơn hàng ngẫu nhiên — ẩn đến khi thanh toán xong
   var orderId = 'DP' + Math.floor(100000 + Math.random() * 900000);
-  window.currentOrderMemo = orderId;
+  window.currentOrderId = orderId; // Lưu riêng, chỉ reveal sau khi CK
+
+  // Lấy thông tin user
+  var currentUser = getCurrentUser();
+  var username = currentUser && currentUser.username ? currentUser.username : '';
+
+  // Memo gửi cho SePay và hiển thị cho khách = Username (nếu có), fallback orderId
+  var memoForCK = username || orderId;
+  window.currentOrderMemo = memoForCK;
+  window.currentOrderMemoFull = memoForCK;
 
   // Điền thông tin vào Step 2
   var s2Prod = document.getElementById('mStep2ProdName');
@@ -3822,37 +3831,31 @@ function startPaymentForPlan(p, plan) {
   if (s2Price) s2Price.textContent = formatVND(plan.price);
   if (payAmt) payAmt.textContent = formatVND(plan.price);
 
+  // Hiển thị memo = Username trên UI (KHÔNG hiện DP code)
+  if (memoEl) memoEl.textContent = memoForCK;
+  if (adminCodeEl) adminCodeEl.textContent = memoForCK;
+
+  var cardMemoEl = document.getElementById('mCardOrderMemo');
+  if (cardMemoEl) cardMemoEl.textContent = memoForCK;
+
   // Reset về tab Quét QR ngân hàng mặc định
   switchPayMethod('bank');
 
-  // Lưu đơn hàng vào hệ thống lưu trữ để Admin & Khách có thể check
-  var currentUser = getCurrentUser();
+  // Lưu đơn hàng vào hệ thống lưu trữ
   var newOrder = {
     id: orderId,
     productName: p.name,
     planName: plan.name,
     price: plan.price,
-    user: currentUser ? currentUser.username : 'Khách vãng lai',
+    user: username || 'Khách vãng lai',
     phone: currentUser ? (currentUser.phone || '') : '',
     time: formatCurrentDateTime(),
-    status: 'pending' // pending | approved | rejected
+    status: 'pending'
   };
   saveOrder(newOrder);
 
-  // Tạo nội dung ghi chú chuyển khoản: mã đơn + tên tài khoản
-  var memoForQr = orderId + (currentUser && currentUser.username ? ' ' + currentUser.username : '');
-  window.currentOrderMemo = orderId;   // SePay vẫn match theo orderId
-  window.currentOrderMemoFull = memoForQr; // Memo đầy đủ để hiển thị
-
-  // Cập nhật ô nội dung CK trên UI
-  if (memoEl) memoEl.textContent = memoForQr;
-  if (adminCodeEl) adminCodeEl.textContent = memoForQr;
-
-  var cardMemoEl = document.getElementById('mCardOrderMemo');
-  if (cardMemoEl) cardMemoEl.textContent = memoForQr;
-
-  // Tạo mã VietQR tự động (addInfo = memo đầy đủ)
-  var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(memoForQr) + '&accountName=BUI%20VAN%20CAO';
+  // Tạo mã VietQR — addInfo = username (SePay match bằng username)
+  var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(memoForCK) + '&accountName=BUI%20VAN%20CAO';
   var qrEl = document.getElementById('mQrCode');
   if (qrEl) qrEl.src = qrUrl;
 
@@ -3860,7 +3863,7 @@ function startPaymentForPlan(p, plan) {
   goToStep(2);
 
   // Khởi động trình tự động kiểm tra giao dịch SePay
-  startPaymentWatcher(orderId, plan.price);
+  startPaymentWatcher(memoForCK, plan.price);
 
   // Cuộn lên đầu cột chi tiết
   var col = document.querySelector('.m-info-col');
@@ -3868,6 +3871,7 @@ function startPaymentForPlan(p, plan) {
 
   toast('🛒', 'Đã chọn: ' + plan.name + ' (' + formatVND(plan.price) + '). Vui lòng thanh toán.');
 }
+
 
 /* ═══════ SEPAY AUTOMATED BANKING TRANSACTION VERIFICATION ═══════ */
 var paymentPollTimer = null;
@@ -3943,7 +3947,7 @@ function checkPaymentApi(orderId, price, isManual) {
             fb.innerHTML = '<div style="display:flex;align-items:flex-start;gap:10px;">'
               + '<i class="fa-solid fa-circle-exclamation" style="color:#ef4444;font-size:18px;margin-top:2px;"></i>'
               + '<div>'
-                + '<b style="color:#f87171;font-size:13px;">Hệ thống chưa nhận được tiền cho mã: ' + orderId + '</b>'
+                + '<b style="color:#f87171;font-size:13px;">Hệ thống chưa nhận được tiền cho tài khoản: ' + orderId + '</b>'
                 + '<div style="margin-top:4px;color:#cbd5e1;font-size:11.5px;line-height:1.5;">'
                   + '• Nếu <b>chưa chuyển khoản</b>: Vui lòng mở App Ngân hàng quét mã VietQR ở trên (Nội dung phải là <b>' + orderId + '</b>).<br>'
                   + '• Nếu <b>vừa chuyển xong</b>: Ngân hàng có thể mất 5 - 15 giây để báo biến động số dư. Đừng lo lắng, tiền của bạn luôn được bảo đảm an toàn 100%! Bạn có thể bấm lại nút kiểm tra sau vài giây hoặc gửi ảnh bill cho <b>Anh Phú (Zalo: 0588500524)</b> để nhận file ngay!'
@@ -3951,7 +3955,7 @@ function checkPaymentApi(orderId, price, isManual) {
               + '</div>'
             + '</div>';
           }
-          toast('⏳', 'Hệ thống chưa nhận được tiền mã ' + orderId + '. Vui lòng kiểm tra lại chuyển khoản!');
+          toast('⏳', 'Hệ thống chưa nhận được tiền. Vui lòng kiểm tra lại chuyển khoản!');
         }
       }
     })
@@ -4000,9 +4004,10 @@ function manualCheckPayment() {
 }
 
 function onPaymentVerifiedSuccess(tx) {
-  // Cập nhật trạng thái đơn thành 'approved' trong kho lưu trữ
+  // Cập nhật trạng thái đơn thành 'approved' — tìm theo orderId (DP code)
+  var orderId = window.currentOrderId || window.currentOrderMemo;
   var orders = getOrdersHistory();
-  var o = orders.find(function(item) { return item.id === window.currentOrderMemo; });
+  var o = orders.find(function(item) { return item.id === orderId; });
   if (o) {
     o.status = 'approved';
     o.txId = tx ? (tx.reference || tx.id) : '';
@@ -4013,6 +4018,7 @@ function onPaymentVerifiedSuccess(tx) {
   closeBuyModal();
   openPaidModal(tx);
 }
+
 
 function switchPayMethod(method) {
   var tabBank = document.getElementById('tabPayBank');
@@ -4131,8 +4137,9 @@ function sendOrderToPhu() {
 }
 
 function openPaidModal(tx) {
-  var memo = window.currentOrderMemo || ('DP' + Math.floor(100000 + Math.random() * 900000));
-  window.currentOrderMemo = memo;
+  // Sau khi CK → reveal mã DP (currentOrderId), không dùng memo (username)
+  var memo = window.currentOrderId || window.currentOrderMemo || ('DP' + Math.floor(100000 + Math.random() * 900000));
+  window.currentOrderMemo = memo; // cập nhật để các hàm copy dùng đúng
 
   var confirmCodeEl = document.getElementById('paidConfirmCode');
   var detailCodeEl = document.getElementById('paidDetailCode');
