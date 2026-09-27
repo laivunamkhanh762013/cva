@@ -2198,7 +2198,6 @@
       <a class="active" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">Cửa hàng</a>
       <a href="#products">Sản phẩm</a>
       <a href="#feedback">Đánh giá</a>
-      <a href="javascript:void(0)" onclick="openOrderCheckModal()"><i class="fa-solid fa-clipboard-check"></i> Check Đơn Hàng</a>
       <a href="https://zalo.me/0588500524" target="_blank" rel="noopener">Hỗ trợ Zalo</a>
     </nav>
     <div class="top-actions">
@@ -2227,6 +2226,7 @@
       <strong id="sideUserTitle">Đăng nhập để mua hàng</strong>
       <p id="sideUserSub">Đăng nhập hoặc tạo tài khoản để thanh toán và nhận sản phẩm sau khi mua.</p>
       <a class="btn btn-primary btn-block" href="javascript:void(0)" onclick="openLogin()" id="sideAuthBtn">Đăng nhập / Đăng ký</a>
+      <a class="btn btn-block" href="javascript:void(0)" onclick="openMyOrderHistory()" id="sideOrderHistoryBtn" style="display:none;background:rgba(0,240,255,0.12);color:#00f0ff;border:1px solid rgba(0,240,255,0.3);margin-top:6px;font-size:12.5px;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn hàng của tôi</a>
     </aside>
   </section>
 
@@ -2315,7 +2315,7 @@
 <nav class="mobile-nav" aria-label="Điều hướng trên điện thoại">
   <a class="active" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;"><i class="fa-solid fa-store"></i><span>Cửa hàng</span></a>
   <a href="#products"><i class="fa-solid fa-fire"></i><span>Sản phẩm</span></a>
-  <a href="javascript:void(0)" onclick="openOrderCheckModal()"><i class="fa-solid fa-clipboard-check"></i><span>Check đơn</span></a>
+  <a href="javascript:void(0)" onclick="openMyOrderHistory()"><i class="fa-solid fa-clock-rotate-left"></i><span>Lịch sử</span></a>
   <a href="#feedback"><i class="fa-solid fa-comments"></i><span>Đánh giá</span></a>
   <a href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i><span>Hỗ trợ</span></a>
 </nav>
@@ -3270,6 +3270,7 @@ function updateAuthUI() {
   var sideTitle = document.getElementById('sideUserTitle');
   var sideSub = document.getElementById('sideUserSub');
   var sideBtn = document.getElementById('sideAuthBtn');
+  var sideHistoryBtn = document.getElementById('sideOrderHistoryBtn');
 
   if (user && user.username) {
     if (topBtn) {
@@ -3283,6 +3284,7 @@ function updateAuthUI() {
       sideBtn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Đăng xuất';
       sideBtn.onclick = handleLogout;
     }
+    if (sideHistoryBtn) sideHistoryBtn.style.display = 'inline-flex';
   } else {
     if (topBtn) {
       topBtn.innerHTML = 'Đăng nhập';
@@ -3295,8 +3297,10 @@ function updateAuthUI() {
       sideBtn.innerHTML = 'Đăng nhập / Đăng ký';
       sideBtn.onclick = function() { openLogin(); };
     }
+    if (sideHistoryBtn) sideHistoryBtn.style.display = 'none';
   }
 }
+
 
 function switchAuthTab(tab) {
   var tabLogin = document.getElementById('tabBtnLogin') || document.getElementById('tabLogin');
@@ -4385,14 +4389,8 @@ function lookupOrderCode(manualCode) {
       + (o.txId ? '<div style="color:#34d399;font-weight:700;">• MBBank Ref: ' + o.txId + '</div>' : '')
     + '</div>'
     + '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:8px;">'
-      + '<button type="button" class="btn" style="background:#10b981;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;" onclick="setOrderStatus(\'' + o.id + '\', \'approved\')">'
-        + '<i class="fa-solid fa-check"></i> ĐÚNG - Đã gửi file'
-      + '</button>'
-      + '<button type="button" class="btn" style="background:#ef4444;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;" onclick="setOrderStatus(\'' + o.id + '\', \'rejected\')">'
-        + '<i class="fa-solid fa-xmark"></i> BÁO SAI / THIẾU TIỀN'
-      + '</button>'
       + '<a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-size:11.5px;padding:6px 12px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:700;">'
-        + '<i class="fa-solid fa-headset"></i> Nhắn Zalo'
+        + '<i class="fa-solid fa-headset"></i> Liên hệ Zalo hỗ trợ'
       + '</a>'
     + '</div>';
   }
@@ -4434,7 +4432,21 @@ function lookupOrderCode(manualCode) {
   }
 }
 
+/* ── ADMIN GATE ─────────────────────────────────────────────────────── */
+var _dpAdminVerified = false;
+function _verifyAdmin() {
+  if (_dpAdminVerified) return true;
+  var pwd = prompt('🔐 Nhập mật khẩu Admin Đại Phú:');
+  if (!pwd) return false;
+  var ok = (pwd === atob('ZGFpcGh1QGFkbWluMjAyNQ=='));
+  if (ok) { _dpAdminVerified = true; return true; }
+  toast('❌', 'Mật khẩu admin sai! Liên hệ Anh Phú để được cấp quyền.');
+  return false;
+}
+
 function setOrderStatus(orderId, newStatus) {
+  if (!_verifyAdmin()) return;
+
   var list = getOrders();
   var order = list.find(function(o) { return o.id === orderId; });
   if (!order) return;
@@ -4450,6 +4462,25 @@ function setOrderStatus(orderId, newStatus) {
     toast('❌', 'Đã đánh dấu đơn hàng ' + orderId + ' là CHƯA KHỚP / SAI TIỀN!');
   }
 }
+
+/* ── LỊCH SỬ ĐƠN HÀNG (chỉ dành cho khách đã login) ──────────────── */
+function openMyOrderHistory() {
+  var u = getCurrentUser();
+  if (!u) {
+    toast('🔒', 'Vui lòng đăng nhập để xem lịch sử đơn hàng!');
+    openLogin();
+    return;
+  }
+  var m = document.getElementById('orderCheckModal');
+  if (m) m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  var inp = document.getElementById('checkOrderInput');
+  if (inp) inp.value = '';
+  var resultBox = document.getElementById('lookupResult');
+  if (resultBox) resultBox.style.display = 'none';
+  renderRecentOrders();
+}
+
 
 function renderRecentOrders() {
   var container = document.getElementById('recentOrdersList');
