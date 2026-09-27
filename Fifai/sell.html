@@ -2452,17 +2452,6 @@
 
             <!-- Chi tiết tài khoản ngân hàng -->
             <div class="m-bank-rows">
-              <!-- Dòng 1: MÃ ĐƠN HÀNG (Hiện rõ ràng ngay lập tức cho khách sao chép & đối soát) -->
-              <div class="m-bank-item" style="background:linear-gradient(135deg,rgba(14,165,233,0.18) 0%,rgba(99,102,241,0.18) 100%);border:1.5px solid #0284c7;box-shadow:0 0 15px rgba(2,132,199,0.2);">
-                <div>
-                  <small style="color:#38bdf8;font-weight:900;letter-spacing:.6px;"><i class="fa-solid fa-receipt"></i> MÃ ĐƠN HÀNG CỦA BẠN (LƯU LẠI ĐỂ NHẬN FILE)</small>
-                  <strong id="mStep2OrderId" style="color:#00f0ff;font-family:monospace;font-size:17px;letter-spacing:1px;font-weight:900;">DP...</strong>
-                </div>
-                <button type="button" class="m-copy-btn" onclick="copyText(window.currentOrderId, this)" style="border-color:#0284c7;color:#38bdf8;font-weight:800;background:rgba(2,132,199,0.2);">
-                  <i class="fa-solid fa-copy"></i> Sao chép mã
-                </button>
-              </div>
-
               <div class="m-bank-item">
                 <div><small>NGÂN HÀNG THỤ HƯỞNG</small><strong>MB BANK (Quân Đội)</strong></div>
                 <button class="m-copy-btn" onclick="copyText('MBBANK', this)"><i class="fa-solid fa-copy"></i> Sao chép</button>
@@ -3844,16 +3833,16 @@ function startPaymentForPlan(p, plan) {
   currentPlan = plan;
   window.currentPayAmountRaw = plan.price;
 
-  // Sinh mã đơn hàng ngẫu nhiên — HIỂN THỊ RÕ RÀNG CHO KHÁCH & ADMIN ĐỒNG BỘ 100%
+  // Sinh mã đơn hàng ngẫu nhiên — lưu trên hệ thống để Admin nhận
   var orderId = 'DP' + Math.floor(100000 + Math.random() * 900000);
-  window.currentOrderId = orderId;
+  window.currentOrderId = orderId; // Reveal mã DP sau khi chuyển khoản
 
   // Lấy thông tin user
   var currentUser = getCurrentUser();
   var username = currentUser && currentUser.username ? currentUser.username : '';
 
-  // Memo chuyển khoản: Ưu tiên mã đơn hàng DP... để khớp chuẩn xác trên MBBank và SePay
-  var memoForCK = orderId;
+  // TRƯỚC KHI CK: Nội dung CK là Username trên web (fallback orderId nếu khách vãng lai)
+  var memoForCK = username || orderId;
   window.currentOrderMemo = memoForCK;
   window.currentOrderMemoFull = memoForCK;
 
@@ -3864,20 +3853,18 @@ function startPaymentForPlan(p, plan) {
   var payAmt = document.getElementById('mPayAmount');
   var memoEl = document.getElementById('mOrderMemo');
   var adminCodeEl = document.getElementById('mAdminCode');
-  var step2OrderIdEl = document.getElementById('mStep2OrderId');
 
   if (s2Prod) s2Prod.textContent = p.name;
   if (s2Plan) s2Plan.textContent = plan.name;
   if (s2Price) s2Price.textContent = formatVND(plan.price);
   if (payAmt) payAmt.textContent = formatVND(plan.price);
 
-  // Hiển thị MÃ ĐƠN HÀNG DP... trên UI cho khách thấy và sao chép ngay
-  if (step2OrderIdEl) step2OrderIdEl.textContent = orderId;
-  if (memoEl) memoEl.textContent = orderId;
-  if (adminCodeEl) adminCodeEl.textContent = orderId;
+  // Trước khi CK: Hiển thị nội dung chuyển khoản là Username
+  if (memoEl) memoEl.textContent = memoForCK;
+  if (adminCodeEl) adminCodeEl.textContent = memoForCK;
 
   var cardMemoEl = document.getElementById('mCardOrderMemo');
-  if (cardMemoEl) cardMemoEl.textContent = orderId;
+  if (cardMemoEl) cardMemoEl.textContent = memoForCK;
 
   // Reset về tab Quét QR ngân hàng mặc định
   switchPayMethod('bank');
@@ -3895,7 +3882,7 @@ function startPaymentForPlan(p, plan) {
   };
   saveOrder(newOrder);
 
-  // Tạo mã VietQR — addInfo = orderId (DP514786)
+  // Tạo mã VietQR — addInfo = username (nội dung chuyển khoản trước khi CK là Username)
   var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(memoForCK) + '&accountName=BUI%20VAN%20CAO';
   var qrEl = document.getElementById('mQrCode');
   if (qrEl) qrEl.src = qrUrl;
@@ -3910,7 +3897,7 @@ function startPaymentForPlan(p, plan) {
   var col = document.querySelector('.m-info-col');
   if (col) col.scrollTo({ top: 0, behavior: 'smooth' });
 
-  toast('🛒', 'Đã tạo đơn ' + orderId + ' · ' + plan.name + ' (' + formatVND(plan.price) + ')');
+  toast('🛒', 'Đã chọn gói: ' + plan.name + ' (' + formatVND(plan.price) + '). Vui lòng quét mã QR thanh toán.');
 }
 
 
