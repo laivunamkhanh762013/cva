@@ -1,5 +1,15 @@
 const { getGist, updateGist } = require('./db');
 
+function maskPhone(phone) {
+  if (!phone || phone.length < 6) return '***';
+  return phone.substring(0, 3) + '****' + phone.substring(phone.length - 3);
+}
+
+function sanitizeText(str, maxLen) {
+  if (!str) return '';
+  return String(str).replace(/[<>'"]/g, '').trim().substring(0, maxLen || 50);
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -12,10 +22,10 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const { users } = await getGist();
-      // Mask passwords before returning
+      // Mask sensitive phone numbers & never expose passwords
       const safeUsers = users.map(u => ({
-        username: u.username,
-        phone: u.phone || '',
+        username: sanitizeText(u.username, 30),
+        phone: maskPhone(u.phone),
         createdAt: u.createdAt || ''
       }));
       return res.status(200).json({ success: true, users: safeUsers });
@@ -28,12 +38,12 @@ module.exports = async function handler(req, res) {
       }
 
       const action = body.action || 'login';
-      const username = (body.username || '').trim();
-      const password = (body.password || '').trim();
-      const phone = (body.phone || '').trim();
+      const username = sanitizeText(body.username, 30);
+      const password = (body.password || '').trim().substring(0, 100);
+      const phone = sanitizeText(body.phone, 15);
 
-      if (!username) {
-        return res.status(400).json({ success: false, error: 'Vui lòng nhập tên đăng nhập!' });
+      if (!username || username.length < 3) {
+        return res.status(400).json({ success: false, error: 'Tên đăng nhập phải có ít nhất 3 ký tự!' });
       }
 
       const { users } = await getGist();
@@ -61,8 +71,6 @@ module.exports = async function handler(req, res) {
       } else {
         // Login
         if (!existing) {
-          // If not registered yet, we can either auto-register or return error
-          // To be friendly: if password is provided, check or auto-register
           return res.status(400).json({ success: false, error: 'Tài khoản chưa tồn tại! Vui lòng bấm Đăng Ký.' });
         }
 

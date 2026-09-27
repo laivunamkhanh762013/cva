@@ -31,7 +31,7 @@ function fetchSePay(path) {
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
@@ -40,8 +40,19 @@ module.exports = async function handler(req, res) {
 
   const { memo, price } = req.query;
 
-  if (!memo) {
-    return res.status(400).json({ error: 'Missing memo query parameter' });
+  // Strix Security Guard: Strict validation on memo format
+  if (!memo || typeof memo !== 'string') {
+    return res.status(400).json({ paid: false, error: 'Thiếu mã đơn hàng' });
+  }
+
+  const normalizedMemo = memo.trim().toUpperCase();
+
+  // Chống brute-force hoặc match ký tự ngắn (như 'A', '1', 'MB') làm lộ key giả
+  if (normalizedMemo.length < 5 || normalizedMemo.length > 20 || !/^[A-Z0-9_-]+$/.test(normalizedMemo)) {
+    return res.status(400).json({
+      paid: false,
+      error: 'Mã đơn không hợp lệ. Mã đơn phải gồm ít nhất 5 ký tự chữ và số (Ví dụ: DP123456).'
+    });
   }
 
   try {
@@ -51,14 +62,18 @@ module.exports = async function handler(req, res) {
     }
 
     const transactions = result.data.transactions || [];
-    const normalizedMemo = memo.trim().toUpperCase();
     const minAmount = price ? parseFloat(price) : 0;
 
     // Check if any transaction content contains the order code (e.g. DP708251)
     const matched = transactions.find(t => {
       const content = (t.transaction_content || '').toUpperCase();
       const amountIn = parseFloat(t.amount_in || 0);
-      return content.includes(normalizedMemo) && (minAmount === 0 || amountIn >= (minAmount * 0.9));
+
+      // Phải có mã đơn và số tiền nạp phải >= 90% giá gói
+      const hasMemo = content.includes(normalizedMemo);
+      const hasValidAmount = (minAmount === 0 || amountIn >= (minAmount * 0.9));
+
+      return hasMemo && hasValidAmount;
     });
 
     if (matched) {

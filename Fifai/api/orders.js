@@ -1,8 +1,13 @@
 const { getGist, updateGist } = require('./db');
 
+function sanitizeText(str, maxLen) {
+  if (!str) return '';
+  return String(str).replace(/[<>'"]/g, '').trim().substring(0, maxLen || 50);
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
@@ -12,7 +17,7 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const { orders } = await getGist();
-      return res.status(200).json({ success: true, orders });
+      return res.status(200).json({ success: true, orders: orders || [] });
     }
 
     if (req.method === 'POST') {
@@ -20,23 +25,34 @@ module.exports = async function handler(req, res) {
       if (typeof body === 'string') {
         try { body = JSON.parse(body); } catch(e) {}
       }
+
       if (!body || !body.id) {
         return res.status(400).json({ success: false, error: 'Thiếu mã đơn hàng' });
       }
 
+      // Strix Security Guard: Sanitize ID strictly
+      const cleanId = String(body.id).replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase().substring(0, 20);
+      if (cleanId.length < 5) {
+        return res.status(400).json({ success: false, error: 'Mã đơn không hợp lệ' });
+      }
+
       const { orders, users } = await getGist();
-      const existingIdx = orders.findIndex(o => o.id === body.id);
+      const existingIdx = orders.findIndex(o => o.id === cleanId);
+
+      const validStatuses = ['pending', 'approved', 'rejected'];
+      const rawStatus = (body.status || 'pending').toLowerCase();
+      const status = validStatuses.includes(rawStatus) ? rawStatus : 'pending';
 
       const orderItem = {
-        id: body.id,
-        product: body.product || 'AimLock FF',
-        plan: body.plan || '1 tháng',
-        price: body.price || 0,
-        user: body.user || 'Khách',
-        phone: body.phone || '',
-        time: body.time || new Date().toLocaleString('vi-VN'),
-        status: body.status || 'pending',
-        txId: body.txId || ''
+        id: cleanId,
+        product: sanitizeText(body.product, 60) || 'AimLock FF',
+        plan: sanitizeText(body.plan, 40) || '1 tháng',
+        price: typeof body.price === 'number' ? Math.max(0, body.price) : (parseFloat(body.price) || 0),
+        user: sanitizeText(body.user, 40) || 'Khách vãng lai',
+        phone: sanitizeText(body.phone, 15) || '',
+        time: body.time ? sanitizeText(body.time, 35) : new Date().toLocaleString('vi-VN'),
+        status: status,
+        txId: sanitizeText(body.txId, 40) || ''
       };
 
       if (existingIdx >= 0) {
@@ -45,7 +61,7 @@ module.exports = async function handler(req, res) {
         orders.unshift(orderItem);
       }
 
-      // Limit to 300 recent orders
+      // Giới hạn 300 đơn gần nhất
       const trimmed = orders.slice(0, 300);
       await updateGist({ orders: trimmed });
 

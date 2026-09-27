@@ -32,14 +32,23 @@ function fetchSePay(path) {
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-key');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
+  // Strix Security Guard: Protect bank statement API with Admin auth
+  const adminKey = req.query.adminKey || req.headers['x-admin-key'];
+  if (adminKey !== 'daiphu2026') {
+    return res.status(401).json({
+      status: 401,
+      error: 'Unauthorized: Bạn cần quyền Admin (Mật khẩu Admin) để truy cập lịch sử ngân hàng MBBank.'
+    });
+  }
+
   try {
-    const limit = req.query.limit || 50;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
     const result = await fetchSePay('/userapi/transactions/list?limit=' + limit);
     return res.status(result.status).json(result.data);
   } catch (err) {

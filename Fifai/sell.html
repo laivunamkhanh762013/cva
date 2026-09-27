@@ -1831,14 +1831,14 @@
 </head>
 
 <body class="storefront">
-<!-- ══ GAMING SPLASH SCREEN INTRO (HÀNG NGANG: LOGO + TÊN & PHÓNG TO XUYÊN THẤU) ══ -->
+<!-- ══ GAMING SPLASH SCREEN INTRO (2.0s CHUẨN: FADE-IN -> TRƯỢT TÂM -> PHÓNG TO XUYÊN THẤU) ══ -->
 <div id="gamingIntro" class="dp-intro-overlay">
   <div class="dp-intro-center" id="dpIntroCenter">
-    <!-- LOGO BÊN TRÁI (Dễ dàng thay đổi ảnh tại thẻ img bên dưới) -->
+    <!-- LOGO BÊN TRÁI -->
     <div class="dp-intro-logo-box" id="dpIntroLogoBox">
       <img src="assets/uploads/logos/aizen-logo.png" alt="Logo Shop Đại Phú FF" class="dp-intro-logo-img" onerror="this.onerror=null;this.src='logo.png';">
     </div>
-    <!-- TÊN SHOP BÊN PHẢI -->
+    <!-- CHỮ BÊN PHẢI -->
     <div class="dp-intro-text-box" id="dpIntroTextBox">
       <div class="dp-intro-title">SHOP ĐẠI PHÚ FF</div>
       <div class="dp-intro-subline">GAMING STORE • MOD &amp; UTILITIES</div>
@@ -1847,6 +1847,11 @@
 </div>
 
 <style>
+/* Đảm bảo trang web không bao giờ bị chớp trắng */
+html, body {
+  background-color: #020409 !important;
+}
+
 /* Toàn màn hình đen gaming */
 .dp-intro-overlay {
   position: fixed;
@@ -1863,24 +1868,25 @@
   pointer-events: all;
   user-select: none;
   -webkit-user-select: none;
-  transition: opacity 0.35s ease;
+  opacity: 1;
+  transition: opacity 0.4s ease;
 }
 
-/* Khối trung tâm xếp hàng ngang: Logo bên trái, Chữ bên phải */
+/* Khối trung tâm ngang (0.0s - 1.2s: Fade-in êm ái) */
 .dp-intro-center {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
   position: relative;
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform;
+  animation: introFadeIn 1.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
 }
 
-/* Logo bên trái viền phát sáng Neon Cyan & Gold */
+/* Logo bên trái viền Neon Cyan & Gold */
 .dp-intro-logo-box {
-  width: clamp(65px, 14vw, 92px);
-  height: clamp(65px, 14vw, 92px);
+  width: clamp(68px, 15vw, 96px);
+  height: clamp(68px, 15vw, 96px);
   border-radius: 50%;
   padding: 3px;
   background: linear-gradient(135deg, #00f0ff 0%, #facc15 100%);
@@ -1889,9 +1895,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  animation: dpLogoPulse 0.7s ease infinite alternate;
-  transition: transform 0.4s cubic-bezier(0.7, 0, 0.9, 1), opacity 0.35s ease, filter 0.35s ease;
-  will-change: transform, opacity;
+  animation: introLogoPulse 1.2s ease-in-out infinite alternate;
+  will-change: transform, opacity, filter;
   z-index: 2;
 }
 
@@ -1904,13 +1909,12 @@
   display: block;
 }
 
-/* Khối chữ Tên bên phải */
+/* Tên SHOP ĐẠI PHÚ FF bên phải */
 .dp-intro-text-box {
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: left;
-  transition: opacity 0.3s ease, transform 0.3s ease;
   will-change: opacity, transform;
 }
 
@@ -1942,25 +1946,39 @@
   white-space: nowrap;
 }
 
-@keyframes dpLogoPulse {
-  0% { transform: scale(0.96); filter: drop-shadow(0 0 10px #00f0ff); }
-  100% { transform: scale(1.04); filter: drop-shadow(0 0 22px #facc15); }
+/* Keyframes */
+@keyframes introFadeIn {
+  0% { opacity: 0; transform: scale(0.92); filter: blur(4px); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
 }
 
-/* Hiệu ứng khi chữ mờ dần */
-.dp-intro-text-hidden {
+@keyframes introLogoPulse {
+  0% { transform: scale(0.97); filter: drop-shadow(0 0 12px #00f0ff); }
+  100% { transform: scale(1.03); filter: drop-shadow(0 0 25px #facc15); }
+}
+
+/* 1.2s - 1.6s: Chữ từ từ mờ dần biến mất */
+.dp-intro-text-fade {
+  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   opacity: 0 !important;
-  transform: translateX(25px) scale(0.95);
+  transform: translateX(20px) scale(0.94) !important;
   pointer-events: none;
 }
 
-/* Hiệu ứng Logo phóng to cực đại xuyên thấu màn hình */
-.dp-intro-logo-zoom {
+/* 1.2s - 1.6s: Logo lướt cực êm vào chính giữa tâm màn hình */
+.dp-intro-logo-glide {
   animation: none !important;
-  transform: scale(28) !important;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* 1.6s - 2.0s: Logo bùng sáng và phóng to xuyên thấu màn hình (Zoom burst) */
+.dp-intro-logo-burst {
+  animation: none !important;
+  transition: transform 0.4s cubic-bezier(0.7, 0, 1, 1), opacity 0.38s ease, filter 0.38s ease !important;
+  transform: scale(32) !important;
   opacity: 0 !important;
-  filter: brightness(3.5) blur(1px) !important;
-  box-shadow: 0 0 120px rgba(0, 240, 255, 1) !important;
+  filter: brightness(4) blur(1px) !important;
+  box-shadow: 0 0 150px rgba(0, 240, 255, 1) !important;
 }
 </style>
 
@@ -1976,31 +1994,30 @@
   intro.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 
-  // Sau 0.7 giây:
+  // 1.2s: Chữ từ từ mờ dần; Logo lướt cực êm vào chính giữa tâm
   setTimeout(function() {
-    // 1. Tên chữ nhanh chóng mờ dần và biến mất
-    text.classList.add('dp-intro-text-hidden');
+    text.classList.add('dp-intro-text-fade');
 
-    // 2. Logo lập tức trượt vào chính giữa màn hình
     var textWidth = text.offsetWidth || 150;
     var shiftX = (textWidth + 16) / 2;
+    logo.classList.add('dp-intro-logo-glide');
     logo.style.transform = 'translateX(' + shiftX + 'px)';
 
-    // Sau 0.15s: Logo phóng to cực đại xuyên thấu màn hình mở ra web
+    // 1.6s: Logo bùng sáng và phóng to xuyên thấu màn hình (Zoom burst)
     setTimeout(function() {
-      logo.style.transition = 'transform 0.42s cubic-bezier(0.7, 0, 1, 1), opacity 0.38s ease, filter 0.38s ease';
-      logo.classList.add('dp-intro-logo-zoom');
+      logo.style.transform = 'translateX(' + shiftX + 'px)';
+      logo.classList.add('dp-intro-logo-burst');
       intro.style.opacity = '0';
 
-      // Tổng thời lượng ~1.1s - 1.2s: Xóa hoàn toàn khỏi DOM & mở lại cuộn trang
+      // Đúng 2.0s: Xóa hoàn toàn khỏi DOM & mở lại cuộn trang
       setTimeout(function() {
         document.body.style.overflow = '';
         if (intro && intro.parentNode) {
           intro.parentNode.removeChild(intro);
         }
-      }, 350);
-    }, 150);
-  }, 700);
+      }, 400);
+    }, 400);
+  }, 1200);
 })();
 </script>
 
