@@ -2821,16 +2821,18 @@
     <button class="modal-close" onclick="closeOrderCheckModal()"><i class="fa-solid fa-xmark"></i></button>
 
     <div style="text-align:center;margin-bottom:16px;">
-      <div style="font-size:28px;margin-bottom:6px;">📋</div>
-      <h3 style="font-size:18px;font-weight:800;color:#fff;">Kiểm Tra &amp; Đối Soát Đơn Hàng</h3>
-      <p style="font-size:12px;color:var(--muted);margin-top:4px;">Dành cho Khách hàng, Bạn &amp; Anh Phú để check trạng thái đơn hàng</p>
+      <div style="width:48px;height:48px;margin:0 auto 10px;border-radius:12px;background:rgba(0,240,255,0.12);border:1.5px solid rgba(0,240,255,0.3);display:flex;align-items:center;justify-content:center;color:#00f0ff;font-size:22px;">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+      <h3 style="font-size:18px;font-weight:800;color:#fff;margin:0;">Lịch Sử Đơn Hàng Của Bạn</h3>
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">Xem lại danh sách sản phẩm và gói bạn đã mua trên Shop</p>
     </div>
 
     <!-- Search box by Order Code -->
     <div style="display:flex;gap:8px;margin-bottom:16px;">
-      <input type="text" id="checkOrderInput" class="input" placeholder="Nhập mã đơn (Ví dụ: DP123456)..." style="text-transform:uppercase;">
+      <input type="text" id="checkOrderInput" class="input" placeholder="Tìm theo mã đơn (Ví dụ: DP123456)..." style="text-transform:uppercase;">
       <button type="button" class="btn btn-primary" onclick="lookupOrderCode()" style="white-space:nowrap;padding:0 18px;">
-        <i class="fa-solid fa-magnifying-glass"></i> Check
+        <i class="fa-solid fa-magnifying-glass"></i> Tra cứu
       </button>
     </div>
 
@@ -2842,10 +2844,10 @@
     <!-- Recent Orders List -->
     <div style="border-top:1px solid var(--line);padding-top:14px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <span style="font-size:12.5px;font-weight:700;color:#cbd5e1;"><i class="fa-solid fa-clock-rotate-left"></i> Danh sách đơn gần đây trên web:</span>
-        <button type="button" onclick="clearOrdersHistory()" style="background:none;border:none;color:#ef4444;font-size:11px;cursor:pointer;font-weight:700;">Xóa lịch sử</button>
+        <span style="font-size:12.5px;font-weight:700;color:#cbd5e1;"><i class="fa-solid fa-box-open"></i> Đơn hàng đã mua của bạn:</span>
+        <button type="button" onclick="clearOrdersHistory()" style="background:none;border:none;color:#ef4444;font-size:11px;cursor:pointer;font-weight:700;">Xóa lịch sử trên máy</button>
       </div>
-      <div id="recentOrdersList" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+      <div id="recentOrdersList" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
         <!-- Populated orders -->
       </div>
     </div>
@@ -4613,35 +4615,35 @@ function lookupOrderCode(manualCode) {
   function displayOrderResult(o) {
     var statusBadge = '';
     if (o.status === 'approved') {
-      statusBadge = '<span style="background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">✅ ĐÚNG - ĐÃ DUYỆT & BÀN GIAO</span>';
+      statusBadge = '<span style="background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.4);padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:800;">✅ ĐÃ THANH TOÁN (HOÀN THÀNH)</span>';
     } else if (o.status === 'rejected') {
-      statusBadge = '<span style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">❌ CHƯA KHỚP - BÁO LỖI</span>';
+      statusBadge = '<span style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.4);padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:800;">❌ CHƯA KHỚP TIỀN</span>';
     } else {
-      statusBadge = '<span style="background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;">⏳ ĐANG CHỜ ADMIN CHECK</span>';
+      statusBadge = '<span style="background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:800;">⏳ ĐANG CHỜ DUYỆT</span>';
     }
 
-    var cleanId = escapeHTML(o.id);
-    var cleanProd = escapeHTML(o.productName || o.product || 'AimLock');
+    var cleanId = escapeHTML(o.id || '');
+    var cleanProd = escapeHTML(o.productName || o.product || o.planName || o.plan || 'Sản phẩm');
     var cleanPlan = escapeHTML(o.planName || o.plan || 'Gói');
     var cleanUser = escapeHTML(o.user || 'Khách');
     var cleanPhone = escapeHTML(o.phone || '');
     var cleanTime = escapeHTML(o.time || '');
-    var cleanTxId = o.txId ? '<div style="color:#34d399;font-weight:700;">• MBBank Ref: ' + escapeHTML(o.txId) + '</div>' : '';
+    var cleanTxId = o.txId ? '<div style="color:#34d399;font-weight:700;">• Giao dịch MBBank: ' + escapeHTML(o.txId) + '</div>' : '';
 
-    resultBox.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;">'
-      + '<strong style="color:#00f0ff;font-family:monospace;font-size:16px;">' + cleanId + '</strong>'
+    resultBox.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;flex-wrap:wrap;gap:8px;">'
+      + '<strong style="color:#00f0ff;font-family:monospace;font-size:15px;">Mã đơn: ' + cleanId + '</strong>'
       + statusBadge
     + '</div>'
-    + '<div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#cbd5e1;">'
-      + '<div>• <b>Sản phẩm:</b> <span style="color:#fff;">' + cleanProd + '</span> (' + cleanPlan + ')</div>'
-      + '<div>• <b>Số tiền:</b> <span style="color:#10b981;font-weight:800;">' + formatVND(o.price) + '</span></div>'
-      + '<div>• <b>Khách hàng:</b> <span style="color:#fff;">' + cleanUser + '</span> ' + (cleanPhone ? '• SĐT/Zalo: <span style="color:#f59e0b;">' + cleanPhone + '</span>' : '') + '</div>'
-      + '<div>• <b>Thời gian:</b> ' + cleanTime + '</div>'
+    + '<div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#cbd5e1;">'
+      + '<div>🛒 <b>Sản phẩm đã mua:</b> <span style="color:#fff;font-weight:700;">' + cleanProd + '</span> (' + cleanPlan + ')</div>'
+      + '<div>💰 <b>Số tiền thanh toán:</b> <span style="color:#10b981;font-weight:800;">' + formatVND(o.price || o.amount || 0) + '</span></div>'
+      + '<div>👤 <b>Tài khoản:</b> <span style="color:#fff;">' + cleanUser + '</span>' + (cleanPhone ? ' • SĐT/Zalo: <span style="color:#f59e0b;">' + cleanPhone + '</span>' : '') + '</div>'
+      + '<div>⏰ <b>Thời gian đặt hàng:</b> ' + cleanTime + '</div>'
       + cleanTxId
     + '</div>'
     + '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:8px;">'
-      + '<a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-size:11.5px;padding:6px 12px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:700;">'
-        + '<i class="fa-solid fa-headset"></i> Liên hệ Zalo hỗ trợ'
+      + '<a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn" style="background:#0284c7;color:#fff;font-size:12px;padding:7px 14px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-weight:700;">'
+        + '<i class="fa-solid fa-headset"></i> Cần hỗ trợ đơn này? Nhắn Zalo Anh Phú'
       + '</a>'
     + '</div>';
   }
@@ -4685,39 +4687,7 @@ function lookupOrderCode(manualCode) {
   }
 }
 
-/* ── ADMIN GATE ─────────────────────────────────────────────────────── */
-var _dpAdminVerified = false;
-function _verifyAdmin() {
-  if (_dpAdminVerified) return true;
-  var pwd = prompt('🔐 Nhập mật khẩu Admin Đại Phú:');
-  if (!pwd) return false;
-  var ok = (pwd === 'daiphu2026' || pwd === atob('ZGFpcGh1QGFkbWluMjAyNQ=='));
-  if (ok) { _dpAdminVerified = true; return true; }
-  toast('❌', 'Mật khẩu admin sai! Liên hệ Anh Phú để được cấp quyền.');
-  return false;
-}
-
-function setOrderStatus(orderId, newStatus) {
-  if (!_verifyAdmin()) return;
-
-  var list = getOrders();
-  var order = list.find(function(o) { return o.id === orderId; });
-  if (!order) return;
-
-  order.status = newStatus;
-  order.adminKey = 'daiphu2026';
-  saveOrder(order);
-  lookupOrderCode(orderId);
-  renderRecentOrders();
-
-  if (newStatus === 'approved') {
-    toast('✅', 'Đã xác nhận đơn hàng ' + orderId + ' ĐÚNG và bàn giao file!');
-  } else {
-    toast('❌', 'Đã đánh dấu đơn hàng ' + orderId + ' là CHƯA KHỚP / SAI TIỀN!');
-  }
-}
-
-/* ── LỊCH SỬ ĐƠN HÀNG (chỉ dành cho khách đã login) ──────────────── */
+/* ── LỊCH SỬ ĐƠN HÀNG (chỉ dành cho khách check sản phẩm đã mua) ──── */
 function openMyOrderHistory() {
   var u = getCurrentUser();
   if (!u) {
@@ -4733,45 +4703,93 @@ function openMyOrderHistory() {
   var resultBox = document.getElementById('lookupResult');
   if (resultBox) resultBox.style.display = 'none';
   renderRecentOrders();
-}
 
+  // Đồng bộ đơn hàng mới nhất từ Cloud Database
+  fetch('/api/orders')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data && data.orders && data.orders.length) {
+        var cloudList = data.orders.map(function(co) {
+          return {
+            id: co.id,
+            productName: co.product,
+            planName: co.plan,
+            price: co.price,
+            user: co.user,
+            phone: co.phone,
+            time: co.time,
+            status: co.status,
+            txId: co.txId
+          };
+        });
+        localStorage.setItem('daiphu_orders', JSON.stringify(cloudList));
+        renderRecentOrders();
+      }
+    })
+    .catch(function(e) {});
+}
 
 function renderRecentOrders() {
   var container = document.getElementById('recentOrdersList');
   if (!container) return;
 
-  var list = getOrders();
+  var user = getCurrentUser();
+  if (!user || !user.username) {
+    container.innerHTML = '<div style="text-align:center;padding:24px 12px;color:#94a3b8;font-size:13px;">'
+      + '<i class="fa-solid fa-user-lock" style="font-size:28px;margin-bottom:8px;display:block;color:#f59e0b;opacity:0.8;"></i>'
+      + 'Vui lòng đăng nhập để xem các sản phẩm bạn đã mua.<br>'
+      + '<button type="button" class="btn btn-primary" onclick="closeOrderCheckModal();openLogin();" style="margin-top:10px;font-size:12px;padding:6px 14px;">Đăng nhập ngay</button>'
+      + '</div>';
+    return;
+  }
+
+  var allOrders = getOrders();
+  // Chỉ lọc các đơn hàng của chính tài khoản này
+  var list = allOrders.filter(function(o) {
+    if (!o.user) return false;
+    return o.user.toLowerCase() === user.username.toLowerCase();
+  });
+
   if (list.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:12px;font-size:12px;color:var(--muted);">Chưa có đơn hàng nào được ghi nhận.</div>';
+    container.innerHTML = '<div style="text-align:center;padding:24px 12px;font-size:13px;color:#94a3b8;">'
+      + '<i class="fa-solid fa-bag-shopping" style="font-size:30px;margin-bottom:8px;display:block;opacity:0.4;"></i>'
+      + 'Bạn chưa mua sản phẩm nào trên tài khoản <b>' + escapeHTML(user.username) + '</b>.<br>'
+      + '<a href="#products" onclick="closeOrderCheckModal();" style="color:#00f0ff;font-weight:700;text-decoration:none;margin-top:8px;display:inline-block;">Xem sản phẩm & mua ngay &rarr;</a>'
+      + '</div>';
     return;
   }
 
   var html = '';
   list.forEach(function(o) {
-    var statusText = '⏳ Chờ check';
+    var statusText = '⏳ Chờ thanh toán';
     var statusColor = '#38bdf8';
+    var statusBg = 'rgba(56,189,248,0.15)';
     if (o.status === 'approved') {
-      statusText = '✅ ĐÚNG';
+      statusText = '✅ Đã thanh toán';
       statusColor = '#4ade80';
+      statusBg = 'rgba(34,197,94,0.15)';
     } else if (o.status === 'rejected') {
-      statusText = '❌ SAI';
+      statusText = '❌ Sai tiền / Lỗi';
       statusColor = '#f87171';
+      statusBg = 'rgba(239,68,68,0.15)';
     }
 
     var cleanId = escapeHTML(o.id || '');
     var prodName = escapeHTML(o.productName || o.product || o.planName || o.plan || 'Sản phẩm');
+    var planName = escapeHTML(o.planName || o.plan || '');
     var cleanPrice = formatVND(o.price || o.amount || 0);
     var cleanTime = escapeHTML(o.time || '');
 
-    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="lookupOrderCode(\'' + cleanId + '\')">'
-      + '<div>'
-        + '<div style="display:flex;align-items:center;gap:6px;">'
-          + '<strong style="color:#00f0ff;font-family:monospace;font-size:12.5px;">' + cleanId + '</strong>'
-          + '<span style="font-size:10px;color:' + statusColor + ';font-weight:700;">' + statusText + '</span>'
+    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background=\'rgba(255,255,255,0.08)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.04)\'" onclick="lookupOrderCode(\'' + cleanId + '\')">'
+      + '<div style="flex:1;min-width:0;">'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap;">'
+          + '<strong style="color:#00f0ff;font-family:monospace;font-size:13px;">' + cleanId + '</strong>'
+          + '<span style="font-size:10.5px;color:' + statusColor + ';background:' + statusBg + ';padding:2px 8px;border-radius:6px;font-weight:700;">' + statusText + '</span>'
         + '</div>'
-        + '<div style="font-size:11px;color:#94a3b8;margin-top:2px;">' + prodName + ' (' + cleanPrice + ')' + (cleanTime ? ' • ' + cleanTime : '') + '</div>'
+        + '<div style="font-size:13px;color:#fff;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + prodName + (planName ? ' <span style="color:#94a3b8;font-size:11.5px;font-weight:normal;">(' + planName + ')</span>' : '') + '</div>'
+        + '<div style="font-size:11.5px;color:#94a3b8;margin-top:2px;"><b style="color:#10b981;">' + cleanPrice + '</b>' + (cleanTime ? ' • ' + cleanTime : '') + '</div>'
       + '</div>'
-      + '<button type="button" class="btn" style="background:rgba(255,255,255,0.08);color:#fff;font-size:11px;padding:4px 8px;border-radius:5px;border:none;cursor:pointer;">Check</button>'
+      + '<button type="button" class="btn" style="background:rgba(0,240,255,0.15);color:#00f0ff;border:1px solid rgba(0,240,255,0.3);font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;">Xem chi tiết</button>'
     + '</div>';
   });
 
@@ -4779,12 +4797,21 @@ function renderRecentOrders() {
 }
 
 function clearOrdersHistory() {
-  if (confirm('Bạn có chắc muốn xóa lịch sử đơn hàng trên trình duyệt này?')) {
-    localStorage.removeItem('daiphu_orders');
+  if (confirm('Bạn có chắc muốn xóa danh sách lịch sử đơn hàng trên máy này?')) {
+    var user = getCurrentUser();
+    if (user && user.username) {
+      var all = getOrders();
+      var remaining = all.filter(function(o) {
+        return !o.user || o.user.toLowerCase() !== user.username.toLowerCase();
+      });
+      localStorage.setItem('daiphu_orders', JSON.stringify(remaining));
+    } else {
+      localStorage.removeItem('daiphu_orders');
+    }
     renderRecentOrders();
     var resultBox = document.getElementById('lookupResult');
     if (resultBox) resultBox.style.display = 'none';
-    toast('🗑️', 'Đã xóa lịch sử đơn hàng.');
+    toast('🗑️', 'Đã xóa lịch sử đơn hàng trên máy này.');
   }
 }
 
