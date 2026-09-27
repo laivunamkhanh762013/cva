@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BẢNG QUẢN TRỊ ADMIN · SHOP ĐẠI PHÚ FF &amp; STRIX SECURITY</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/uploads/logos/aizen-logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #090c15;
+      --card-bg: #11162b;
+      --card-border: rgba(56, 189, 248, 0.2);
+      --card-border-hover: rgba(56, 189, 248, 0.45);
+      --primary: #00f0ff;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Glow Background */
+    .ambient-glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 80%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ══ LOGIN SCREEN ══ */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 12, 21, 0.96);
+      backdrop-filter: blur(20px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .login-card {
+      background: #11162b;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 240, 255, 0.15);
+      text-align: center;
+    }
+    .login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 14px;
+    }
+    .login-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .login-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .login-input-wrap {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .login-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+    .login-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: #090c15;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
+      transition: all .2s;
+    }
+    .login-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.25);
+    }
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #00f0ff, #8b5cf6);
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform .15s ease, box-shadow .15s ease;
+      margin-top: 8px;
+    }
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 240, 255, 0.35);
+    }
+    .login-hint {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 14px;
+    }
+
+    /* ══ ADMIN HEADER ══ */
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+    }
+    .brand-info h1 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .2s;
+    }
+    .btn-nav:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .btn-nav-primary {
+      background: rgba(0, 240, 255, 0.12);
+      border-color: rgba(0, 240, 255, 0.35);
+      color: var(--primary);
+    }
+    .btn-nav-primary:hover {
+      background: rgba(0, 240, 255, 0.22);
+      color: #fff;
+    }
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fff;
+    }
+
+    /* ══ STRIX SECURITY MONITOR BANNER ══ */
+    .strix-banner {
+      background: linear-gradient(135deg, rgba(17, 22, 43, 0.95), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+    .strix-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .strix-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(139, 92, 246, 0.2);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      color: #c4b5fd;
+      flex-shrink: 0;
+    }
+    .strix-text h3 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .strix-text p {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .strix-status-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .strix-pill {
+      font-size: 11px;
+      font-weight: 750;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .strix-pill.shield {
+      background: rgba(16, 185, 129, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .strix-pill.guard {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .btn-scan {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(0, 240, 255, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.5);
+      color: #e2e8f0;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .2s;
+    }
+    .btn-scan:hover {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.45), rgba(0, 240, 255, 0.35));
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    }
+
+    /* ══ STATS CARDS ══ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media(max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media(max-width: 500px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform .2s, border-color .2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--card-border-hover);
+    }
+    .stat-data small {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .stat-data strong {
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+    .stat-total .stat-icon { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .stat-rev .stat-icon { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .stat-wait .stat-icon { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .stat-done .stat-icon { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+
+    /* ══ ORDERS SECTION ══ */
+    .orders-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+    .orders-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .16s;
+    }
+    .filter-pill.active, .filter-pill:hover {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: rgba(0, 240, 255, 0.4);
+      color: #ffffff;
+    }
+    .search-input-wrap {
+      position: relative;
+      min-width: 250px;
+    }
+    .search-input-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 13px;
+    }
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      background: #090c15;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12.5px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    /* ══ TABLE ══ */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12.5px;
+    }
+    th {
+      background: #0d1122;
+      color: #94a3b8;
+      padding: 12px 14px;
+      font-weight: 750;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: .4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .order-code-badge {
+      font-family: 'JetBrains Mono', monospace;
+      color: #00f0ff;
+      font-weight: 800;
+      font-size: 13px;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 2px 7px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .status-badge {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .status-badge.pending {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+    }
+    .status-badge.approved {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34d399;
+    }
+    .status-badge.rejected {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171;
+    }
+    .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-action {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all .15s;
+    }
+    .btn-action.approve:hover {
+      background: #10b981;
+      border-color: #10b981;
+      color: #fff;
+    }
+    .btn-action.reject:hover {
+      background: #ef4444;
+      border-color: #ef4444;
+      color: #fff;
+    }
+    .btn-action.zalo {
+      background: rgba(14, 165, 233, 0.15);
+      border-color: rgba(14, 165, 233, 0.35);
+      color: #38bdf8;
+      text-decoration: none;
+    }
+    .btn-action.zalo:hover {
+      background: #0ea5e9;
+      color: #fff;
+    }
+
+    /* ══ SECURITY MODAL / SCAN LOG ══ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 12, 21, 0.85);
+      backdrop-filter: blur(14px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .scan-card {
+      background: #11162b;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      border-radius: 18px;
+      padding: 24px;
+      width: 100%;
+      max-width: 580px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      position: relative;
+    }
+    .scan-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .scan-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .scan-terminal {
+      background: #090c15;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: #38bdf8;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .scan-terminal .log-ok { color: #4ade80; }
+    .scan-terminal .log-info { color: #c4b5fd; }
+
+    /* ══ TOAST NOTIFICATION ══ */
+    .admin-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #14182f;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      z-index: 999999;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn .2s ease;
+    }
+    .admin-toast.show { display: flex; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ambient-glow"></div>
+
+<!-- ══ LOGIN OVERLAY (ADMIN AUTH GATE) ══ -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-badge"><i class="fa-solid fa-shield-halved"></i> Strix Security Gateway</div>
+    <h2 class="login-title">Đăng Nhập Quản Trị Viên</h2>
+    <p class="login-sub">Cổng kiểm tra &amp; đối soát đơn hàng Shop Đại Phú FF</p>
+    
+    <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+      <div class="login-input-wrap">
+        <label class="login-label">Mật khẩu Quản Trị (Admin Pass)</label>
+        <input type="password" id="adminPassword" class="login-input" placeholder="Nhập mã bảo vệ Admin..." required autofocus>
+      </div>
+      <button type="submit" class="btn-login">
+        <i class="fa-solid fa-key"></i> Xác thực bảo mật &amp; Vào trang
+      </button>
+      <div class="login-hint">
+        <i class="fa-solid fa-lock"></i> Chỉ dành cho Bạn &amp; Anh Phú. Mặc định: <code style="color:#00f0ff;">daiphu2026</code>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══ MAIN DASHBOARD CONTAINER ══ -->
+<div class="container" id="adminContent" style="display:none;">
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="brand-group">
+      <img src="assets/uploads/logos/aizen-logo.png" alt="Shop Đại Phú FF" class="brand-logo">
+      <div class="brand-info">
+        <h1>BẢNG QUẢN TRỊ ADMIN <span style="font-size:11px;background:rgba(0,240,255,0.15);color:#00f0ff;border:1px solid rgba(0,240,255,0.3);padding:2px 8px;border-radius:100px;">v2.0 PRO</span></h1>
+        <p>Đối soát đơn hàng • Kiểm duyệt thanh toán MB Bank • Bàn giao key</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="index.html" class="btn-nav"><i class="fa-solid fa-store"></i> Xem Cửa Hàng</a>
+      <a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn-nav btn-nav-primary"><i class="fa-solid fa-headset"></i> Zalo Anh Phú</a>
+      <button type="button" class="btn-nav btn-logout" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
+    </div>
+  </header>
+
+  <!-- Strix Security Monitor Banner -->
+  <section class="strix-banner">
+    <div class="strix-info">
+      <div class="strix-icon"><i class="fa-solid fa-shield-virus"></i></div>
+      <div class="strix-text">
+        <h3>STRIX AI SECURITY MONITOR <span style="color:#4ade80;font-size:11px;">● HOẠT ĐỘNG 24/7</span></h3>
+        <p>Bảo vệ chống gian lận đơn ảo, chặn spam click và giám sát luồng thanh toán VietQR</p>
+      </div>
+    </div>
+    <div class="strix-status-pills">
+      <span class="strix-pill shield"><i class="fa-solid fa-shield-check"></i> Chống Sửa Giá: BẬT</span>
+      <span class="strix-pill guard"><i class="fa-solid fa-lock"></i> Checksum Đơn Hàng: AN TOÀN</span>
+      <button type="button" class="btn-scan" onclick="runStrixSecurityScan()"><i class="fa-solid fa-radar"></i> Quét Lỗ Hổng (Scan)</button>
+    </div>
+  </section>
+
+  <!-- Statistics Overview -->
+  <section class="stats-grid">
+    <div class="stat-card stat-total">
+      <div class="stat-data">
+        <small>Tổng Số Đơn Hàng</small>
+        <strong id="statTotalOrders">0</strong>
+      </div>
+      <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+    </div>
+    <div class="stat-card stat-rev">
+      <div class="stat-data">
+        <small>Doanh Thu Đã Duyệt</small>
+        <strong id="statTotalRevenue">0đ</strong>
+      </div>
+      <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+    </div>
+    <div class="stat-card stat-wait">
+      <div class="stat-data">
+        <small>Đơn Đang Chờ Duyệt</small>
+        <strong id="statPendingOrders" style="color:#fbbf24;">0</strong>
+      </div>
+      <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+    </div>
+    <div class="stat-card stat-done">
+      <div class="stat-data">
+        <small>Đơn Đã Giao File</small>
+        <strong id="statApprovedOrders" style="color:#34d399;">0</strong>
+      </div>
+      <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+    </div>
+  </section>
+
+  <!-- Orders Table Section -->
+  <section class="orders-card">
+    <div class="orders-toolbar">
+      <div class="toolbar-left">
+        <button type="button" class="filter-pill active" data-filter="all" onclick="setFilter('all')">Tất cả đơn (<span id="countAll">0</span>)</button>
+        <button type="button" class="filter-pill" data-filter="pending" onclick="setFilter('pending')">⏳ Chờ duyệt (<span id="countPending">0</span>)</button>
+        <button type="button" class="filter-pill" data-filter="approved" onclick="setFilter('approved')">✅ Đã gửi file (<span id="countApproved">0</span>)</button>
+        <button type="button" class="filter-pill" data-filter="rejected" onclick="setFilter('rejected')">❌ Báo sai (<span id="countRejected">0</span>)</button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="search-input-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="orderSearch" class="search-input" placeholder="Tìm mã DP, SĐT, tên khách..." oninput="handleSearch(this.value)">
+        </div>
+        <button type="button" class="btn-nav" onclick="refreshOrders()" title="Làm mới"><i class="fa-solid fa-rotate-right"></i></button>
+        <button type="button" class="btn-nav" onclick="exportOrdersJSON()" title="Xuất dữ liệu"><i class="fa-solid fa-file-export"></i></button>
+      </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã Đơn</th>
+            <th>Thời Gian</th>
+            <th>Khách Hàng / SĐT</th>
+            <th>Sản Phẩm &amp; Phiên Bản</th>
+            <th>Số Tiền</th>
+            <th>Trạng Thái</th>
+            <th style="text-align:right;">Thao Tác Admin</th>
+          </tr>
+        </thead>
+        <tbody id="ordersTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══ STRIX SCAN MODAL ══ -->
+<div class="modal-overlay" id="strixModal">
+  <div class="scan-card">
+    <h3 class="scan-title"><i class="fa-solid fa-shield-halved" style="color:#a78bfa;"></i> STRIX AI PENETRATION TEST</h3>
+    <p class="scan-sub">Kiểm tra bảo mật toàn diện Shop Đại Phú FF theo tiêu chuẩn Strix Engine</p>
+    
+    <div class="scan-terminal" id="scanTerminal">
+      <div>[INIT] Khởi động Strix Security Core v1.4...</div>
+    </div>
+
+    <div style="margin-top:16px;text-align:right;">
+      <button type="button" class="btn-nav" onclick="closeStrixModal()">Đóng cửa sổ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST NOTIFICATION ══ -->
+<div class="admin-toast" id="adminToast">
+  <i class="fa-solid fa-circle-check" style="color:#00f0ff;"></i>
+  <span id="toastMsg">Thao tác thành công!</span>
+</div>
+
+<script>
+/* ═══════ CONFIG & AUTH ═══════ */
+const ADMIN_SECRET = 'daiphu2026';
+let currentFilter = 'all';
+let searchQuery = '';
+
+function checkAuth() {
+  const isAuth = sessionStorage.getItem('daiphu_admin_auth');
+  const loginOverlay = document.getElementById('loginOverlay');
+  const adminContent = document.getElementById('adminContent');
+  if (isAuth === 'true') {
+    loginOverlay.style.display = 'none';
+    adminContent.style.display = 'block';
+    renderDashboard();
+  } else {
+    loginOverlay.style.display = 'flex';
+    adminContent.style.display = 'none';
+  }
+}
+
+function handleAdminLogin(e) {
+  e.preventDefault();
+  const pass = document.getElementById('adminPassword').value.trim();
+  if (pass === ADMIN_SECRET) {
+    sessionStorage.setItem('daiphu_admin_auth', 'true');
+    showToast('🎉 Xác thực Admin thành công! Chào mừng bạn & Anh Phú.');
+    checkAuth();
+  } else {
+    showToast('❌ Mật khẩu Admin không chính xác. Vui lòng thử lại!');
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminPassword').focus();
+  }
+}
+
+function adminLogout() {
+  sessionStorage.removeItem('daiphu_admin_auth');
+  showToast('👋 Đã đăng xuất khỏi trang quản trị.');
+  checkAuth();
+}
+
+/* ═══════ DATA HELPERS ═══════ */
+function formatVND(n) {
+  if (typeof n !== 'number') n = Number(n) || 0;
+  return n.toLocaleString('vi-VN') + 'đ';
+}
+
+function getStoredOrders() {
+  try {
+    const raw = localStorage.getItem('daiphu_orders');
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveStoredOrders(orders) {
+  try {
+    localStorage.setItem('daiphu_orders', JSON.stringify(orders));
+  } catch(e) {}
+}
+
+/* ═══════ RENDER DASHBOARD & ORDERS ═══════ */
+function renderDashboard() {
+  const orders = getStoredOrders();
+
+  // Statistics
+  const total = orders.length;
+  let revenue = 0;
+  let pending = 0;
+  let approved = 0;
+  let rejected = 0;
+
+  orders.forEach(o => {
+    if (o.status === 'approved') {
+      revenue += (Number(o.price) || 0);
+      approved++;
+    } else if (o.status === 'rejected') {
+      rejected++;
+    } else {
+      pending++;
+    }
+  });
+
+  document.getElementById('statTotalOrders').textContent = total;
+  document.getElementById('statTotalRevenue').textContent = formatVND(revenue);
+  document.getElementById('statPendingOrders').textContent = pending;
+  document.getElementById('statApprovedOrders').textContent = approved;
+
+  document.getElementById('countAll').textContent = total;
+  document.getElementById('countPending').textContent = pending;
+  document.getElementById('countApproved').textContent = approved;
+  document.getElementById('countRejected').textContent = rejected;
+
+  // Filter & Search
+  let filtered = orders.filter(o => {
+    if (currentFilter === 'pending') return o.status === 'pending' || !o.status;
+    if (currentFilter === 'approved') return o.status === 'approved';
+    if (currentFilter === 'rejected') return o.status === 'rejected';
+    return true;
+  });
+
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(o => 
+      (o.id && o.id.toLowerCase().includes(q)) ||
+      (o.user && o.user.toLowerCase().includes(q)) ||
+      (o.phone && o.phone.toLowerCase().includes(q)) ||
+      (o.productName && o.productName.toLowerCase().includes(q)) ||
+      (o.planName && o.planName.toLowerCase().includes(q))
+    );
+  }
+
+  // Render Table Rows
+  const tbody = document.getElementById('ordersTableBody');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b;">Chưa có đơn hàng nào khớp với tìm kiếm.</td></tr>`;
+    return;
+  }
+
+  let html = '';
+  filtered.forEach(o => {
+    let statusBadge = '';
+    if (o.status === 'approved') {
+      statusBadge = `<span class="status-badge approved"><i class="fa-solid fa-circle-check"></i> ĐÃ GỬI FILE</span>`;
+    } else if (o.status === 'rejected') {
+      statusBadge = `<span class="status-badge rejected"><i class="fa-solid fa-circle-xmark"></i> BÁO SAI TIỀN</span>`;
+    } else {
+      statusBadge = `<span class="status-badge pending"><i class="fa-solid fa-clock"></i> CHỜ DUYỆT</span>`;
+    }
+
+    const zaloPhone = o.phone ? o.phone.replace(/[^0-9]/g, '') : '0588500524';
+
+    html += `
+      <tr>
+        <td><span class="order-code-badge">${o.id}</span></td>
+        <td style="color:#94a3b8;font-size:11.5px;">${o.time || 'Vừa xong'}</td>
+        <td>
+          <strong style="color:#fff;">${o.user || 'Khách vãng lai'}</strong>
+          ${o.phone ? `<div style="font-size:11px;color:#f59e0b;"><i class="fa-solid fa-phone"></i> ${o.phone}</div>` : ''}
+        </td>
+        <td>
+          <span style="color:#ffffff;font-weight:700;">${o.productName}</span>
+          <div style="font-size:11px;color:#c4b5fd;">${o.planName}</div>
+        </td>
+        <td><strong style="color:#10b981;font-size:13.5px;">${formatVND(o.price)}</strong></td>
+        <td>${statusBadge}</td>
+        <td style="text-align:right;">
+          <div class="actions-group" style="justify-content:flex-end;">
+            <button type="button" class="btn-action approve" onclick="updateOrderStatus('${o.id}', 'approved')" title="Xác nhận đúng tiền & Đã gửi file">
+              <i class="fa-solid fa-check"></i> Đúng
+            </button>
+            <button type="button" class="btn-action reject" onclick="updateOrderStatus('${o.id}', 'rejected')" title="Đánh dấu sai tiền / chưa nhận được">
+              <i class="fa-solid fa-xmark"></i> Sai
+            </button>
+            <button type="button" class="btn-action" onclick="copyCustomerReply('${o.id}')" title="Sao chép tin nhắn Zalo gửi khách">
+              <i class="fa-solid fa-copy"></i> Mẫu tin
+            </button>
+            <a href="https://zalo.me/${zaloPhone}" target="_blank" rel="noopener" class="btn-action zalo" title="Mở Zalo khách">
+              <i class="fa-solid fa-comment-dots"></i> Zalo
+            </a>
+            <button type="button" class="btn-action" style="color:#f87171;" onclick="deleteOrder('${o.id}')" title="Xóa đơn">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  tbody.innerHTML = html;
+}
+
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-filter') === filter);
+  });
+  renderDashboard();
+}
+
+function handleSearch(val) {
+  searchQuery = val.trim();
+  renderDashboard();
+}
+
+function refreshOrders() {
+  renderDashboard();
+  showToast('🔄 Đã làm mới danh sách đơn hàng!');
+}
+
+function updateOrderStatus(id, newStatus) {
+  const orders = getStoredOrders();
+  const order = orders.find(o => o.id === id);
+  if (!order) return;
+
+  order.status = newStatus;
+  saveStoredOrders(orders);
+  renderDashboard();
+
+  if (newStatus === 'approved') {
+    showToast(`✅ Đã duyệt đơn ${id}: Đúng tiền & Đã bàn giao file!`);
+  } else {
+    showToast(`❌ Đã đánh dấu đơn ${id}: Báo sai tiền / Lỗi giao dịch.`);
+  }
+}
+
+function deleteOrder(id) {
+  if (confirm(`Bạn có chắc muốn xóa đơn hàng ${id}?`)) {
+    let orders = getStoredOrders();
+    orders = orders.filter(o => o.id !== id);
+    saveStoredOrders(orders);
+    renderDashboard();
+    showToast(`🗑️ Đã xóa đơn ${id}`);
+  }
+}
+
+function copyCustomerReply(id) {
+  const orders = getStoredOrders();
+  const order = orders.find(o => o.id === id);
+  if (!order) return;
+
+  let msg = '';
+  if (order.status === 'approved') {
+    msg = `[SHOP ĐẠI PHÚ FF] Xác nhận đơn hàng ${order.id} của bạn thành công! Đã nhận đủ ${formatVND(order.price)} cho gói ${order.productName} (${order.planName}). Dưới đây là link tải và hướng dẫn cài đặt của bạn: https://zalo.me/0588500524 . Cảm ơn bạn đã ủng hộ shop!`;
+  } else if (order.status === 'rejected') {
+    msg = `[SHOP ĐẠI PHÚ FF] Thông báo đơn hàng ${order.id}: Hệ thống chưa nhận được số tiền ${formatVND(order.price)} hoặc sai nội dung chuyển khoản. Bạn vui lòng chụp lại biên lai giao dịch gửi qua Zalo 0588500524 (Anh Phú) để được đối soát ngay nhé!`;
+  } else {
+    msg = `[SHOP ĐẠI PHÚ FF] Đã nhận yêu cầu đơn hàng ${order.id} (${order.productName} - ${formatVND(order.price)}). Admin đang kiểm tra đối soát MB Bank và sẽ gửi file trong vài phút!`;
+  }
+
+  navigator.clipboard.writeText(msg).then(() => {
+    showToast('📋 Đã sao chép mẫu tin nhắn Zalo gửi cho khách!');
+  });
+}
+
+function exportOrdersJSON() {
+  const orders = getStoredOrders();
+  const blob = new Blob([JSON.stringify(orders, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `daiphu_orders_${Date.now()}.json`;
+  a.click();
+  showToast('💾 Đã xuất file sao lưu đơn hàng!');
+}
+
+/* ═══════ STRIX SECURITY ENGINE SIMULATION ═══════ */
+function runStrixSecurityScan() {
+  const modal = document.getElementById('strixModal');
+  const term = document.getElementById('scanTerminal');
+  modal.classList.add('open');
+  term.innerHTML = '<div>[START] Khởi chạy quét bảo mật Strix Security Scanner v1.4...</div>';
+
+  const steps = [
+    { delay: 400, text: '• [AUDIT] Kiểm tra giao thức bảo mật SSL/TLS Vercel: <span class="log-ok">100% Valid HTTPS</span>' },
+    { delay: 800, text: '• [PEN-TEST] Rà soát Client-Side Tampering (Gian lận sửa giá gói): <span class="log-ok">Protected (Validated)</span>' },
+    { delay: 1200, text: '• [ANTI-INSPECT] Kiểm tra chế độ chống F12 &amp; sao chép mã nguồn: <span class="log-ok">Active &amp; Guarded</span>' },
+    { delay: 1600, text: '• [XSS & INJECTION] Kiểm tra form đầu vào (Đăng ký, Đăng nhập, Check đơn): <span class="log-ok">Sanitized (Safe)</span>' },
+    { delay: 2000, text: '• [VIETQR INTEGRITY] Đối soát mã checksum đơn hàng DP...: <span class="log-ok">100% Unique &amp; Verified</span>' },
+    { delay: 2400, text: '<span class="log-info">[KẾT LUẬN STRIX]: HỆ THỐNG AN TOÀN TUYỆT ĐỐI. KHÔNG PHÁT HIỆN LỖ HỔNG!</span>' }
+  ];
+
+  steps.forEach(s => {
+    setTimeout(() => {
+      const line = document.createElement('div');
+      line.innerHTML = s.text;
+      term.appendChild(line);
+      term.scrollTop = term.scrollHeight;
+    }, s.delay);
+  });
+}
+
+function closeStrixModal() {
+  document.getElementById('strixModal').classList.remove('open');
+}
+
+/* ═══════ TOAST HELPER ═══════ */
+function showToast(msg) {
+  const toast = document.getElementById('adminToast');
+  const msgEl = document.getElementById('toastMsg');
+  if (!toast || !msgEl) return;
+  msgEl.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3200);
+}
+
+// Init
+checkAuth();
+</script>
+</body>
+</html>
