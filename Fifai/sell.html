@@ -1200,6 +1200,55 @@
   filter: brightness(1.1);
 }
 
+/* ══ LIVE PAYMENT STATUS CARD ══ */
+.m-payment-status-card {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
+  border: 1.5px solid rgba(0, 240, 255, 0.35);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 12px;
+  box-shadow: 0 4px 18px rgba(0, 240, 255, 0.12);
+  transition: all .25s ease;
+}
+.m-payment-status-card.success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.15) 100%);
+  border-color: #10b981;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+}
+.m-pls-icon {
+  font-size: 22px;
+  color: #22d3ee;
+  flex-shrink: 0;
+}
+.m-payment-status-card.success .m-pls-icon {
+  color: #34d399;
+}
+.m-pls-info {
+  flex: 1;
+}
+.m-pls-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: .2px;
+  margin-bottom: 2px;
+}
+.m-payment-status-card.success .m-pls-title {
+  color: #34d399;
+}
+.m-pls-desc {
+  font-size: 11.5px;
+  color: #cbd5e1;
+  line-height: 1.4;
+  margin: 0;
+}
+.m-pls-desc b {
+  color: #facc15;
+}
+
 .m-qr-box {
   background: #ffffff;
   border-radius: 14px;
@@ -2050,18 +2099,28 @@
               </div>
             </div>
 
-            <!-- Hướng dẫn Xác nhận Admin & Bàn giao -->
-            <div class="m-bot-box" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.35);">
-              <div class="m-bot-title" style="color:#38bdf8;"><i class="fa-solid fa-user-shield"></i> Xác nhận đơn hàng &amp; Bàn giao trực tiếp:</div>
-              <p class="m-bot-desc" style="color:#bae6fd;">
-                Sau khi chuyển khoản thành công, hãy gửi mã đơn <code class="m-code" style="background:rgba(6,182,212,0.25);color:#e0f2fe;"><span id="mAdminCode">DP...</span></code> hoặc ảnh bill chuyển khoản đến <b>Zalo Admin: 0588500524 (Anh Phú)</b>. Admin sẽ vào kiểm tra đối soát, nếu đúng tiền sẽ gửi file &amp; key kèm hỗ trợ cài đặt 1:1 ngay!
-              </p>
+            <!-- Live Auto Check Status Box via SePay -->
+            <div class="m-payment-status-card" id="mPayLiveStatus">
+              <div class="m-pls-icon" id="mPlsIcon"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
+              <div class="m-pls-info">
+                <div class="m-pls-title" id="mPlsTitle">HỆ THỐNG ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...</div>
+                <div class="m-pls-desc" id="mPlsDesc">Sau khi chuyển khoản với nội dung <b id="mPlsMemo">DP...</b>, hệ thống sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!</div>
+              </div>
             </div>
 
-            <!-- Nút xác nhận -->
-            <button type="button" class="btn-paid-done" onclick="confirmPaid()">
-              <i class="fa-solid fa-circle-check"></i> Tôi đã chuyển khoản thành công
+            <!-- Nút kiểm tra tiền -->
+            <button type="button" class="btn-paid-done" id="btnCheckPaid" onclick="manualCheckPayment()">
+              <i class="fa-solid fa-rotate"></i> Kiểm Tra Xác Nhận Tiền Ngay
             </button>
+            <div id="checkPayFeedback" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;text-align:center;line-height:1.45;"></div>
+
+            <!-- Hướng dẫn Xác nhận Admin & Bàn giao -->
+            <div class="m-bot-box" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.35);margin-top:14px;">
+              <div class="m-bot-title" style="color:#38bdf8;"><i class="fa-solid fa-user-shield"></i> Hỗ trợ trực tiếp từ Admin Shop:</div>
+              <p class="m-bot-desc" style="color:#bae6fd;">
+                Nếu sau khi chuyển tiền ngân hàng bị trễ hoặc cần file cài đặt ngay, hãy gửi mã đơn <code class="m-code" style="background:rgba(6,182,212,0.25);color:#e0f2fe;"><span id="mAdminCode">DP...</span></code> hoặc ảnh bill đến <b>Zalo Admin: 0588500524 (Anh Phú)</b> để được hỗ trợ 1:1 ngay!
+              </p>
+            </div>
 
             <!-- Card Hint Link -->
             <div style="text-align:center;margin-top:14px;padding:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.12);border-radius:10px;font-size:12px;color:#94a3b8;">
@@ -2133,9 +2192,23 @@
 
     <!-- Block 1: Receipt Header -->
     <div class="paid-header-box">
-      <div class="paid-header-icon">🧾</div>
-      <div class="paid-header-title">Mã Xác Nhận Đơn Hàng</div>
-      <div class="paid-header-sub">Gửi mã đơn hoặc ảnh chụp giao dịch cho Zalo Admin để kiểm tra và nhận file cài đặt</div>
+      <div class="paid-header-icon" id="paidHeaderIcon">🧾</div>
+      <div class="paid-header-title" id="paidHeaderTitle">Mã Xác Nhận Đơn Hàng</div>
+      <div class="paid-header-sub" id="paidHeaderSub">Gửi mã đơn hoặc ảnh chụp giao dịch cho Zalo Admin để kiểm tra và nhận file cài đặt</div>
+    </div>
+
+    <!-- Block Key Delivery (Tự động kích hoạt khi SePay xác nhận có tiền) -->
+    <div id="paidKeyDeliveryBox" style="display:none;background:linear-gradient(135deg,rgba(16,185,129,0.18) 0%,rgba(6,182,212,0.18) 100%);border:1.5px solid #10b981;border-radius:14px;padding:16px;margin-bottom:14px;text-align:center;box-shadow:0 4px 20px rgba(16,185,129,0.25);">
+      <div style="font-size:12px;font-weight:800;color:#34d399;text-transform:uppercase;letter-spacing:.5px;"><i class="fa-solid fa-key"></i> MÃ KEY BẢN QUYỀN ĐÃ KÍCH HOẠT:</div>
+      <div style="font-family:monospace;font-size:18px;font-weight:900;color:#ffffff;letter-spacing:1px;margin:10px 0;background:#090c1a;padding:10px 14px;border-radius:10px;border:1.5px dashed #34d399;" id="paidGeneratedKey">KEY-XXXX-YYYY-ZZZZ</div>
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="btn btn-primary" onclick="copyGeneratedKey(this)" style="flex:1;font-size:12.5px;padding:10px;">
+          <i class="fa-solid fa-copy"></i> Sao chép Key
+        </button>
+        <a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn btn-ghost" style="flex:1;font-size:12.5px;padding:10px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <i class="fa-solid fa-download"></i> Tải File &amp; HD
+        </a>
+      </div>
     </div>
 
     <!-- Block 2: Syntax Box -->
@@ -3348,11 +3421,141 @@ function startPaymentForPlan(p, plan) {
   // Chuyển sang Bước 2
   goToStep(2);
 
+  // Khởi động trình tự động kiểm tra giao dịch SePay
+  startPaymentWatcher(orderId, plan.price);
+
   // Cuộn lên đầu cột chi tiết
   var col = document.querySelector('.m-info-col');
   if (col) col.scrollTo({ top: 0, behavior: 'smooth' });
 
   toast('🛒', 'Đã chọn: ' + plan.name + ' (' + formatVND(plan.price) + '). Vui lòng thanh toán.');
+}
+
+/* ═══════ SEPAY AUTOMATED BANKING TRANSACTION VERIFICATION ═══════ */
+var paymentPollTimer = null;
+var isCheckingPayment = false;
+
+function startPaymentWatcher(orderId, price) {
+  stopPaymentWatcher();
+  var memoEl = document.getElementById('mPlsMemo');
+  if (memoEl) memoEl.textContent = orderId;
+  updateLiveStatus('waiting', 'HỆ THỐNG ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...', 'Sau khi chuyển khoản với nội dung <b>' + orderId + '</b>, hệ thống SePay sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!');
+
+  // Tự động kiểm tra mỗi 3.5 giây
+  paymentPollTimer = setInterval(function() {
+    checkPaymentApi(orderId, price, false);
+  }, 3500);
+}
+
+function stopPaymentWatcher() {
+  if (paymentPollTimer) {
+    clearInterval(paymentPollTimer);
+    paymentPollTimer = null;
+  }
+}
+
+function updateLiveStatus(state, title, desc) {
+  var card = document.getElementById('mPayLiveStatus');
+  var icon = document.getElementById('mPlsIcon');
+  var tEl = document.getElementById('mPlsTitle');
+  var dEl = document.getElementById('mPlsDesc');
+
+  if (!card) return;
+  if (state === 'success') {
+    card.classList.add('success');
+    if (icon) icon.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#34d399;"></i>';
+    if (tEl) { tEl.textContent = title || 'ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!'; tEl.style.color = '#34d399'; }
+    if (dEl) dEl.innerHTML = desc || 'MBBank đã nhận được tiền. Đang kích hoạt key ngay...';
+  } else {
+    card.classList.remove('success');
+    if (icon) icon.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+    if (tEl) { tEl.textContent = title; tEl.style.color = '#ffffff'; }
+    if (dEl) dEl.innerHTML = desc;
+  }
+}
+
+function checkPaymentApi(orderId, price, isManual) {
+  if (isCheckingPayment || !orderId) return;
+  isCheckingPayment = true;
+
+  fetch('/api/check-payment?memo=' + encodeURIComponent(orderId) + '&price=' + encodeURIComponent(price || 0))
+    .then(function(res) {
+      if (!res.ok) throw new Error('API status ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      isCheckingPayment = false;
+      if (data && data.paid) {
+        // MATCHED! Tiền thực sự đã vào MBBank!
+        stopPaymentWatcher();
+        updateLiveStatus('success', '✅ ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!', 'MBBank 0941414448 đã ghi có +' + formatVND(data.transaction.amount) + ' với mã ' + orderId + '. Đang mở key...');
+        toast('🎉', 'Đã xác nhận tiền vào MBBank thành công!');
+        setTimeout(function() {
+          onPaymentVerifiedSuccess(data.transaction);
+        }, 1200);
+      } else {
+        if (isManual) {
+          var fb = document.getElementById('checkPayFeedback');
+          if (fb) {
+            fb.style.display = 'block';
+            fb.style.background = 'rgba(239, 68, 68, 0.15)';
+            fb.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+            fb.style.color = '#fca5a5';
+            fb.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> <b>Chưa thấy tiền vào MBBank cho mã ' + orderId + '!</b><br>Vui lòng kiểm tra bạn đã chuyển tiền trong App ngân hàng chưa (Nội dung phải có <b>' + orderId + '</b>). Nếu vừa chuyển, vui lòng chờ 5-10 giây để ngân hàng gửi thông báo biến động, hoặc gửi bill qua Zalo Anh Phú.';
+          }
+          toast('⚠️', 'Chưa thấy giao dịch ' + orderId + ' trong tài khoản MBBank!');
+        }
+      }
+    })
+    .catch(function(err) {
+      isCheckingPayment = false;
+      console.warn('Check payment poll warning:', err);
+      if (isManual) {
+        var fb = document.getElementById('checkPayFeedback');
+        if (fb) {
+          fb.style.display = 'block';
+          fb.style.background = 'rgba(234, 179, 8, 0.15)';
+          fb.style.border = '1px solid rgba(234, 179, 8, 0.4)';
+          fb.style.color = '#fef08a';
+          fb.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <b>Đang kết nối đối soát...</b><br>Nếu bạn đã chuyển tiền thành công, hãy gửi bill cho Zalo Anh Phú (0588500524) để được nhận file và key ngay nhé!';
+        }
+        toast('⚠️', 'Chưa xác nhận được tiền! Vui lòng thử lại sau vài giây.');
+      }
+    });
+}
+
+function manualCheckPayment() {
+  var btn = document.getElementById('btnCheckPaid');
+  var fb = document.getElementById('checkPayFeedback');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đối soát với MBBank...';
+  }
+  if (fb) fb.style.display = 'none';
+
+  checkPaymentApi(window.currentOrderMemo, window.currentPayAmountRaw, true);
+
+  setTimeout(function() {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Kiểm Tra Xác Nhận Tiền Ngay';
+    }
+  }, 2500);
+}
+
+function onPaymentVerifiedSuccess(tx) {
+  // Cập nhật trạng thái đơn thành 'approved' trong kho lưu trữ
+  var orders = getOrdersHistory();
+  var o = orders.find(function(item) { return item.id === window.currentOrderMemo; });
+  if (o) {
+    o.status = 'approved';
+    o.txId = tx ? (tx.reference || tx.id) : '';
+    saveOrder(o);
+  }
+
+  // Mở modal xác nhận với trạng thái ĐÃ XÁC NHẬN TIỀN
+  closeBuyModal();
+  openPaidModal(tx);
 }
 
 function switchPayMethod(method) {
@@ -3421,26 +3624,28 @@ function goToStep(step) {
   var s2 = document.getElementById('mStep2');
   if (!s1 || !s2) return;
   if (step === 1) {
+    stopPaymentWatcher();
     s1.style.display = 'block';
     s2.style.display = 'none';
   } else if (step === 2) {
     s1.style.display = 'none';
     s2.style.display = 'block';
+    startPaymentWatcher(window.currentOrderMemo, window.currentPayAmountRaw);
   }
 }
 
 function closeBuyModal() {
+  stopPaymentWatcher();
   var m = document.getElementById('buyModal');
   if (m) m.classList.remove('open');
   document.body.style.overflow = '';
 }
 
 function confirmPaid() {
-  closeBuyModal();
-  openPaidModal();
+  manualCheckPayment();
 }
 
-function openPaidModal() {
+function openPaidModal(tx) {
   var memo = window.currentOrderMemo || ('DP' + Math.floor(100000 + Math.random() * 900000));
   window.currentOrderMemo = memo;
 
@@ -3451,6 +3656,12 @@ function openPaidModal() {
   var detailPriceEl = document.getElementById('paidDetailPrice');
   var detailTimeEl = document.getElementById('paidDetailTime');
 
+  var headerIcon = document.getElementById('paidHeaderIcon');
+  var headerTitle = document.getElementById('paidHeaderTitle');
+  var headerSub = document.getElementById('paidHeaderSub');
+  var keyBox = document.getElementById('paidKeyDeliveryBox');
+  var keyEl = document.getElementById('paidGeneratedKey');
+
   if (confirmCodeEl) confirmCodeEl.textContent = memo;
   if (detailCodeEl) detailCodeEl.textContent = memo;
   if (detailProdEl) detailProdEl.textContent = currentProduct ? currentProduct.name : 'AimLock iOS';
@@ -3458,9 +3669,51 @@ function openPaidModal() {
   if (detailPriceEl) detailPriceEl.textContent = currentPlan ? formatVND(currentPlan.price) : '50.000đ';
   if (detailTimeEl) detailTimeEl.textContent = formatCurrentDateTime();
 
+  var statusEl = document.querySelector('.paid-status');
+
+  if (tx) {
+    if (headerIcon) headerIcon.textContent = '🎉';
+    if (headerTitle) headerTitle.textContent = 'Xác Nhận Đã Nhận Tiền Thành Công!';
+    if (headerSub) headerSub.textContent = 'Tài khoản MBBank đã nhận đủ tiền! Mã bản quyền của bạn đã được kích hoạt bên dưới.';
+    if (statusEl) {
+      statusEl.innerHTML = '✅ <span style="color:#34d399;font-weight:800;">ĐÃ THANH TOÁN THÀNH CÔNG (MBBank #' + (tx.reference || tx.id) + ')</span>';
+    }
+    if (keyBox) keyBox.style.display = 'block';
+    if (keyEl) keyEl.textContent = 'KEY-' + memo + '-' + Math.floor(1000 + Math.random() * 9000);
+  } else {
+    if (headerIcon) headerIcon.textContent = '⏳';
+    if (headerTitle) headerTitle.textContent = 'Mã Đơn Đang Chờ Đối Soát Tiền';
+    if (headerSub) headerSub.textContent = 'Gửi mã đơn hoặc ảnh chụp giao dịch cho Zalo Admin để kiểm tra và nhận file cài đặt';
+    if (statusEl) {
+      statusEl.innerHTML = '⏳ <span style="color:#f59e0b;font-weight:700;">Chờ đối soát tiền vào tài khoản MBBank</span>';
+    }
+    if (keyBox) keyBox.style.display = 'none';
+  }
+
   var m = document.getElementById('paidModal');
   if (m) m.classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function copyGeneratedKey(btn) {
+  var keyEl = document.getElementById('paidGeneratedKey');
+  var key = keyEl ? keyEl.textContent.trim() : '';
+  if (!key) return;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(key);
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = key;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  var oldHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-check"></i> Đã sao chép!';
+  setTimeout(function() { btn.innerHTML = oldHtml; }, 2000);
+  toast('🔑', 'Đã sao chép mã Key bản quyền: ' + key);
 }
 
 function closePaidModal() {
