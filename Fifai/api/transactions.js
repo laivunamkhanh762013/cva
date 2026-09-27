@@ -3,13 +3,13 @@ const https = require('https');
 function fetchSePay(path) {
   return new Promise((resolve, reject) => {
     const options = {
-      hostname: 'my.sepay.vn',
+      hostname: 'userapi.sepay.vn',
       path: path,
       method: 'GET',
       rejectUnauthorized: false,
       headers: {
         'Authorization': 'Bearer YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'curl/7.88.1'
       }
     };
     const req = https.request(options, (res) => {

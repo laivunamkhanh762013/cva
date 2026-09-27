@@ -357,6 +357,7 @@
           <i class="fa-solid fa-magnifying-glass"></i>
           <input type="text" id="orderSearch" class="search-input" placeholder="Tìm mã DP, SĐT, tên khách..." oninput="handleSearch(this.value)">
         </div>
+        <button type="button" class="btn-nav" style="background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.4);color:#34d399;font-weight:700;padding:0 12px;gap:6px;" onclick="autoScanPendingOrders(false)" title="Quét tự động tiền vào SePay MBBank"><i class="fa-solid fa-bolt"></i> Quét SePay</button>
         <button type="button" class="btn-nav" onclick="refreshOrders()" title="Làm mới"><i class="fa-solid fa-rotate-right"></i></button>
         <button type="button" class="btn-nav" onclick="exportOrdersJSON()" title="Xuất dữ liệu"><i class="fa-solid fa-file-export"></i></button>
         <button type="button" class="btn-nav" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);color:#f87171;" onclick="clearAllOrders()" title="Xóa tất cả đơn"><i class="fa-solid fa-trash-can"></i> Reset</button>
@@ -494,6 +495,8 @@ function loadAllOrders(silent) {
       });
       renderDashboard();
       if (!silent) showToast('☁️ Đã tải ' + allOrders.length + ' đơn từ hệ thống!');
+      // Tự động quét tiền SePay cho các đơn đang chờ duyệt
+      autoScanPendingOrders(true);
     })
     .catch(function(err) {
       console.warn('Cloud fetch failed:', err);
@@ -506,6 +509,68 @@ function loadAllOrders(silent) {
 function showLoadingState() {
   const tbody = document.getElementById('ordersTableBody');
   if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin" style="font-size:20px;"></i><br><br>Đang tải đơn hàng...</td></tr>';
+}
+
+/* ═══════ QUÉT TỰ ĐỘNG KHỚP TIỀN SEPAY CHO CÁC ĐƠN CHỜ DUYỆT ═══════ */
+let isAutoScanning = false;
+function autoScanPendingOrders(silent) {
+  if (isAutoScanning) return;
+  const pendingOrders = allOrders.filter(function(o) { return o.status === 'pending' || !o.status; });
+  if (pendingOrders.length === 0) {
+    if (!silent) showToast('ℹ️ Không có đơn hàng nào đang chờ duyệt.');
+    return;
+  }
+
+  isAutoScanning = true;
+  if (!silent) showToast('⚡ Đang quét SePay MBBank cho ' + pendingOrders.length + ' đơn chờ...');
+
+  fetch('/api/transactions?adminKey=' + encodeURIComponent(ADMIN_SECRET) + '&limit=50')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      isAutoScanning = false;
+      const txs = (data && data.transactions) ? data.transactions : [];
+      if (!txs.length) {
+        if (!silent) showToast('ℹ️ Không tìm thấy lịch sử giao dịch từ MBBank.');
+        return;
+      }
+
+      let approvedCount = 0;
+      pendingOrders.forEach(function(o) {
+        const price = Number(o.price) || 0;
+        const cleanOId = (o.id || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const cleanUName = (o.user || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+        const matchedTx = txs.find(function(t) {
+          const amountIn = parseFloat(t.amount_in || 0);
+          if (price > 0 && amountIn < (price * 0.9)) return false;
+          if (amountIn < 10000) return false;
+
+          const rawContent = (t.transaction_content || '');
+          const content = rawContent.toUpperCase().replace(/[^A-Z0-9]/g, '');
+          const matchId = cleanOId && cleanOId.length >= 4 && content.includes(cleanOId);
+          const matchUser = cleanUName && cleanUName.length >= 3 && cleanUName !== 'KHACHVANGLAI' && content.includes(cleanUName);
+
+          return matchId || matchUser;
+        });
+
+        if (matchedTx) {
+          const ref = matchedTx.reference_number || String(matchedTx.id);
+          updateOrderStatus(o.id, 'approved', ref);
+          approvedCount++;
+        }
+      });
+
+      if (approvedCount > 0) {
+        showToast('🎉 SePay tự động phát hiện & duyệt ' + approvedCount + ' đơn đã chuyển khoản!');
+      } else if (!silent) {
+        showToast('🔍 Đã quét 50 giao dịch MBBank gần nhất: Chưa thấy giao dịch khớp đơn chờ.');
+      }
+    })
+    .catch(function(err) {
+      isAutoScanning = false;
+      console.warn('Auto scan transactions error:', err);
+      if (!silent) showToast('❌ Lỗi kết nối SePay khi quét giao dịch.');
+    });
 }
 
 /* ═══════ CHECK SEPAY CHO 1 ĐƠN ═══════ */

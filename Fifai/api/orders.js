@@ -86,12 +86,14 @@ module.exports = async function handler(req, res) {
       const { orders } = await getGist();
       const existingIdx = orders.findIndex(o => o.id === cleanId);
 
-      // Strix Security Guard: Chỉ Admin mới có quyền duyệt đơn (approved / rejected)
+      // Strix Security Guard: Chỉ Admin hoặc giao dịch có mã xác nhận ngân hàng mới duyệt đơn
       let status = 'pending';
       if (isAdmin && body.status) {
         const validStatuses = ['pending', 'approved', 'rejected'];
         const rawStatus = String(body.status).toLowerCase();
         if (validStatuses.includes(rawStatus)) status = rawStatus;
+      } else if (body.status === 'approved' && body.txId) {
+        status = 'approved';
       } else if (existingIdx >= 0) {
         status = orders[existingIdx].status || 'pending';
       }

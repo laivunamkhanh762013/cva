@@ -1,4 +1,5 @@
 const https = require('https');
+const { getGist, updateGist } = require('./db');
 
 // Danh sách từ cấm / từ thông dụng trong ngân hàng không được dùng làm từ khóa đối soát
 const STOP_WORDS = new Set([
@@ -26,14 +27,14 @@ function fetchSePay(path) {
   return new Promise((resolve, reject) => {
     const apiKey = process.env.SEPAY_API_KEY || 'YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV';
     const options = {
-      hostname: 'my.sepay.vn',
+      hostname: 'userapi.sepay.vn',
       path: path,
       method: 'GET',
       rejectUnauthorized: false,
       headers: {
         'Authorization': 'Bearer ' + apiKey,
         'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'curl/7.88.1'
       }
     };
     const req = https.request(options, (res) => {
@@ -114,6 +115,31 @@ module.exports = async function handler(req, res) {
     });
 
     if (matched) {
+      const txRef = matched.reference_number || String(matched.id);
+
+      // Tự động cập nhật trạng thái đơn thành 'approved' trong Database
+      try {
+        const { orders } = await getGist();
+        if (orders && orders.length) {
+          let updated = false;
+          orders.forEach(o => {
+            const isMatch = (cleanOrderId && o.id === cleanOrderId) ||
+                            (cleanMemo && (o.id === cleanMemo || cleanToken(o.user) === cleanMemo)) ||
+                            (cleanUser && cleanToken(o.user) === cleanUser);
+            if (isMatch && o.status !== 'approved') {
+              o.status = 'approved';
+              o.txId = txRef;
+              updated = true;
+            }
+          });
+          if (updated) {
+            await updateGist({ orders });
+          }
+        }
+      } catch(dbErr) {
+        console.warn('Auto-update DB in check-payment error:', dbErr.message);
+      }
+
       return res.status(200).json({
         paid: true,
         message: 'Đã xác nhận nhận đủ tiền từ MBBank!',

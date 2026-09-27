@@ -4230,7 +4230,7 @@ function manualCheckPayment() {
 function onPaymentVerifiedSuccess(tx) {
   // Cập nhật trạng thái đơn thành 'approved' — tìm theo orderId (DP code)
   var orderId = window.currentOrderId || window.currentOrderMemo;
-  var orders = getOrdersHistory();
+  var orders = getOrders();
   var o = orders.find(function(item) { return item.id === orderId; });
   if (o) {
     o.status = 'approved';
