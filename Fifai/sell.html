@@ -1831,25 +1831,31 @@
 </head>
 
 <body class="storefront">
-<!-- ══ GAMING SPLASH SCREEN INTRO (1 GIÂY) ══ -->
-<div id="gamingIntro" class="gaming-intro-overlay" style="display: none;">
-  <div class="intro-fx-flare"></div>
-  <div class="intro-content">
-    <div class="intro-glitch-text" data-text="SHOP ĐẠI PHÚ FF">SHOP ĐẠI PHÚ FF</div>
-    <div class="intro-subline">GAMING STORE • MOD &amp; UTILITIES</div>
+<!-- ══ GAMING SPLASH SCREEN INTRO (HÀNG NGANG: LOGO + TÊN & PHÓNG TO XUYÊN THẤU) ══ -->
+<div id="gamingIntro" class="dp-intro-overlay">
+  <div class="dp-intro-center" id="dpIntroCenter">
+    <!-- LOGO BÊN TRÁI (Dễ dàng thay đổi ảnh tại thẻ img bên dưới) -->
+    <div class="dp-intro-logo-box" id="dpIntroLogoBox">
+      <img src="assets/uploads/logos/aizen-logo.png" alt="Logo Shop Đại Phú FF" class="dp-intro-logo-img" onerror="this.onerror=null;this.src='logo.png';">
+    </div>
+    <!-- TÊN SHOP BÊN PHẢI -->
+    <div class="dp-intro-text-box" id="dpIntroTextBox">
+      <div class="dp-intro-title">SHOP ĐẠI PHÚ FF</div>
+      <div class="dp-intro-subline">GAMING STORE • MOD &amp; UTILITIES</div>
+    </div>
   </div>
 </div>
 
 <style>
-/* CSS Reset & Intro Overlay */
-.gaming-intro-overlay {
+/* Toàn màn hình đen gaming */
+.dp-intro-overlay {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   height: 100dvh;
-  background: radial-gradient(circle at center, #070d1e 0%, #020409 100%);
-  z-index: 99999999;
+  background: radial-gradient(circle at center, #070e24 0%, #020409 100%);
+  z-index: 999999999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1857,121 +1863,143 @@
   pointer-events: all;
   user-select: none;
   -webkit-user-select: none;
+  transition: opacity 0.35s ease;
 }
 
-.intro-fx-flare {
-  position: absolute;
-  width: 320px;
-  height: 320px;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.45) 0%, rgba(250, 204, 21, 0.25) 45%, transparent 70%);
-  filter: blur(40px);
-  border-radius: 50%;
-  pointer-events: none;
-  animation: flarePulse 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.intro-content {
+/* Khối trung tâm xếp hàng ngang: Logo bên trái, Chữ bên phải */
+.dp-intro-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   position: relative;
-  text-align: center;
-  padding: 0 16px;
-  animation: impactZoom 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
 }
 
-.intro-glitch-text {
+/* Logo bên trái viền phát sáng Neon Cyan & Gold */
+.dp-intro-logo-box {
+  width: clamp(65px, 14vw, 92px);
+  height: clamp(65px, 14vw, 92px);
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, #00f0ff 0%, #facc15 100%);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.7), 0 0 50px rgba(250, 204, 21, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: dpLogoPulse 0.7s ease infinite alternate;
+  transition: transform 0.4s cubic-bezier(0.7, 0, 0.9, 1), opacity 0.35s ease, filter 0.35s ease;
+  will-change: transform, opacity;
+  z-index: 2;
+}
+
+.dp-intro-logo-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #020409;
+  display: block;
+}
+
+/* Khối chữ Tên bên phải */
+.dp-intro-text-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
+}
+
+.dp-intro-title {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Impact", sans-serif;
-  font-size: clamp(26px, 8vw, 48px);
+  font-size: clamp(20px, 5.5vw, 38px);
   font-weight: 900;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
+  line-height: 1.1;
   text-transform: uppercase;
   color: #ffffff;
-  background: linear-gradient(135deg, #00f0ff 0%, #ffffff 50%, #facc15 100%);
+  background: linear-gradient(135deg, #00f0ff 0%, #ffffff 45%, #facc15 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 15px rgba(0, 240, 255, 0.7), 0 0 35px rgba(250, 204, 21, 0.5);
-  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.9));
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.65), 0 0 35px rgba(250, 204, 21, 0.5);
+  filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.9));
   white-space: nowrap;
 }
 
-.intro-subline {
+.dp-intro-subline {
   font-family: monospace, system-ui;
-  font-size: clamp(10px, 2.5vw, 13px);
+  font-size: clamp(9px, 2.2vw, 12px);
   font-weight: 700;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   color: #38bdf8;
-  margin-top: 8px;
+  margin-top: 6px;
   opacity: 0.85;
   text-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+  white-space: nowrap;
 }
 
-@keyframes impactZoom {
-  0% {
-    opacity: 0;
-    transform: scale(0.65) translateY(10px);
-    filter: brightness(2.5) contrast(1.5);
-  }
-  25% {
-    opacity: 1;
-    transform: scale(1.08);
-    filter: brightness(1.8);
-  }
-  60% {
-    transform: scale(0.98);
-    filter: brightness(1.2);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-    filter: brightness(1);
-  }
+@keyframes dpLogoPulse {
+  0% { transform: scale(0.96); filter: drop-shadow(0 0 10px #00f0ff); }
+  100% { transform: scale(1.04); filter: drop-shadow(0 0 22px #facc15); }
 }
 
-@keyframes flarePulse {
-  0% { transform: scale(0.4); opacity: 0; }
-  40% { transform: scale(1.4); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.6; }
-}
-
-.intro-fade-out {
+/* Hiệu ứng khi chữ mờ dần */
+.dp-intro-text-hidden {
   opacity: 0 !important;
-  transform: scale(1.04);
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 1, 1), transform 0.3s ease;
+  transform: translateX(25px) scale(0.95);
+  pointer-events: none;
+}
+
+/* Hiệu ứng Logo phóng to cực đại xuyên thấu màn hình */
+.dp-intro-logo-zoom {
+  animation: none !important;
+  transform: scale(28) !important;
+  opacity: 0 !important;
+  filter: brightness(3.5) blur(1px) !important;
+  box-shadow: 0 0 120px rgba(0, 240, 255, 1) !important;
 }
 </style>
 
 <script>
 (function() {
-  var INTRO_KEY = 'daiphu_intro_timestamp';
-  var COOLDOWN_MS = 60 * 60 * 1000;
-  var now = Date.now();
-  var lastView = localStorage.getItem(INTRO_KEY);
+  var intro = document.getElementById('gamingIntro');
+  var center = document.getElementById('dpIntroCenter');
+  var logo = document.getElementById('dpIntroLogoBox');
+  var text = document.getElementById('dpIntroTextBox');
+  if (!intro || !center || !logo || !text) return;
 
-  var isReload = false;
-  try {
-    var perf = window.performance.getEntriesByType('navigation');
-    if (perf && perf.length > 0) {
-      isReload = (perf[0].type === 'reload');
-    } else if (window.performance && window.performance.navigation) {
-      isReload = (window.performance.navigation.type === 1);
-    }
-  } catch(e) {}
+  // Luôn luôn hiển thị mỗi lần người dùng truy cập hoặc tải lại trang
+  intro.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 
-  if (isReload || (lastView && (now - parseInt(lastView, 10)) < COOLDOWN_MS)) {
-    return;
-  }
-
-  localStorage.setItem(INTRO_KEY, now.toString());
-  var introEl = document.getElementById('gamingIntro');
-  if (!introEl) return;
-
-  introEl.style.display = 'flex';
-
+  // Sau 0.7 giây:
   setTimeout(function() {
-    introEl.classList.add('intro-fade-out');
+    // 1. Tên chữ nhanh chóng mờ dần và biến mất
+    text.classList.add('dp-intro-text-hidden');
+
+    // 2. Logo lập tức trượt vào chính giữa màn hình
+    var textWidth = text.offsetWidth || 150;
+    var shiftX = (textWidth + 16) / 2;
+    logo.style.transform = 'translateX(' + shiftX + 'px)';
+
+    // Sau 0.15s: Logo phóng to cực đại xuyên thấu màn hình mở ra web
     setTimeout(function() {
-      if (introEl && introEl.parentNode) {
-        introEl.parentNode.removeChild(introEl);
-      }
-    }, 300);
+      logo.style.transition = 'transform 0.42s cubic-bezier(0.7, 0, 1, 1), opacity 0.38s ease, filter 0.38s ease';
+      logo.classList.add('dp-intro-logo-zoom');
+      intro.style.opacity = '0';
+
+      // Tổng thời lượng ~1.1s - 1.2s: Xóa hoàn toàn khỏi DOM & mở lại cuộn trang
+      setTimeout(function() {
+        document.body.style.overflow = '';
+        if (intro && intro.parentNode) {
+          intro.parentNode.removeChild(intro);
+        }
+      }, 350);
+    }, 150);
   }, 700);
 })();
 </script>
@@ -1990,12 +2018,12 @@
 <!-- ══ TOPBAR ══ -->
 <header class="topbar">
   <div class="shell topbar-inner">
-    <a class="brand" href="index.html">
+    <a class="brand" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;" title="Shop Đại Phú FF">
       <span class="brand-mark"><img class="website-logo" src="assets/uploads/logos/aizen-logo.png" alt="Logo Shop Đại Phú FF" style="border-radius:50%;object-fit:cover;"></span>
       <span><b>SHOP ĐẠI PHÚ FF</b><small>SẢN PHẨM SỐ</small></span>
     </a>
     <nav class="desktop-nav" aria-label="Điều hướng chính">
-      <a class="active" href="index.html">Cửa hàng</a>
+      <a class="active" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">Cửa hàng</a>
       <a href="#products">Sản phẩm</a>
       <a href="#feedback">Đánh giá</a>
       <a href="javascript:void(0)" onclick="openOrderCheckModal()"><i class="fa-solid fa-clipboard-check"></i> Check Đơn Hàng</a>
@@ -2015,7 +2043,7 @@
     <div class="hero-copy">
       <span class="store-kicker"><i class="fa-solid fa-circle-check"></i> CỬA HÀNG HỖ TRỢ KÉO TÂM CHUẨN XÁC</span>
       <h1>Chọn sản phẩm phù hợp với nhu cầu của bạn.</h1>
-      <p>Những sản phẩm bên ĐẠI PHÚ FF tạo ra hỗ trợ kéo tâm chuẩn xác, không can thiệp sâu PMT3 và hoạt động ổn định lâu dài ✅<br><br><b>ZALO ADMIN DUYỆT ĐƠN &amp; HỖ TRỢ: 0588500524 (Anh Phú)</b><br><span style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);padding:5px 12px;border-radius:8px;font-size:12px;color:#fef08a;">💳 Phương thức thanh toán: <b>Quét mã VietQR Ngân hàng</b> | <b>Thẻ cào / Card (Liên hệ riêng)</b></span></p>
+      <p>Những sản phẩm bên ĐẠI PHÚ FF tạo ra hỗ trợ kéo tâm chuẩn xác, không can thiệp sâu PMT3 và hoạt động ổn định lâu dài ✅<br><br><b>ZALO ADMIN DUYỆT ĐƠN &amp; HỖ TRỢ: 0588500524 (Anh Phú)</b><br><span style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;background:#0d1527;border:1.5px solid rgba(0,240,255,0.45);padding:7px 14px;border-radius:10px;font-size:12.5px;color:#f1f5f9;box-shadow:0 4px 16px rgba(0,0,0,0.5);"><span style="color:#00f0ff;font-weight:800;"><i class="fa-solid fa-credit-card"></i> Phương thức thanh toán:</span> <span style="background:rgba(16,185,129,0.22);color:#34d399;padding:2px 8px;border-radius:6px;font-weight:800;border:1px solid rgba(16,185,129,0.4);"><i class="fa-solid fa-qrcode"></i> Quét mã VietQR</span> <span style="color:#64748b;">|</span> <span style="background:rgba(250,204,21,0.2);color:#facc15;padding:2px 8px;border-radius:6px;font-weight:800;border:1px solid rgba(250,204,21,0.4);"><i class="fa-solid fa-sim-card"></i> Thẻ cào / Card (Liên hệ riêng)</span></span></p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#products"><i class="fa-solid fa-bag-shopping"></i> Xem sản phẩm</a>
         <a class="btn btn-ghost" href="https://zalo.me/0588500524" target="_blank" rel="noopener"><i class="fa-solid fa-headset"></i> Liên hệ Zalo Admin</a>
@@ -2113,7 +2141,7 @@
 
 <!-- ══ MOBILE BOTTOM NAVIGATION ══ -->
 <nav class="mobile-nav" aria-label="Điều hướng trên điện thoại">
-  <a class="active" href="index.html"><i class="fa-solid fa-store"></i><span>Cửa hàng</span></a>
+  <a class="active" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;"><i class="fa-solid fa-store"></i><span>Cửa hàng</span></a>
   <a href="#products"><i class="fa-solid fa-fire"></i><span>Sản phẩm</span></a>
   <a href="javascript:void(0)" onclick="openOrderCheckModal()"><i class="fa-solid fa-clipboard-check"></i><span>Check đơn</span></a>
   <a href="#feedback"><i class="fa-solid fa-comments"></i><span>Đánh giá</span></a>
