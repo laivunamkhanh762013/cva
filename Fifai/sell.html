@@ -4624,113 +4624,14 @@ function toast(ico, msg) {
   }, 3600);
 }
 
-/* ═══════ ADVANCED ANTI-INSPECT & PRE-OPENED DEVTOOLS TRAP ═══════ */
-(function() {
-  var devtoolsOpen = false;
-
-  // 1. Phím tắt cơ bản & chuột phải
-  document.addEventListener('contextmenu', function(e) {
+/* ═══════ KEYBOARD SHORTCUTS & SEARCH ═══════ */
+document.addEventListener('keydown', function(e) {
+  if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
     e.preventDefault();
-    toast('🔒', 'Hệ thống kích hoạt chế độ bảo mật bản quyền & chống sao chép.');
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
-      e.preventDefault();
-      toast('🔒', 'Chế độ bảo mật chống gian lận & sao chép đang bật.');
-      return false;
-    }
-    if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
-      e.preventDefault();
-      var s = document.getElementById('product-search');
-      if (s) s.focus();
-    }
-  });
-
-  // 2. Màn hình cảnh báo đỏ/đen khóa tương tác tuyệt đối khi mở DevTools
-  function lockScreen() {
-    if (document.getElementById('dpDevtoolsLock')) return;
-    var lock = document.createElement('div');
-    lock.id = 'dpDevtoolsLock';
-    lock.innerHTML = `
-      <div style="position:fixed;inset:0;background:#030712;z-index:9999999999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;color:#fff;font-family:sans-serif;user-select:none;">
-        <div style="width:84px;height:84px;border-radius:50%;background:rgba(239,68,68,0.15);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 0 40px rgba(239,68,68,0.5);">
-          <i class="fa-solid fa-shield-halved" style="font-size:38px;color:#ef4444;"></i>
-        </div>
-        <h2 style="font-size:26px;font-weight:900;letter-spacing:1px;color:#ef4444;margin:0 0 10px;text-transform:uppercase;">PHÁT HIỆN CÔNG CỤ DEVTOOLS / F12</h2>
-        <p style="max-width:520px;font-size:14px;color:#94a3b8;line-height:1.6;margin:0 0 24px;">Hệ thống bảo mật phát hiện công cụ kiểm tra phần tử hoặc trình sửa lỗi đang mở.<br><b style="color:#f87171;">Vui lòng đóng hoàn toàn cửa sổ F12 / DevTools để tiếp tục truy cập Shop Đại Phú FF.</b></p>
-        <button onclick="window.location.reload();" style="background:linear-gradient(135deg,#00f0ff,#3b82f6);color:#020409;font-weight:800;border:0;padding:12px 28px;border-radius:12px;font-size:13px;cursor:pointer;box-shadow:0 0 25px rgba(0,240,255,0.4);text-transform:uppercase;letter-spacing:.5px;">Đã đóng DevTools — Tải lại trang</button>
-      </div>
-    `;
-    document.body.appendChild(lock);
-    document.body.style.overflow = 'hidden';
+    var s = document.getElementById('product-search');
+    if (s) s.focus();
   }
-
-  function unlockScreen() {
-    var lock = document.getElementById('dpDevtoolsLock');
-    if (lock) {
-      lock.remove();
-      document.body.style.overflow = '';
-    }
-  }
-
-  // 3. Cơ chế 1: Đo độ lệch cửa sổ Window Delta (Phát hiện mở sẵn F12 khi vừa vào trang)
-  function checkWindowDelta() {
-    var threshold = 160;
-    var widthDiff = window.outerWidth - window.innerWidth > threshold;
-    var heightDiff = window.outerHeight - window.innerHeight > threshold;
-    if (widthDiff || heightDiff) {
-      if (!devtoolsOpen) {
-        devtoolsOpen = true;
-        lockScreen();
-        triggerDebuggerTrap();
-      }
-    } else {
-      if (devtoolsOpen) {
-        devtoolsOpen = false;
-        unlockScreen();
-      }
-    }
-  }
-
-  // 4. Cơ chế 2: Console Getter Trap (Bắt ngay cả khi DevTools tách rời cửa sổ riêng Undocked)
-  var element = new Image();
-  Object.defineProperty(element, 'id', {
-    get: function() {
-      devtoolsOpen = true;
-      lockScreen();
-      triggerDebuggerTrap();
-    }
-  });
-
-  // 5. Cơ chế 3: Debugger Freeze Loop (Đóng băng trình duyệt nếu họ cố tình inspect)
-  function triggerDebuggerTrap() {
-    (function antiDebug(i) {
-      try {
-        (function() {
-          return function(x) {
-            return (function(y) {
-              return eval('debugger');
-            })(x);
-          };
-        })()()(i);
-      } catch(e) {}
-      if (devtoolsOpen) {
-        setTimeout(function() { antiDebug(++i); }, 50);
-      }
-    })(0);
-  }
-
-  // Quét định kỳ mỗi 500ms
-  setInterval(function() {
-    checkWindowDelta();
-    console.log('%c', element);
-    console.clear();
-  }, 500);
-
-  // Kiểm tra ngay khi tải trang
-  checkWindowDelta();
-})();
+});
 
 /* ═══════ SCROLL LISTENER ═══════ */
 window.addEventListener('scroll', function() {
