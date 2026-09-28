@@ -1,4 +1,5 @@
-const { getGist, updateGist } = require('./db');
+﻿const { getGist, updateGist } = require('./db');
+const { signUserToken, parseBody, checkApiDdos } = require('./_security');
 const { signUserToken } = require('./_security');
 
 function maskPhone(phone) {
@@ -15,6 +16,12 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Anti-DDoS API Rate Limit (30 req / 1 min for auth)
+  const ddosCheck = checkApiDdos(req, 30, 60000);
+  if (!ddosCheck.allowed) {
+    return res.status(429).json({ success: false, error: 'Quá nhiều yêu cầu. Vui lòng thử lại sau ' + ddosCheck.retryAfter + 's (Anti-DDoS).' });
+  }
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -101,3 +108,4 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
+

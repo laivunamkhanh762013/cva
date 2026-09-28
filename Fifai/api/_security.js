@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+﻿const crypto = require('crypto');
 
 // Băm SHA-256 của mật khẩu mặc định 'daiphu2026'
 const DEFAULT_PASS_SHA256 = 'a0b65ee17d6da3d0026a121dd8c3cca8bce355c53bbb3f74dd0fe9198b8ab25f';
@@ -6,6 +6,31 @@ const JWT_SECRET = process.env.JWT_SECRET || 'DP_SECURE_HMAC_KEY_984712048123984
 
 // In-memory rate limiter chống dò mật khẩu (5 lần sai / 15 phút)
 const failedAttempts = new Map();
+const apiRateLimits = new Map(); // Anti-DDoS API
+
+function checkApiDdos(req, limit = 60, windowMs = 60000) {
+  const ip = getClientIp(req);
+  const now = Date.now();
+  
+  if (!apiRateLimits.has(ip)) {
+    apiRateLimits.set(ip, { count: 1, resetAt: now + windowMs });
+    return { allowed: true };
+  }
+  
+  const entry = apiRateLimits.get(ip);
+  if (now > entry.resetAt) {
+    entry.count = 1;
+    entry.resetAt = now + windowMs;
+    return { allowed: true };
+  }
+  
+  entry.count++;
+  if (entry.count > limit) {
+    return { allowed: false, retryAfter: Math.ceil((entry.resetAt - now) / 1000) };
+  }
+  
+  return { allowed: true };
+}
 
 function getClientIp(req) {
   const forwarded = req.headers && (req.headers['x-forwarded-for'] || req.headers['x-real-ip']);
@@ -207,9 +232,11 @@ module.exports = {
   verifyUserToken,
   generateSecureOrderId,
   checkRateLimit,
+  checkApiDdos,
   recordFailedLogin,
   resetFailedLogin,
   parseCookies,
   parseBody,
   validateOrderId
 };
+

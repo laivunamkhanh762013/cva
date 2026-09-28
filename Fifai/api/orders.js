@@ -1,4 +1,5 @@
-const { getGist, updateGist } = require('./db');
+﻿const { getGist, updateGist } = require('./db');
+const { verifyAdminToken, verifyUserToken, generateSecureOrderId, parseCookies, parseBody, checkApiDdos } = require('./_security');
 const { verifyAdminToken, verifyUserToken, generateSecureOrderId, parseBody, validateOrderId } = require('./_security');
 const { getCanonicalPrice } = require('./_catalog');
 
@@ -12,6 +13,12 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token, x-user-token');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Anti-DDoS API Rate Limit (60 req / 1 min)
+  const ddosCheck = checkApiDdos(req, 60, 60000);
+  if (!ddosCheck.allowed) {
+    return res.status(429).json({ success: false, error: 'Too Many Requests (DDoS Protection). Vui lòng thử lại sau ' + ddosCheck.retryAfter + 's.' });
+  }
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -267,3 +274,5 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
+
+
