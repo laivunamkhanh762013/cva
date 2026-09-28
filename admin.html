@@ -1212,7 +1212,18 @@ async function runStrixSecurityScan() {
 
   // Test 5: Idempotency & Catalog Shield
   appendLog('• [AUDIT 5/5] Kiểm tra Server Canonical Catalog & Chống Trùng Giao Dịch...');
-  appendLog('  ↳ Server Price Enforcement: <span class="log-ok">ACTIVE (_catalog.js)</span>');
+  appendLog('  ↳ Server Price Enforcement: Đang kiểm tra...');
+      fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+        body: JSON.stringify({ action: 'create', product: 'FAKE_PROD', plan: 'FAKE_PLAN' })
+      }).then(r => r.json()).then(res => {
+        if (!res.success && res.error && res.error.includes('không hợp lệ')) {
+          appendLog('  ↳ Server Price Enforcement: <span class="log-ok">ACTIVE (Từ chối đơn giả mạo)</span>');
+        } else {
+          appendLog('  ↳ Server Price Enforcement: <span class="log-error">FAILED (Cho phép tạo đơn sai giá)</span>');
+        }
+      }).catch(e => appendLog('  ↳ Server Price Enforcement: <span class="log-error">ERROR</span>'));
   appendLog('  ↳ VietQR Reference Lock: <span class="log-ok">ACTIVE (1 TxID / 1 Đơn)</span>');
     let isError = term.innerHTML.includes('ef4444');
   if (isError) {
@@ -1240,4 +1251,5 @@ checkAuth();
 </script>
 </body>
 </html>
+
 

@@ -1,6 +1,7 @@
 ﻿const { getGist, updateGist } = require('./db');
 const { verifyAdminToken, verifyUserToken, generateSecureOrderId, parseCookies, parseBody, checkApiDdos, validateOrderId } = require('./_security');
 const { getCanonicalPrice } = require('./_catalog');
+const createLimits = new Map();
 
 function sanitizeText(str, maxLen) {
   if (!str) return '';
@@ -93,6 +94,8 @@ module.exports = async function handler(req, res) {
       }
 
       // Trả về thông tin an toàn của đơn hàng
+            const isOwner = userPayload && userPayload.user.toLowerCase() === (found.user || '').toLowerCase();
+      const canViewFull = isAdmin || isOwner;
       return res.status(200).json({
         success: true,
         order: {
@@ -100,10 +103,10 @@ module.exports = async function handler(req, res) {
           product: found.product,
           plan: found.plan,
           price: found.price,
-          user: found.user,
+          user: canViewFull ? found.user : (found.user ? found.user.substring(0, 3) + '***' : '***'),
           time: found.time,
           status: found.status,
-          txId: found.txId
+          txId: canViewFull ? found.txId : undefined
         }
       });
     }
@@ -153,7 +156,16 @@ module.exports = async function handler(req, res) {
       }
 
       // 3. TẠO ĐƠN HÀNG MỚI TỪ SERVER (Chỉ sinh đơn pending, lấy giá từ Catalog)
-      if (body._action === 'create' || body.action === 'create') {
+            if (body._action === 'create' || body.action === 'create') {
+        const ip = req.headers['x-forwarded-for'] || '127.0.0.1';
+        const now = Date.now();
+        const entry = createLimits.get(ip) || { count: 0, resetAt: now + 60000 };
+        if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + 60000; }
+        entry.count++;
+        createLimits.set(ip, entry);
+        if (entry.count > 5) {
+          return res.status(429).json({ success: false, error: 'Bạn tạo đơn quá nhanh. Vui lòng chờ 1 phút.' });
+        }
         const prodKey = sanitizeText(body.productId || body.product, 60);
         const planName = sanitizeText(body.planName || body.plan, 40);
         const canonicalPrice = getCanonicalPrice(prodKey, planName);
@@ -273,6 +285,7 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
+
 
 
 
