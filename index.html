@@ -2094,6 +2094,32 @@
   0% { opacity: 0.4; }
   100% { opacity: 1; }
 }
+
+/* ═══ HIỆU ỨNG MỚI ═══ */
+@keyframes cardRiseIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.product.reveal-in {
+  animation: cardRiseIn .45s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes qrPulseGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(0,240,255,0); }
+  50% { box-shadow: 0 0 22px rgba(0,240,255,0.35); }
+}
+.m-qr-box { animation: qrPulseGlow 2.4s ease-in-out infinite; }
+
+.btn-version-buy:active { transform: scale(.97); }
+
+@keyframes checkPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.paid-header-icon { animation: checkPop .5s cubic-bezier(.34,1.56,.64,1) both; }
+
+.nt-timeline-node { transition: background .3s ease, border-color .3s ease, box-shadow .3s ease; }
 </style>
 </head>
 
@@ -2298,6 +2324,7 @@
     }
   }, 2000);
 })();
+
 </script>
 
 <a class="skip-link" href="#main-content">Chuyển đến nội dung chính</a>
@@ -4415,10 +4442,6 @@ function copyPaidSyntax() {
   toast('📋', 'Đã sao chép mã đơn: ' + memo + ' (Gửi qua Zalo 0588500524 để nhận file)');
 }
 
-;
-  return pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds()) + ' ' + now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
-}
-
 /* ═══════ ORDERS STORAGE & ADMIN CHECK LOGIC ═══════ */
 function getOrders() {
   try {
@@ -4778,9 +4801,35 @@ window.addEventListener('scroll', function() {
 updateAuthUI();
 renderProducts();
 renderFeedback();
+
+/* ═══ REVEAL ANIMATION ON SCROLL ═══ */
+function initScrollReveal() {
+  const cards = document.querySelectorAll('.product:not(.reveal-in)');
+  if (!('IntersectionObserver' in window)) {
+    cards.forEach(function(c) { c.classList.add('reveal-in'); });
+    return;
+  }
+  const io = new IntersectionObserver(function(entries, obs) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('reveal-in');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  cards.forEach(function(c) { io.observe(c); });
+}
+
+const _origRenderProducts = renderProducts;
+renderProducts = function() {
+  _origRenderProducts();
+  setTimeout(initScrollReveal, 30);
+};
+initScrollReveal();
 </script>
 </body>
 </html>
+
 
 
 

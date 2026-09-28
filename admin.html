@@ -226,7 +226,34 @@
     .admin-toast { position: fixed; bottom: 24px; right: 24px; background: #14182f; border: 1px solid rgba(56,189,248,0.4); border-radius: 12px; padding: 12px 18px; color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 999999; display: none; align-items: center; gap: 8px; }
     .admin-toast.show { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
+  
+/* ═══ HIỆU ỨNG MỚI ═══ */
+@keyframes rowFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#ordersTableBody tr {
+  animation: rowFadeIn .35s ease both;
+}
+#ordersTableBody tr:nth-child(1) { animation-delay: .02s; }
+#ordersTableBody tr:nth-child(2) { animation-delay: .05s; }
+#ordersTableBody tr:nth-child(3) { animation-delay: .08s; }
+#ordersTableBody tr:nth-child(4) { animation-delay: .11s; }
+#ordersTableBody tr:nth-child(5) { animation-delay: .14s; }
+#ordersTableBody tr:nth-child(n+6) { animation-delay: .16s; }
+
+.stat-data strong, .rev-period-card strong {
+  transition: color .2s ease;
+}
+.stat-card, .rev-period-card {
+  animation: rowFadeIn .4s ease both;
+}
+
+.btn-scan i { transition: transform .5s ease; }
+.btn-scan:active i { transform: rotate(180deg); }
+
+.login-card { animation: rowFadeIn .5s ease both; }
+</style>
 </head>
 <body>
 
@@ -880,7 +907,7 @@ function renderDashboard() {
     else { pending++; }
   });
 
-  document.getElementById('statTotalOrders').textContent = orders.length;
+  animateNumber(document.getElementById('statTotalOrders'), orders.length, false);
   document.getElementById('statTotalRevenue').textContent = formatVND(revTotal);
 
   // Hôm nay / Tháng này / Năm nay
@@ -1252,6 +1279,25 @@ function showToast(msg) {
 // Khởi tạo
 bindTableEvents();
 checkAuth();
+
+function animateNumber(el, endValue, isCurrency) {
+  if (!el) return;
+  const startValue = parseInt(el.dataset.rawVal || '0', 10) || 0;
+  const duration = 500;
+  const startTime = performance.now();
+  function step(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(startValue + (endValue - startValue) * eased);
+    el.textContent = isCurrency ? formatVND(current) : current;
+    if (progress < 1) requestAnimationFrame(step);
+    else {
+      el.textContent = isCurrency ? formatVND(endValue) : endValue;
+      el.dataset.rawVal = endValue;
+    }
+  }
+  requestAnimationFrame(step);
+}
 </script>
 </body>
 </html>
