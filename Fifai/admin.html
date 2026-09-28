@@ -554,7 +554,7 @@ async function handleAdminLogin(e) {
       document.getElementById('adminPassword').focus();
     }
   } catch (err) {
-    showToast('❌ Lỗi kết nối tới máy chủ xác thực.');
+    showToast('❌ Lỗi kết nối tới máy chủ xác thực: ' + (err.message || 'Server error'));
   } finally {
     if (btn) {
       btn.disabled = false;

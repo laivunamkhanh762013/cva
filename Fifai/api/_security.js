@@ -194,6 +194,11 @@ function generateSecureOrderId() {
   return 'DP' + num;
 }
 
+function validateOrderId(id) {
+  if (!id || typeof id !== 'string') return false;
+  return /^DP[A-Z0-9]{4,15}$/i.test(id.trim());
+}
+
 module.exports = {
   verifyAdminPassword,
   signAdminToken,
