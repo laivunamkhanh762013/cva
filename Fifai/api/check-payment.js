@@ -130,8 +130,8 @@ module.exports = async function handler(req, res) {
       const content = cleanToken(rawContent);
       const amountIn = parseFloat(t.amount_in || 0);
 
-      // Số tiền thực nhận phải >= 90% giá gói (nếu có giá), tối thiểu >= 10.000đ để tránh spam 1đ
-      const hasValidAmount = (minAmount > 0) ? (amountIn >= (minAmount * 0.9)) : (amountIn >= 10000);
+      // Số tiền thực nhận phải >= 100% giá gói (nếu có giá), tối thiểu >= 10.000đ để tránh spam 1đ
+      const hasValidAmount = (minAmount > 0) ? (amountIn >= minAmount) : (amountIn >= 10000);
       if (!hasValidAmount) return false;
 
       // Khớp một trong các mã hợp lệ (Username hoặc Mã DP...)

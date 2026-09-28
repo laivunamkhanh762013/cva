@@ -1,0 +1,40 @@
+/* Storefront appearance; admin keeps its own readable controls. */
+.storefront{background:var(--bg);color:var(--text)}
+.storefront :is(.topbar,.topbar.scrolled,.store-hero,.product,.card,.auth-card,.modal-card,.mobile-nav,.footer,.product-detail-info,.product-detail-media,.order-receipt,.wallet-transaction,.empty-card,.empty-state,.page-balance,.wallet,.input,.select,.search-box,.filter-btn,.btn-ghost,.quick-amounts button,.history-tab,.login-captcha-question){background:var(--surface);border-color:var(--line);color:var(--text)}
+.storefront :is(.product,.card,.store-hero,.auth-card,.modal-card,.product-detail-info,.product-detail-media,.order-receipt,.wallet-transaction,.empty-card,.empty-state){border-radius:var(--radius)}
+.storefront :is(.btn,.input,.select,.filter-btn,.product-thumb,.order-download,.history-tab){border-radius:var(--radius-sm)}
+.storefront :is(.btn-primary,.btn-primary:hover,.btn-buy,.btn-buy:hover,.brand-mark,.auth-logo,.desktop-nav a.active,.filter-btn.active,.history-tab.active,.method-tab.active,.order-download,.download-product-btn,.announcement-bar,.nav-progress){background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.storefront :is(.btn-primary:hover,.btn-buy:hover,.order-download:hover){filter:brightness(.92)}
+.storefront :is(h1,h2,h3,h4,.price,.detail-price strong,.order-total strong,.wallet-summary strong,.brand,.wallet,.label,.detail-facts b,.order-reference){color:var(--text)}
+.storefront :is(.product-meta,.old-price,.result-count,.brand small,.desktop-nav a,.mobile-nav a,.mini-note,.store-kicker,.page-kicker,.order-delivery-note,.wallet-transaction-detail,.wallet-transaction-meta time,.order-total>span,.order-receipt-product time){color:var(--muted)}
+.storefront :is(.desktop-nav a.active,.mobile-nav a.active){color:var(--on-accent);background:var(--accent)}
+.storefront :is(.btn-ghost:hover,.filter-btn:hover,.wallet-icon,.avatar,.product-thumb,.method-tabs){background:var(--bg);color:var(--text);border-color:var(--line)}
+.storefront .filter-btn.active:hover{background:var(--accent);color:var(--on-accent)}
+.storefront .product-thumb{background:var(--bg)}
+.storefront .product-thumb img{object-fit:var(--image-fit)}
+.storefront .product-thumb i{color:var(--muted)}
+.storefront .product-grid{grid-template-columns:repeat(var(--product-columns),minmax(0,1fr))}
+.storefront :is(input,textarea)::placeholder{color:var(--muted)}
+.storefront :is(a,button,input,select,textarea):focus-visible{outline-color:var(--accent)}
+@media(max-width:1000px){.storefront .product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){.storefront .product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.storefront :is(.history-item,.qr-wrap.show){background:var(--surface);color:var(--text);border-color:var(--line);border-radius:var(--radius)}
+.storefront :is(.order-delivery-note,.order-product-icon,.product-detail-media>img.js-product-zoom){background:var(--bg);color:var(--muted)}
+.storefront :is(.order-awaiting,.wallet-transaction-note,.method-tab){color:var(--muted)}
+.storefront .method-tab.active{color:var(--on-accent)}
+
+/* Keep portrait product photos within the mobile product detail layout. */
+@media(max-width:900px){
+  .storefront .product-detail{grid-template-columns:minmax(0,1fr)}
+  .storefront .product-detail-media,.storefront .product-detail-info{min-width:0;max-width:100%}
+  .storefront .product-detail-media{width:100%;height:clamp(260px,65vh,520px);height:clamp(260px,65svh,520px);min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  .storefront .product-detail-media>img.js-product-zoom{display:block;min-width:0;min-height:0;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
+  .storefront .product-detail-media.image-error>img.js-product-zoom{display:none}
+}
+
+/* Thumbnail dimensions must not depend on the uploaded image's intrinsic size. */
+.storefront .product-thumb{flex-shrink:0;min-width:0;width:100%;isolation:isolate}
+.storefront .product-thumb>img.js-product-image{position:absolute;inset:0;display:block;width:100%;height:100%;min-width:0;min-height:0;max-width:100%;max-height:100%;object-fit:var(--image-fit,contain);opacity:1;transform:none}
+.storefront .product-thumb.image-error>img.js-product-image{display:none}
+
+.storefront .product-thumb:has(>img)::before{content:none}

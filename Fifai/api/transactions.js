@@ -1,4 +1,7 @@
 const https = require('https');
+const { verifyAdminToken } = require('./_security');
+
+const SEPAY_API_KEY = process.env.SEPAY_API_KEY || 'YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV';
 
 function fetchSePay(path) {
   return new Promise((resolve, reject) => {
@@ -8,7 +11,7 @@ function fetchSePay(path) {
       method: 'GET',
       rejectUnauthorized: false,
       headers: {
-        'Authorization': 'Bearer YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV',
+        'Authorization': 'Bearer ' + SEPAY_API_KEY,
         'User-Agent': 'curl/7.88.1'
       }
     };
@@ -32,30 +35,31 @@ function fetchSePay(path) {
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-key');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  let query = req.query || {};
-  if (!query.adminKey && req.url && req.url.includes('?')) {
-    try {
-      const u = new URL(req.url, 'http://localhost');
-      query = Object.assign({}, Object.fromEntries(u.searchParams), query);
-    } catch(e) {}
-  }
-
-  // Strix Security Guard: Protect bank statement API with Admin auth
-  const adminKey = query.adminKey || req.headers['x-admin-key'];
-  if (adminKey !== 'daiphu2026') {
+  // ── KIỂM TRA QUYỀN ADMIN BẰNG TOKEN SERVER (KHÔNG TRUYỀN KEY QUA URL) ──
+  const isAdmin = verifyAdminToken(req);
+  if (!isAdmin) {
     return res.status(401).json({
       status: 401,
-      error: 'Unauthorized: Bạn cần quyền Admin (Mật khẩu Admin) để truy cập lịch sử ngân hàng MBBank.'
+      error: 'Unauthorized: Bạn cần đăng nhập Admin để xem lịch sử giao dịch MBBank.'
     });
   }
 
   try {
+    let query = req.query || {};
+    if (req.url && req.url.includes('?')) {
+      try {
+        const u = new URL(req.url, 'http://localhost');
+        query = Object.assign({}, Object.fromEntries(u.searchParams), query);
+      } catch(e) {}
+    }
+
     const limit = Math.min(parseInt(query.limit, 10) || 50, 100);
     const result = await fetchSePay('/userapi/transactions/list?limit=' + limit);
     return res.status(result.status).json(result.data);

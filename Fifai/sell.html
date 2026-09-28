@@ -4507,8 +4507,7 @@ function saveOrder(order) {
       phone: order.phone || '',
       time: order.time || formatCurrentDateTime(),
       status: order.status || 'pending',
-      txId: order.txId || '',
-      adminKey: order.adminKey || ''
+      txId: order.txId || ''
     })
   }).catch(function(err) {
     console.warn('Sync order cloud error:', err);
@@ -4530,31 +4529,8 @@ function openOrderCheckModal(presetCode) {
       lookupOrderCode(window.currentOrderMemo);
     }
   }
+  // Hiển thị danh sách đơn gần đây của khách
   renderRecentOrders();
-
-  // Tải danh sách đơn mới nhất từ Cloud Database
-  fetch('/api/orders')
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data && data.orders && data.orders.length) {
-        var cloudList = data.orders.map(function(co) {
-          return {
-            id: co.id,
-            productName: co.product,
-            planName: co.plan,
-            price: co.price,
-            user: co.user,
-            phone: co.phone,
-            time: co.time,
-            status: co.status,
-            txId: co.txId
-          };
-        });
-        localStorage.setItem('daiphu_orders', JSON.stringify(cloudList));
-        renderRecentOrders();
-      }
-    })
-    .catch(function(e) {});
 }
 
 function closeOrderCheckModal() {
@@ -4619,22 +4595,19 @@ function lookupOrderCode(manualCode) {
   if (order) {
     displayOrderResult(order);
   } else {
-    resultBox.innerHTML = '<div style="text-align:center;padding:12px;color:#94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tìm mã ' + code + ' trên Cloud Database...</div>';
-    fetch('/api/orders')
+    resultBox.innerHTML = '<div style="text-align:center;padding:12px;color:#94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tìm mã ' + escapeHTML(code) + ' trên hệ thống máy chủ...</div>';
+    fetch('/api/orders?code=' + encodeURIComponent(code))
       .then(function(res) { return res.json(); })
       .then(function(data) {
-        var cloudList = (data && data.orders) ? data.orders : [];
-        var found = cloudList.find(function(o) {
-          return (o.id && o.id.toUpperCase() === code) || (o.user && o.user.toUpperCase() === code);
-        });
-        if (found) {
+        if (data && data.success && data.order) {
+          var found = data.order;
           var ord = {
             id: found.id,
             productName: found.product,
             planName: found.plan,
             price: found.price,
             user: found.user,
-            phone: found.phone,
+            phone: found.phone || '',
             time: found.time,
             status: found.status,
             txId: found.txId
@@ -4644,18 +4617,18 @@ function lookupOrderCode(manualCode) {
         } else {
           resultBox.innerHTML = '<div style="text-align:center;padding:10px;color:#fca5a5;">'
             + '<i class="fa-solid fa-circle-xmark" style="font-size:24px;margin-bottom:6px;"></i>'
-            + '<div style="font-weight:700;font-size:14px;">Không tìm thấy mã đơn: ' + code + '</div>'
+            + '<div style="font-weight:700;font-size:14px;">Không tìm thấy mã đơn: ' + escapeHTML(code) + '</div>'
             + '<p style="font-size:11.5px;color:#cbd5e1;margin-top:4px;">Vui lòng kiểm tra lại mã hoặc liên hệ Zalo <b>0588500524 (Anh Phú)</b> để đối soát trực tiếp.</p>'
           + '</div>';
         }
       })
       .catch(function(e) {
-        resultBox.innerHTML = '<div style="text-align:center;padding:10px;color:#fca5a5;">Không tìm thấy mã đơn: ' + code + '</div>';
+        resultBox.innerHTML = '<div style="text-align:center;padding:10px;color:#fca5a5;">Không tìm thấy mã đơn: ' + escapeHTML(code) + '</div>';
       });
   }
 }
 
-/* ── LỊCH SỬ ĐƠN HÀNG (chỉ dành cho khách check sản phẩm đã mua) ──── */
+/* ── LỊCH SỬ ĐƠN HÀNG (chỉ dành cho khách check sản phẩm đã mua của chính mình) ──── */
 function openMyOrderHistory() {
   var u = getCurrentUser();
   if (!u) {
@@ -4672,29 +4645,30 @@ function openMyOrderHistory() {
   if (resultBox) resultBox.style.display = 'none';
   renderRecentOrders();
 
-  // Đồng bộ đơn hàng mới nhất từ Cloud Database
-  fetch('/api/orders')
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data && data.orders && data.orders.length) {
-        var cloudList = data.orders.map(function(co) {
-          return {
-            id: co.id,
-            productName: co.product,
-            planName: co.plan,
-            price: co.price,
-            user: co.user,
-            phone: co.phone,
-            time: co.time,
-            status: co.status,
-            txId: co.txId
+  // Đồng bộ đơn hàng của chính tài khoản này từ Cloud Database
+  if (u.username) {
+    fetch('/api/orders?code=' + encodeURIComponent(u.username))
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success && data.order) {
+          var found = data.order;
+          var ord = {
+            id: found.id,
+            productName: found.product,
+            planName: found.plan,
+            price: found.price,
+            user: found.user,
+            phone: found.phone || '',
+            time: found.time,
+            status: found.status,
+            txId: found.txId
           };
-        });
-        localStorage.setItem('daiphu_orders', JSON.stringify(cloudList));
-        renderRecentOrders();
-      }
-    })
-    .catch(function(e) {});
+          saveOrder(ord);
+          renderRecentOrders();
+        }
+      })
+      .catch(function(e) {});
+  }
 }
 
 function renderRecentOrders() {
