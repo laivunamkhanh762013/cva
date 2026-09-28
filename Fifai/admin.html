@@ -736,8 +736,20 @@ function autoScanPendingOrders(silent) {
 
 /* ═══════ CHECK SEPAY CHO 1 ĐƠN ═══════ */
 function checkSePay(orderId, price, btnEl) {
-  if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
   const order = allOrders.find(function(o) { return o.id === orderId; });
+  const resultEl = document.getElementById('sr-' + orderId);
+
+  // Nếu đơn này đã được duyệt rồi
+  if (order && order.status === 'approved') {
+    if (resultEl) {
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = '<span style="color:#34d399;font-weight:700;"><i class="fa-solid fa-circle-check"></i> ĐƠN ĐÃ DUYỆT THÀNH CÔNG!' + (order.txId ? ' (Ref: ' + escapeHTML(order.txId) + ')' : '') + '</span>';
+    }
+    showToast('✅ Đơn ' + orderId + ' đã được duyệt thanh toán trước đó!');
+    return;
+  }
+
+  if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
   const memoToCheck = (order && order.user && order.user !== 'Khách vãng lai') ? order.user : orderId;
   const userToCheck = (order && order.user) ? order.user : '';
 
@@ -747,7 +759,6 @@ function checkSePay(orderId, price, btnEl) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (btnEl) { btnEl.disabled = false; btnEl.innerHTML = '<i class="fa-solid fa-magnifying-glass-dollar"></i> SePay'; }
-      const resultEl = document.getElementById('sr-' + orderId);
       if (data && data.paid) {
         const tx = data.transaction;
         if (resultEl) { resultEl.style.display = 'block'; resultEl.innerHTML = '<span style="color:#34d399;font-weight:700;">✅ TIỀN VÀO! +' + formatVND(tx.amount) + ' | Ref: ' + escapeHTML(tx.reference || tx.id) + '</span>'; }
@@ -957,6 +968,14 @@ function renderDashboard() {
     const cleanZalo = (o.phone || '').replace(/[^0-9]/g, '') || '0588500524';
     const txInfo = o.txId ? '<div style="font-size:10px;color:#34d399;margin-top:2px;">Ref: ' + escapeHTML(o.txId) + '</div>' : '';
 
+    const isApproved = (o.status === 'approved');
+    const sepayBtnText = isApproved 
+      ? '<i class="fa-solid fa-circle-check"></i> Đã nhận tiền' 
+      : '<i class="fa-solid fa-magnifying-glass-dollar"></i> SePay';
+    const sepayBtnStyle = isApproved
+      ? 'background:rgba(16,185,129,0.15);color:#34d399;border-color:rgba(16,185,129,0.35);'
+      : 'background:rgba(0,240,255,0.12);color:#00f0ff;border-color:rgba(0,240,255,0.3);';
+
     html += '<tr>' +
       '<td><span class="order-code-badge">' + cleanId + '</span>' + txInfo + '</td>' +
       '<td style="color:#94a3b8;font-size:11px;">' + escapeHTML(o.time || 'Vừa xong') + '</td>' +
@@ -970,7 +989,7 @@ function renderDashboard() {
       '<td>' + badge + '</td>' +
       '<td style="text-align:right;">' +
         '<div class="actions-group" style="justify-content:flex-end;">' +
-          '<button type="button" class="btn-action" style="background:rgba(0,240,255,0.12);color:#00f0ff;border-color:rgba(0,240,255,0.3);" data-act="sepay" data-id="' + cleanId + '" data-price="' + numPrice + '" title="Kiểm tra tiền SePay"><i class="fa-solid fa-magnifying-glass-dollar"></i> SePay</button>' +
+          '<button type="button" class="btn-action" style="' + sepayBtnStyle + '" data-act="sepay" data-id="' + cleanId + '" data-price="' + numPrice + '" title="' + (isApproved ? 'Đơn này đã đối soát thành công' : 'Kiểm tra tiền SePay') + '">' + sepayBtnText + '</button>' +
           '<button type="button" class="btn-action approve" data-act="approve" data-id="' + cleanId + '" title="Đúng tiền & Đã gửi file"><i class="fa-solid fa-check"></i> Đúng</button>' +
           '<button type="button" class="btn-action reject" data-act="reject" data-id="' + cleanId + '" title="Sai tiền"><i class="fa-solid fa-xmark"></i> Sai</button>' +
           '<button type="button" class="btn-action" data-act="copy" data-id="' + cleanId + '" title="Mẫu tin Zalo"><i class="fa-solid fa-copy"></i> Mẫu tin</button>' +
