@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="utf-8">
@@ -1214,7 +1214,12 @@ async function runStrixSecurityScan() {
   appendLog('• [AUDIT 5/5] Kiểm tra Server Canonical Catalog & Chống Trùng Giao Dịch...');
   appendLog('  ↳ Server Price Enforcement: <span class="log-ok">ACTIVE (_catalog.js)</span>');
   appendLog('  ↳ VietQR Reference Lock: <span class="log-ok">ACTIVE (1 TxID / 1 Đơn)</span>');
-  appendLog('<br><span class="log-ok" style="font-weight:800;">[KẾT LUẬN STRIX]: HỆ THỐNG ĐÃ ĐƯỢC BẢO VỆ TOÀN DIỆN 100%!</span>');
+    let isError = term.innerHTML.includes('ef4444');
+  if (isError) {
+      appendLog('<br><span style="color:#ef4444;font-weight:800;">[CẢNH BÁO STRIX]: PHÁT HIỆN LỖI BẢO MẬT. VUI LÒNG KIỂM TRA LẠI CÁC MỤC MÀU ĐỎ!</span>');
+  } else {
+      appendLog('<br><span class="log-ok" style="font-weight:800;">[KẾT LUẬN STRIX]: HỆ THỐNG ĐÃ ĐƯỢC BẢO VỆ TOÀN DIỆN 100%!</span>');
+  }
 }
 
 function closeStrixModal() { document.getElementById('strixModal').classList.remove('open'); }
@@ -1235,3 +1240,4 @@ checkAuth();
 </script>
 </body>
 </html>
+
