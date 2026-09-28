@@ -307,39 +307,84 @@
     </div>
   </section>
 
-  <!-- Chi Tiết Doanh Thu Đã Duyệt: 1 Ngày / 1 Tháng / 1 Năm -->
-  <section class="revenue-period-grid">
-    <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(16,185,129,0.14),rgba(15,23,42,0.95));border:1px solid rgba(16,185,129,0.4);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:12px;font-weight:800;color:#34d399;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
-          <i class="fa-solid fa-calendar-day"></i> ĐÃ DUYỆT 1 NGÀY (HÔM NAY)
-        </span>
-        <span id="badgeDayOrders" style="font-size:11px;font-weight:800;background:rgba(16,185,129,0.22);color:#4ade80;padding:2px 8px;border-radius:6px;border:1px solid rgba(16,185,129,0.4);">0 đơn</span>
+  <!-- Chi Tiết Doanh Thu Đã Duyệt: Hôm nay, Tháng này, Năm nay & Hôm qua, Tháng trước, Năm trước -->
+  <section style="margin-bottom: 24px;">
+    <!-- Hàng 1: Hiện tại (Hôm nay / Tháng này / Năm nay) -->
+    <div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+      <i class="fa-solid fa-chart-line" style="color:#38bdf8;"></i> Doanh Thu Kỳ Hiện Tại (Hôm Nay / Tháng Này / Năm Nay)
+    </div>
+    <div class="revenue-period-grid">
+      <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(16,185,129,0.14),rgba(15,23,42,0.95));border:1px solid rgba(16,185,129,0.4);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;color:#34d399;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-calendar-day"></i> ĐÃ DUYỆT HÔM NAY
+          </span>
+          <span id="badgeDayOrders" style="font-size:11px;font-weight:800;background:rgba(16,185,129,0.22);color:#4ade80;padding:2px 8px;border-radius:6px;border:1px solid rgba(16,185,129,0.4);">0 đơn</span>
+        </div>
+        <strong id="statRevDay" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
+        <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;" id="labelToday">Từ 00:00 hôm nay</small>
       </div>
-      <strong id="statRevDay" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
-      <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;">Doanh thu được duyệt từ 00:00 hôm nay</small>
+
+      <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(56,189,248,0.14),rgba(15,23,42,0.95));border:1px solid rgba(56,189,248,0.4);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-calendar-week"></i> ĐÃ DUYỆT THÁNG NÀY
+          </span>
+          <span id="badgeMonthOrders" style="font-size:11px;font-weight:800;background:rgba(56,189,248,0.22);color:#38bdf8;padding:2px 8px;border-radius:6px;border:1px solid rgba(56,189,248,0.4);">0 đơn</span>
+        </div>
+        <strong id="statRevMonth" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
+        <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;" id="labelThisMonth">Trong tháng này</small>
+      </div>
+
+      <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(168,85,247,0.14),rgba(15,23,42,0.95));border:1px solid rgba(168,85,247,0.4);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;color:#c084fc;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-calendar-check"></i> ĐÃ DUYỆT NĂM NAY
+          </span>
+          <span id="badgeYearOrders" style="font-size:11px;font-weight:800;background:rgba(168,85,247,0.22);color:#c084fc;padding:2px 8px;border-radius:6px;border:1px solid rgba(168,85,247,0.4);">0 đơn</span>
+        </div>
+        <strong id="statRevYear" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
+        <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;" id="labelThisYear">Trong năm nay</small>
+      </div>
     </div>
 
-    <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(56,189,248,0.14),rgba(15,23,42,0.95));border:1px solid rgba(56,189,248,0.4);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:12px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
-          <i class="fa-solid fa-calendar-week"></i> ĐÃ DUYỆT 1 THÁNG (THÁNG NÀY)
-        </span>
-        <span id="badgeMonthOrders" style="font-size:11px;font-weight:800;background:rgba(56,189,248,0.22);color:#38bdf8;padding:2px 8px;border-radius:6px;border:1px solid rgba(56,189,248,0.4);">0 đơn</span>
-      </div>
-      <strong id="statRevMonth" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
-      <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;" id="labelThisMonth">Doanh thu được duyệt trong tháng này</small>
+    <!-- Hàng 2: Kỳ trước (Hôm qua / Tháng trước / Năm trước) -->
+    <div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;margin-top:16px;display:flex;align-items:center;gap:6px;">
+      <i class="fa-solid fa-clock-rotate-left" style="color:#f59e0b;"></i> Doanh Thu Kỳ Trước (Hôm Qua / Tháng Trước / Năm Trước)
     </div>
-
-    <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(168,85,247,0.14),rgba(15,23,42,0.95));border:1px solid rgba(168,85,247,0.4);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:12px;font-weight:800;color:#c084fc;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
-          <i class="fa-solid fa-calendar-check"></i> ĐÃ DUYỆT 1 NĂM (NĂM NAY)
-        </span>
-        <span id="badgeYearOrders" style="font-size:11px;font-weight:800;background:rgba(168,85,247,0.22);color:#c084fc;padding:2px 8px;border-radius:6px;border:1px solid rgba(168,85,247,0.4);">0 đơn</span>
+    <div class="revenue-period-grid">
+      <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(15,23,42,0.95));border:1px solid rgba(245,158,11,0.35);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;color:#fbbf24;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-history"></i> DOANH THU HÔM QUA
+          </span>
+          <span id="badgeYesterdayOrders" style="font-size:11px;font-weight:800;background:rgba(245,158,11,0.2);color:#fbbf24;padding:2px 8px;border-radius:6px;border:1px solid rgba(245,158,11,0.35);">0 đơn</span>
+        </div>
+        <strong id="statRevYesterday" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
+        <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;" id="labelYesterday">Toàn bộ ngày hôm qua</small>
       </div>
-      <strong id="statRevYear" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
-      <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;" id="labelThisYear">Doanh thu được duyệt trong năm nay</small>
+
+      <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(236,72,153,0.12),rgba(15,23,42,0.95));border:1px solid rgba(236,72,153,0.35);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;color:#f472b6;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-calendar-minus"></i> DOANH THU THÁNG TRƯỚC
+          </span>
+          <span id="badgeLastMonthOrders" style="font-size:11px;font-weight:800;background:rgba(236,72,153,0.2);color:#f472b6;padding:2px 8px;border-radius:6px;border:1px solid rgba(236,72,153,0.35);">0 đơn</span>
+        </div>
+        <strong id="statRevLastMonth" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
+        <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;" id="labelLastMonth">Toàn bộ tháng trước</small>
+      </div>
+
+      <div class="rev-period-card" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(15,23,42,0.95));border:1px solid rgba(99,102,241,0.35);box-shadow:0 10px 28px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;color:#818cf8;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-hourglass-end"></i> DOANH THU NĂM TRƯỚC
+          </span>
+          <span id="badgeLastYearOrders" style="font-size:11px;font-weight:800;background:rgba(99,102,241,0.2);color:#818cf8;padding:2px 8px;border-radius:6px;border:1px solid rgba(99,102,241,0.35);">0 đơn</span>
+        </div>
+        <strong id="statRevLastYear" style="font-size:26px;font-weight:900;color:#fff;display:block;">0đ</strong>
+        <small style="font-size:11.5px;color:#94a3b8;margin-top:6px;display:block;" id="labelLastYear">Toàn bộ năm trước</small>
+      </div>
     </div>
   </section>
 
@@ -755,9 +800,25 @@ function renderDashboard() {
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  let revTotal = 0, revDay = 0, revMonth = 0, revYear = 0;
+  let revTotal = 0;
+  let revDay = 0, revMonth = 0, revYear = 0;
   let countDay = 0, countMonth = 0, countYear = 0;
+  let revYesterday = 0, revLastMonth = 0, revLastYear = 0;
+  let countYesterday = 0, countLastMonth = 0, countLastYear = 0;
   let pending = 0, approved = 0, rejected = 0;
+
+  // Tính ngày hôm qua
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  const yDay = yesterday.getDate();
+  const yMonth = yesterday.getMonth();
+  const yYear = yesterday.getFullYear();
+
+  // Tính tháng trước
+  const lastMonthYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
+  const lastMonthVal = (currentMonth === 0) ? 11 : currentMonth - 1;
+
+  // Tính năm trước
+  const lastYearVal = currentYear - 1;
 
   orders.forEach(function(o) {
     if (o.status === 'approved') {
@@ -767,22 +828,41 @@ function renderDashboard() {
 
       const d = parseOrderDate(o.time);
       if (d) {
-        if (d.getDate() === currentDay && d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+        const orderDay = d.getDate();
+        const orderMonth = d.getMonth();
+        const orderYear = d.getFullYear();
+
+        // Hôm nay
+        if (orderDay === currentDay && orderMonth === currentMonth && orderYear === currentYear) {
           revDay += price;
           countDay++;
         }
-        if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+        // Tháng này
+        if (orderMonth === currentMonth && orderYear === currentYear) {
           revMonth += price;
           countMonth++;
         }
-        if (d.getFullYear() === currentYear) {
+        // Năm nay
+        if (orderYear === currentYear) {
           revYear += price;
           countYear++;
         }
-      } else {
-        revDay += price; countDay++;
-        revMonth += price; countMonth++;
-        revYear += price; countYear++;
+
+        // Hôm qua
+        if (orderDay === yDay && orderMonth === yMonth && orderYear === yYear) {
+          revYesterday += price;
+          countYesterday++;
+        }
+        // Tháng trước
+        if (orderMonth === lastMonthVal && orderYear === lastMonthYear) {
+          revLastMonth += price;
+          countLastMonth++;
+        }
+        // Năm trước
+        if (orderYear === lastYearVal) {
+          revLastYear += price;
+          countLastYear++;
+        }
       }
     }
     else if (o.status === 'rejected') { rejected++; }
@@ -791,6 +871,8 @@ function renderDashboard() {
 
   document.getElementById('statTotalOrders').textContent = orders.length;
   document.getElementById('statTotalRevenue').textContent = formatVND(revTotal);
+
+  // Hôm nay / Tháng này / Năm nay
   document.getElementById('statRevDay').textContent = formatVND(revDay);
   document.getElementById('statRevMonth').textContent = formatVND(revMonth);
   document.getElementById('statRevYear').textContent = formatVND(revYear);
@@ -798,10 +880,34 @@ function renderDashboard() {
   document.getElementById('badgeMonthOrders').textContent = countMonth + ' đơn';
   document.getElementById('badgeYearOrders').textContent = countYear + ' đơn';
 
+  // Hôm qua / Tháng trước / Năm trước
+  const elRevY = document.getElementById('statRevYesterday');
+  if (elRevY) elRevY.textContent = formatVND(revYesterday);
+  const elBadgeY = document.getElementById('badgeYesterdayOrders');
+  if (elBadgeY) elBadgeY.textContent = countYesterday + ' đơn';
+
+  const elRevLM = document.getElementById('statRevLastMonth');
+  if (elRevLM) elRevLM.textContent = formatVND(revLastMonth);
+  const elBadgeLM = document.getElementById('badgeLastMonthOrders');
+  if (elBadgeLM) elBadgeLM.textContent = countLastMonth + ' đơn';
+
+  const elRevLY = document.getElementById('statRevLastYear');
+  if (elRevLY) elRevLY.textContent = formatVND(revLastYear);
+  const elBadgeLY = document.getElementById('badgeLastYearOrders');
+  if (elBadgeLY) elBadgeLY.textContent = countLastYear + ' đơn';
+
+  const lblToday = document.getElementById('labelToday');
+  if (lblToday) lblToday.textContent = 'Ngày ' + currentDay + '/' + (currentMonth + 1) + '/' + currentYear;
+  const lblYesterday = document.getElementById('labelYesterday');
+  if (lblYesterday) lblYesterday.textContent = 'Ngày ' + yDay + '/' + (yMonth + 1) + '/' + yYear;
   const lblMonth = document.getElementById('labelThisMonth');
-  if (lblMonth) lblMonth.textContent = 'Doanh thu được duyệt trong Tháng ' + (currentMonth + 1) + '/' + currentYear;
+  if (lblMonth) lblMonth.textContent = 'Tháng ' + (currentMonth + 1) + '/' + currentYear;
+  const lblLastMonth = document.getElementById('labelLastMonth');
+  if (lblLastMonth) lblLastMonth.textContent = 'Tháng ' + (lastMonthVal + 1) + '/' + lastMonthYear;
   const lblYear = document.getElementById('labelThisYear');
-  if (lblYear) lblYear.textContent = 'Doanh thu được duyệt trong Năm ' + currentYear;
+  if (lblYear) lblYear.textContent = 'Năm ' + currentYear;
+  const lblLastYear = document.getElementById('labelLastYear');
+  if (lblLastYear) lblLastYear.textContent = 'Năm ' + lastYearVal;
 
   document.getElementById('statPendingOrders').textContent = pending;
   document.getElementById('statApprovedOrders').textContent = approved;
