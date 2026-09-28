@@ -4415,9 +4415,7 @@ function copyPaidSyntax() {
   toast('📋', 'Đã sao chép mã đơn: ' + memo + ' (Gửi qua Zalo 0588500524 để nhận file)');
 }
 
-function formatCurrentDateTime() {
-  var now = new Date();
-  var pad = function(n) { return n < 10 ? '0' + n : n; };
+;
   return pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds()) + ' ' + now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
 }
 
