@@ -6,7 +6,13 @@ function sanitizeText(str, maxLen) {
 }
 
 function checkIsAdmin(req, body) {
-  const queryKey = req.query && req.query.adminKey;
+  let queryKey = req.query && req.query.adminKey;
+  if (!queryKey && req.url && req.url.includes('?')) {
+    try {
+      const u = new URL(req.url, 'http://localhost');
+      queryKey = u.searchParams.get('adminKey');
+    } catch(e) {}
+  }
   const headerKey = req.headers && (req.headers['x-admin-key'] || req.headers['authorization']);
   const bodyKey = body && body.adminKey;
   const provided = queryKey || headerKey || bodyKey || '';
@@ -24,12 +30,33 @@ module.exports = async function handler(req, res) {
   }
 
   let body = req.body;
-  if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch(e) {}
+  if (!body && (req.method === 'POST' || req.method === 'DELETE')) {
+    try {
+      body = await new Promise(resolve => {
+        let d = '';
+        req.on('data', chunk => d += chunk);
+        req.on('end', () => {
+          try { resolve(JSON.parse(d)); } catch(e) { resolve({}); }
+        });
+        req.on('error', () => resolve({}));
+      });
+    } catch(e) {
+      body = {};
+    }
+  } else if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch(e) { body = {}; }
   }
   body = body || {};
 
   const isAdmin = checkIsAdmin(req, body);
+
+  let query = req.query || {};
+  if (req.url && req.url.includes('?')) {
+    try {
+      const u = new URL(req.url, 'http://localhost');
+      query = Object.assign({}, Object.fromEntries(u.searchParams), query);
+    } catch(e) {}
+  }
 
   try {
     if (req.method === 'GET') {
@@ -41,7 +68,7 @@ module.exports = async function handler(req, res) {
       if (!isAdmin) {
         return res.status(403).json({ success: false, error: 'Strix Guard: Bạn không có quyền xóa đơn hàng!' });
       }
-      const targetId = String(req.query.id || body.id || '').replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
+      const targetId = String(query.id || body.id || '').replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
       if (!targetId) {
         return res.status(400).json({ success: false, error: 'Thiếu mã đơn cần xóa' });
       }
@@ -62,11 +89,11 @@ module.exports = async function handler(req, res) {
       }
 
       // ── XÓA 1 ĐƠN HÀNG QUA POST (Chỉ Admin) ──
-      if ((body._delete === true || body._action === 'delete') && body.id) {
+      if ((body._delete === true || body._action === 'delete') && (body.id || query.id)) {
         if (!isAdmin) {
           return res.status(403).json({ success: false, error: 'Strix Guard: Cần quyền Admin để xóa đơn hàng!' });
         }
-        const cleanId = String(body.id).replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
+        const cleanId = String(body.id || query.id).replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
         const { orders } = await getGist();
         const filtered = (orders || []).filter(o => o.id !== cleanId);
         await updateGist({ orders: filtered });
@@ -98,6 +125,14 @@ module.exports = async function handler(req, res) {
         status = orders[existingIdx].status || 'pending';
       }
 
+      const cleanTxId = sanitizeText(body.txId, 40);
+      if (status === 'approved' && cleanTxId) {
+        const dupTx = orders.find(o => o.id !== cleanId && o.status === 'approved' && o.txId && o.txId.toUpperCase() === cleanTxId.toUpperCase());
+        if (dupTx) {
+          return res.status(409).json({ success: false, error: 'Mã giao dịch ngân hàng ' + cleanTxId + ' đã được dùng cho đơn ' + dupTx.id });
+        }
+      }
+
       const orderItem = {
         id: cleanId,
         product: sanitizeText(body.product, 60) || 'AimLock FF',
@@ -107,7 +142,7 @@ module.exports = async function handler(req, res) {
         phone: sanitizeText(body.phone, 15) || '',
         time: body.time ? sanitizeText(body.time, 35) : new Date().toLocaleString('vi-VN'),
         status: status,
-        txId: sanitizeText(body.txId, 40) || (existingIdx >= 0 ? orders[existingIdx].txId : '')
+        txId: cleanTxId || (existingIdx >= 0 ? orders[existingIdx].txId : '')
       };
 
       if (existingIdx >= 0) {

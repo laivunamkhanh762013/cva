@@ -63,7 +63,15 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const { memo, orderId, price, user } = req.query;
+  let query = req.query || {};
+  if (!query.memo && !query.user && !query.orderId && req.url && req.url.includes('?')) {
+    try {
+      const u = new URL(req.url, 'http://localhost');
+      query = Object.fromEntries(u.searchParams);
+    } catch(e) {}
+  }
+
+  const { memo, orderId, price, user } = query;
 
   // Strix Security Guard: Clean & validate tokens
   const cleanMemo = cleanToken(memo);
@@ -86,6 +94,21 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    // Tải danh sách đơn hàng đã duyệt để loại trừ các giao dịch đã dùng
+    let usedTxIds = new Set();
+    let existingOrders = [];
+    try {
+      const gist = await getGist();
+      existingOrders = gist.orders || [];
+      existingOrders.forEach(o => {
+        if (o.status === 'approved' && o.txId) {
+          usedTxIds.add(String(o.txId).trim().toUpperCase());
+        }
+      });
+    } catch(e) {
+      console.warn('Load gist in check-payment error:', e.message);
+    }
+
     const result = await fetchSePay('/userapi/transactions/list?limit=50');
     if (result.status !== 200) {
       return res.status(502).json({ error: 'SePay error status ' + result.status });
@@ -95,8 +118,13 @@ module.exports = async function handler(req, res) {
     const parsedPrice = parseFloat(price);
     const minAmount = (!isNaN(parsedPrice) && parsedPrice > 0) ? parsedPrice : 0;
 
-    // Strix AI Matching Engine: Khớp giao dịch nạp tiền
+    // Strix AI Matching Engine: Khớp giao dịch nạp tiền (CHỈ KHỚP GIAO DỊCH CHƯA TỪNG DÙNG)
     const matched = transactions.find(t => {
+      const ref = String(t.reference_number || t.id || '').trim().toUpperCase();
+      if (usedTxIds.has(ref) || usedTxIds.has(String(t.id).trim().toUpperCase())) {
+        return false; // Giao dịch này đã duyệt đơn hàng khác rồi, không dùng lại!
+      }
+
       // Chuẩn hóa nội dung chuyển khoản từ MBBank (bỏ dấu tiếng Việt, viết hoa)
       const rawContent = (t.transaction_content || '');
       const content = cleanToken(rawContent);
@@ -117,14 +145,13 @@ module.exports = async function handler(req, res) {
     if (matched) {
       const txRef = matched.reference_number || String(matched.id);
 
-      // Tự động cập nhật trạng thái đơn thành 'approved' trong Database
+      // Tự động cập nhật trạng thái đơn thành 'approved' trong Database nếu đơn đã tồn tại
       try {
-        const { orders } = await getGist();
-        if (orders && orders.length) {
+        if (existingOrders && existingOrders.length) {
           let updated = false;
-          orders.forEach(o => {
-            const isMatch = (cleanOrderId && o.id === cleanOrderId) ||
-                            (cleanMemo && (o.id === cleanMemo || cleanToken(o.user) === cleanMemo)) ||
+          existingOrders.forEach(o => {
+            const isMatch = (cleanOrderId && cleanToken(o.id) === cleanOrderId) ||
+                            (cleanMemo && (cleanToken(o.id) === cleanMemo || cleanToken(o.user) === cleanMemo)) ||
                             (cleanUser && cleanToken(o.user) === cleanUser);
             if (isMatch && o.status !== 'approved') {
               o.status = 'approved';
@@ -133,7 +160,7 @@ module.exports = async function handler(req, res) {
             }
           });
           if (updated) {
-            await updateGist({ orders });
+            await updateGist({ orders: existingOrders });
           }
         }
       } catch(dbErr) {

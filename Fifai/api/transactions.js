@@ -38,8 +38,16 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
+  let query = req.query || {};
+  if (!query.adminKey && req.url && req.url.includes('?')) {
+    try {
+      const u = new URL(req.url, 'http://localhost');
+      query = Object.assign({}, Object.fromEntries(u.searchParams), query);
+    } catch(e) {}
+  }
+
   // Strix Security Guard: Protect bank statement API with Admin auth
-  const adminKey = req.query.adminKey || req.headers['x-admin-key'];
+  const adminKey = query.adminKey || req.headers['x-admin-key'];
   if (adminKey !== 'daiphu2026') {
     return res.status(401).json({
       status: 401,
@@ -48,7 +56,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
+    const limit = Math.min(parseInt(query.limit, 10) || 50, 100);
     const result = await fetchSePay('/userapi/transactions/list?limit=' + limit);
     return res.status(result.status).json(result.data);
   } catch (err) {

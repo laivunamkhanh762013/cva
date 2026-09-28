@@ -470,6 +470,21 @@ function stopAutoRefresh() {
 }
 
 /* ═══════ DATA HELPERS ═══════ */
+function stripVietnamese(str) {
+  if (!str) return '';
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+}
+
+function cleanToken(str) {
+  if (!str || typeof str !== 'string') return '';
+  const noTones = stripVietnamese(str.trim());
+  return noTones.toUpperCase().replace(/[^A-Z0-9]/g, '');
+}
+
 function formatVND(n) {
   if (typeof n !== 'number') n = Number(n) || 0;
   return n.toLocaleString('vi-VN') + 'đ';
@@ -534,19 +549,32 @@ function autoScanPendingOrders(silent) {
         return;
       }
 
+      // ── BẢO VỆ CHỐNG DUPLICATE ĐƠN: 1 GIAO DỊCH NGÂN HÀNG CHỈ DUYỆT ĐÚNG 1 ĐƠN HÀNG ──
+      const usedTxIds = new Set();
+      allOrders.forEach(function(ao) {
+        if (ao.status === 'approved' && ao.txId) {
+          usedTxIds.add(String(ao.txId).trim().toUpperCase());
+        }
+      });
+
       let approvedCount = 0;
       pendingOrders.forEach(function(o) {
         const price = Number(o.price) || 0;
-        const cleanOId = (o.id || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-        const cleanUName = (o.user || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const cleanOId = cleanToken(o.id || '');
+        const cleanUName = cleanToken(o.user || '');
 
         const matchedTx = txs.find(function(t) {
+          const ref = String(t.reference_number || t.id || '').trim().toUpperCase();
+          if (usedTxIds.has(ref) || usedTxIds.has(String(t.id).trim().toUpperCase())) {
+            return false; // Giao dịch này đã được dùng cho đơn khác, không thể dùng lại!
+          }
+
           const amountIn = parseFloat(t.amount_in || 0);
           if (price > 0 && amountIn < (price * 0.9)) return false;
           if (amountIn < 10000) return false;
 
           const rawContent = (t.transaction_content || '');
-          const content = rawContent.toUpperCase().replace(/[^A-Z0-9]/g, '');
+          const content = cleanToken(rawContent);
           const matchId = cleanOId && cleanOId.length >= 4 && content.includes(cleanOId);
           const matchUser = cleanUName && cleanUName.length >= 3 && cleanUName !== 'KHACHVANGLAI' && content.includes(cleanUName);
 
@@ -555,6 +583,8 @@ function autoScanPendingOrders(silent) {
 
         if (matchedTx) {
           const ref = matchedTx.reference_number || String(matchedTx.id);
+          usedTxIds.add(String(ref).trim().toUpperCase());
+          usedTxIds.add(String(matchedTx.id).trim().toUpperCase());
           updateOrderStatus(o.id, 'approved', ref);
           approvedCount++;
         }
@@ -788,30 +818,28 @@ function updateOrderStatus(id, newStatus, txId) {
 
 function deleteOrder(id) {
   if (!confirm('Bạn có chắc muốn xóa vĩnh viễn đơn hàng ' + id + '?')) return;
-  allOrders = allOrders.filter(function(o) { return o.id !== id; });
-  saveStoredOrders(allOrders);
-  renderDashboard();
   showToast('🗑️ Đang xóa đơn ' + id + ' khỏi máy chủ...');
 
-  // Gửi request xóa vĩnh viễn trên Cloud Database
-  fetch('/api/orders?id=' + encodeURIComponent(id) + '&adminKey=' + encodeURIComponent(ADMIN_SECRET), {
-    method: 'DELETE',
+  // Gửi request xóa vĩnh viễn trên Cloud Database qua POST _delete để tương thích 100% mọi trình duyệt
+  fetch('/api/orders', {
+    method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_SECRET },
     body: JSON.stringify({ id: id, _delete: true, adminKey: ADMIN_SECRET })
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
     if (data && data.success) {
+      allOrders = allOrders.filter(function(o) { return o.id !== id; });
+      saveStoredOrders(allOrders);
+      renderDashboard();
       showToast('✅ Đã xóa vĩnh viễn đơn ' + id + '!');
+    } else {
+      showToast('❌ Không thể xóa đơn: ' + (data ? (data.error || data.message) : 'Lỗi'));
     }
   })
   .catch(function(err) {
-    console.warn('DELETE error, fallback to POST:', err);
-    fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_SECRET },
-      body: JSON.stringify({ id: id, _delete: true, adminKey: ADMIN_SECRET })
-    }).catch(function(){});
+    console.warn('DELETE error:', err);
+    showToast('❌ Lỗi kết nối khi xóa: ' + err.message);
   });
 }
 
@@ -837,19 +865,28 @@ function exportOrdersJSON() {
 function clearAllOrders() {
   if (!confirm('⚠️ Bạn có chắc muốn XÓA TOÀN BỘ đơn hàng?\n\nHành động này sẽ xóa sạch tất cả đơn trên Cloud + Local.\nKhông thể hoàn tác!')) return;
 
-  // Xóa local
-  saveStoredOrders([]);
-  allOrders = [];
-  renderDashboard();
+  showToast('🗑️ Đang xóa toàn bộ đơn hàng...');
 
   // Xóa cloud Gist qua API kèm admin auth
   fetch('/api/orders', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_SECRET },
     body: JSON.stringify({ _reset: true, id: 'RESET_ALL', adminKey: ADMIN_SECRET })
-  }).catch(function(){});
-
-  showToast('🗑️ Đã xóa toàn bộ đơn hàng. Hệ thống bắt đầu mới!');
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.success) {
+      saveStoredOrders([]);
+      allOrders = [];
+      renderDashboard();
+      showToast('✅ Đã xóa toàn bộ đơn hàng. Hệ thống bắt đầu mới!');
+    } else {
+      showToast('❌ Không thể reset đơn: ' + (data ? (data.error || data.message) : 'Lỗi'));
+    }
+  })
+  .catch(function(err) {
+    showToast('❌ Lỗi kết nối khi reset: ' + err.message);
+  });
 }
 
 /* ═══════ STRIX SCAN ═══════ */

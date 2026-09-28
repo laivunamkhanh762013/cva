@@ -2596,7 +2596,7 @@
                 <button class="m-copy-btn" onclick="copyText(window.currentPayAmountRaw, this)"><i class="fa-solid fa-copy"></i></button>
               </div>
               <div class="m-bank-item m-bank-memo">
-                <div><small style="color:#f87171;font-weight:800;">NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC CHÍNH XÁC)</small><strong id="mOrderMemo" style="color:#f87171;font-family:monospace;font-size:16px;letter-spacing:1px;">DP...</strong></div>
+                <div><small style="color:#f87171;font-weight:800;">NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC CHÍNH XÁC)</small><strong id="mOrderMemo" style="color:#f87171;font-family:monospace;font-size:16px;letter-spacing:1px;">Tài khoản web của bạn</strong></div>
                 <button class="m-copy-btn m-copy-memo" onclick="copyText(window.currentOrderMemoFull || window.currentOrderMemo, this)"><i class="fa-solid fa-copy"></i></button>
               </div>
             </div>
@@ -2606,7 +2606,7 @@
               <div class="m-pls-icon" id="mPlsIcon"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
               <div class="m-pls-info">
                 <div class="m-pls-title" id="mPlsTitle">HỆ THỐNG ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...</div>
-                <div class="m-pls-desc" id="mPlsDesc">Sau khi chuyển khoản với nội dung <b id="mPlsMemo">DP...</b>, hệ thống sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!</div>
+                <div class="m-pls-desc" id="mPlsDesc">Sau khi chuyển khoản với nội dung <b id="mPlsMemo">...</b>, hệ thống sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!</div>
               </div>
             </div>
 
@@ -2620,7 +2620,7 @@
             <div class="m-bot-box" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.35);margin-top:14px;">
               <div class="m-bot-title" style="color:#38bdf8;"><i class="fa-solid fa-user-shield"></i> Hỗ trợ trực tiếp từ Admin Shop:</div>
               <p class="m-bot-desc" style="color:#bae6fd;">
-                Nếu sau khi chuyển tiền ngân hàng bị trễ hoặc cần file cài đặt ngay, hãy gửi mã đơn <code class="m-code" style="background:rgba(6,182,212,0.25);color:#e0f2fe;"><span id="mAdminCode">DP...</span></code> hoặc ảnh bill đến <b>Zalo Admin: 0588500524 (Anh Phú)</b> để được hỗ trợ 1:1 ngay!
+                Nếu sau khi chuyển tiền ngân hàng bị trễ hoặc cần file cài đặt ngay, hãy gửi tên tài khoản <code class="m-code" style="background:rgba(6,182,212,0.25);color:#e0f2fe;"><span id="mAdminCode">...</span></code> kèm ảnh bill chuyển khoản đến <b>Zalo Admin: 0588500524 (Anh Phú)</b> để được hỗ trợ 1:1 ngay!
               </p>
             </div>
 
@@ -2656,15 +2656,15 @@
                 <div style="background:#090c1a;border:1.5px solid #1e2648;border-radius:10px;padding:12px;margin:12px 0;">
                   <div style="display:flex;align-items:center;justify-content:space-between;">
                     <div>
-                      <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Mã Đơn Của Bạn:</div>
-                      <code style="font-family:monospace;font-size:16px;font-weight:900;color:#38bdf8;" id="mCardOrderMemo">DP...</code>
+                      <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Tài Khoản Mua Hàng:</div>
+                      <code style="font-family:monospace;font-size:16px;font-weight:900;color:#38bdf8;" id="mCardOrderMemo">...</code>
                     </div>
                     <button type="button" class="m-copy-btn" onclick="copyText(window.currentOrderMemo, this)">
-                      <i class="fa-solid fa-copy"></i> Sao chép mã
+                      <i class="fa-solid fa-copy"></i> Sao chép
                     </button>
                   </div>
                   <div style="font-size:11.5px;color:#64748b;margin-top:4px;">
-                    Copy mã này gửi kèm mã thẻ &amp; số seri cho Anh Phú để đối soát nhanh nhất!
+                    Copy tên tài khoản này gửi kèm mã thẻ &amp; số seri cho Anh Phú để đối soát nhanh nhất!
                   </div>
                 </div>
 
@@ -2939,6 +2939,15 @@
 
 <!-- ══ APP SCRIPTS ══ -->
 <script>
+function stripVietnamese(str) {
+  if (!str) return '';
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+}
+
 /* ═══════ REAL PRODUCTS DATA (SHOP ĐẠI PHÚ FF) ═══════ */
 var PRODUCTS = [
   {
@@ -3246,41 +3255,6 @@ var PRODUCTS = [
         fix: 'Ổn định tâm súng tối đa, không rung giật màn hình khi giao tranh căng thẳng.',
         pros: 'Gói tháng tiết kiệm và tiện lợi nhất cho bản Delta.',
         note: 'Hỗ trợ toàn bộ dòng máy iPhone / iPad.'
-      }
-    ]
-  },
-  {
-    id: 'panel-adr',
-    category: 'SX2 & Panel',
-    plat: 'Android',
-    buyers: '350+ Người mua',
-    name: 'Panel External (Android)',
-    shortDesc: 'Panel định vị radar, ESP, kéo tâm mượt không rung giật lag.',
-    fullDesc: 'Panel External cao cấp dành cho thiết bị Android:\n- Radar overlay, ESP gắn đầu, hiển thị khoảng cách địch.\n- Tối ưu độ nhạy màn hình cảm ứng, kéo tâm bám đầu tức thì.',
-    priceMin: 150000,
-    priceMax: 450000,
-    image: 'assets/uploads/products/sx2-external.jpg',
-    images: [
-      { src: 'assets/uploads/products/sx2-external.jpg', label: 'Panel SX2', title: 'Panel External Android No Root' }
-    ],
-    plans: [
-      {
-        name: 'Gói 7 Ngày (1 Tuần)',
-        price: 150000,
-        badge: 'Tiết kiệm',
-        action: 'Radar overlay định vị địch, ESP gắn đầu, hiển thị khoảng cách mục tiêu.',
-        fix: 'Khắc phục giật lag cảm ứng trên Android, tối ưu hóa độ nhạy vuốt tâm.',
-        pros: 'Giao diện Panel trực quan, bật tắt tính năng ngay trong trận đấu.',
-        note: 'Dành riêng cho các dòng máy Android No Root.'
-      },
-      {
-        name: 'Gói 30 Ngày (1 Tháng)',
-        price: 450000,
-        badge: 'Phổ biến',
-        action: 'Full quyền sử dụng Panel External 30 ngày với máy chủ định vị cao cấp.',
-        fix: 'Khắc phục hoàn toàn hiện tượng lệch tâm khi đối thủ chạy xe hoặc di chuyển nhanh.',
-        pros: 'Được hỗ trợ cập nhật tính năng mới liên tục trong suốt tháng.',
-        note: 'Dành riêng cho các dòng máy Android No Root.'
       }
     ]
   },
@@ -4023,17 +3997,15 @@ function startPaymentForPlan(p, plan) {
   currentProduct = p;
   currentPlan = plan;
   window.currentPayAmountRaw = plan.price;
-
-  // Sinh mã đơn hàng ngẫu nhiên — lưu trên hệ thống để Admin nhận
-  var orderId = 'DP' + Math.floor(100000 + Math.random() * 900000);
-  window.currentOrderId = orderId; // Reveal mã DP sau khi chuyển khoản
+  window.currentOrderId = null; // CHƯA CÓ MÃ ĐƠN KHI CHƯA CHUYỂN KHOẢN!
 
   // Lấy thông tin user
   var currentUser = getCurrentUser();
-  var username = currentUser && currentUser.username ? currentUser.username : '';
+  var rawUser = currentUser && currentUser.username ? currentUser.username : '';
 
-  // TRƯỚC KHI CK: Nội dung CK là Username trên web (fallback orderId nếu khách vãng lai)
-  var memoForCK = username || orderId;
+  // TRƯỚC KHI CK: Nội dung CK BẮT BUỘC là Username trên web
+  // Bỏ dấu tiếng Việt để nội dung CK sạch sẽ 100%, ngân hàng quét VietQR chính xác
+  var memoForCK = rawUser ? stripVietnamese(rawUser).replace(/[^A-Za-z0-9]/g, '') : ('KHACH' + Math.floor(1000 + Math.random() * 9000));
   window.currentOrderMemo = memoForCK;
   window.currentOrderMemoFull = memoForCK;
 
@@ -4060,18 +4032,8 @@ function startPaymentForPlan(p, plan) {
   // Reset về tab Quét QR ngân hàng mặc định
   switchPayMethod('bank');
 
-  // Lưu đơn hàng vào hệ thống lưu trữ
-  var newOrder = {
-    id: orderId,
-    productName: p.name,
-    planName: plan.name,
-    price: plan.price,
-    user: username || 'Khách vãng lai',
-    phone: currentUser ? (currentUser.phone || '') : '',
-    time: formatCurrentDateTime(),
-    status: 'pending'
-  };
-  saveOrder(newOrder);
+  // TUYỆT ĐỐI KHÔNG TẠO VÀ LƯU ĐƠN PENDING TRƯỚC KHI CK!
+  // Chỉ khi SePay xác nhận tiền vào MBBank thì mới sinh mã DP và lưu vào hệ thống!
 
   // Tạo mã VietQR — addInfo = username (nội dung chuyển khoản trước khi CK là Username)
   var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(memoForCK) + '&accountName=BUI%20VAN%20CAO';
@@ -4098,15 +4060,16 @@ var isCheckingPayment = false;
 
 function startPaymentWatcher(orderId, price) {
   stopPaymentWatcher();
+  isCheckingPayment = false;
   var memoFull = window.currentOrderMemoFull || orderId;
   var memoEl = document.getElementById('mPlsMemo');
   if (memoEl) memoEl.textContent = memoFull;
   updateLiveStatus('waiting', 'HỆ THỐNG ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...', 'Sau khi chuyển khoản với nội dung <b>' + memoFull + '</b>, hệ thống SePay sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!');
 
-  // Tự động kiểm tra mỗi 3.5 giây
+  // Tự động kiểm tra mỗi 3 giây
   paymentPollTimer = setInterval(function() {
     checkPaymentApi(orderId, price, false);
-  }, 3500);
+  }, 3000);
 }
 
 function stopPaymentWatcher() {
@@ -4115,6 +4078,20 @@ function stopPaymentWatcher() {
     paymentPollTimer = null;
   }
 }
+
+// Lắng nghe khi người dùng chuyển từ App Ngân hàng (MBBank/Momo) quay lại web
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden && window.currentOrderMemo && window.currentPayAmountRaw) {
+    isCheckingPayment = false;
+    checkPaymentApi(window.currentOrderMemo, window.currentPayAmountRaw, false);
+  }
+});
+window.addEventListener('focus', function() {
+  if (window.currentOrderMemo && window.currentPayAmountRaw) {
+    isCheckingPayment = false;
+    checkPaymentApi(window.currentOrderMemo, window.currentPayAmountRaw, false);
+  }
+});
 
 function updateLiveStatus(state, title, desc) {
   var card = document.getElementById('mPayLiveStatus');
@@ -4143,7 +4120,7 @@ function checkPaymentApi(orderId, price, isManual) {
   var currentUser = getCurrentUser();
   var username = currentUser && currentUser.username ? currentUser.username : '';
   var memoParam = encodeURIComponent(orderId);
-  var orderIdParam = encodeURIComponent(window.currentOrderId || orderId);
+  var orderIdParam = encodeURIComponent(window.currentOrderId || '');
   var userParam = encodeURIComponent(username);
   fetch('/api/check-payment?memo=' + memoParam + '&orderId=' + orderIdParam + '&user=' + userParam + '&price=' + encodeURIComponent(price || 0))
     .then(function(res) {
@@ -4155,11 +4132,11 @@ function checkPaymentApi(orderId, price, isManual) {
       if (data && data.paid) {
         // MATCHED! Tiền thực sự đã vào MBBank!
         stopPaymentWatcher();
-        updateLiveStatus('success', '✅ ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!', 'MBBank 0941414448 đã ghi có +' + formatVND(data.transaction.amount) + ' với mã ' + orderId + '. Đang mở key...');
+        updateLiveStatus('success', '✅ ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!', 'MBBank 0941414448 đã ghi có +' + formatVND(data.transaction.amount) + ' cho tài khoản ' + (username || orderId) + '. Đang tạo mã đơn và mở key...');
         toast('🎉', 'Đã xác nhận tiền vào MBBank thành công!');
         setTimeout(function() {
           onPaymentVerifiedSuccess(data.transaction);
-        }, 1200);
+        }, 800);
       } else {
         if (isManual) {
           var fb = document.getElementById('checkPayFeedback');
@@ -4198,7 +4175,7 @@ function checkPaymentApi(orderId, price, isManual) {
             + '<div>'
               + '<b style="color:#facc15;font-size:13px;">Đang kết nối đối soát MBBank...</b>'
               + '<div style="margin-top:4px;color:#cbd5e1;font-size:11.5px;line-height:1.5;">'
-                + 'Nếu bạn đã chuyển khoản thành công, hãy sao chép mã đơn hàng <b>' + (window.currentOrderId || orderId) + '</b> ở trên hoặc gửi ảnh bill cho <b>Zalo Anh Phú (0588500524)</b> để nhận file và key nhé!'
+                + 'Nếu bạn đã chuyển khoản thành công, hãy chụp ảnh bill gửi cho <b>Zalo Anh Phú (0588500524)</b> kèm tài khoản <b>' + (username || orderId) + '</b> để nhận file và key nhé!'
               + '</div>'
             + '</div>'
           + '</div>';
@@ -4228,15 +4205,27 @@ function manualCheckPayment() {
 }
 
 function onPaymentVerifiedSuccess(tx) {
-  // Cập nhật trạng thái đơn thành 'approved' — tìm theo orderId (DP code)
-  var orderId = window.currentOrderId || window.currentOrderMemo;
-  var orders = getOrders();
-  var o = orders.find(function(item) { return item.id === orderId; });
-  if (o) {
-    o.status = 'approved';
-    o.txId = tx ? (tx.reference || tx.id) : '';
-    saveOrder(o);
-  }
+  // Sinh mã đơn chính thức DP... CHỈ KHI TIỀN ĐÃ VÀO MBBANK
+  var orderId = 'DP' + Math.floor(100000 + Math.random() * 900000);
+  window.currentOrderId = orderId;
+  window.currentOrderMemo = orderId;
+
+  var currentUser = getCurrentUser();
+  var rawUser = currentUser && currentUser.username ? currentUser.username : (window.currentOrderMemoFull || 'Khách');
+
+  var approvedOrder = {
+    id: orderId,
+    productName: currentProduct ? currentProduct.name : 'AimLock FF',
+    planName: currentPlan ? currentPlan.name : 'Gói phần mềm',
+    price: currentPlan ? currentPlan.price : (tx ? parseFloat(tx.amount || 0) : 0),
+    user: rawUser,
+    phone: currentUser ? (currentUser.phone || '') : '',
+    time: formatCurrentDateTime(),
+    status: 'approved',
+    txId: tx ? (tx.reference || String(tx.id)) : ''
+  };
+
+  saveOrder(approvedOrder);
 
   // Mở modal xác nhận với trạng thái ĐÃ XÁC NHẬN TIỀN
   closeBuyModal();
@@ -4331,10 +4320,7 @@ function closeBuyModal() {
 }
 
 function confirmPaid() {
-  closeBuyModal();
-  openPaidModal();
-  // Khởi chạy nền watcher SePay để nếu tiền vào MBBank thì tự động update thành công ngay
-  startPaymentWatcher(window.currentOrderMemo, window.currentPayAmountRaw);
+  manualCheckPayment();
 }
 
 function sendOrderToPhu() {
@@ -4364,9 +4350,10 @@ function sendOrderToPhu() {
 }
 
 function openPaidModal(tx) {
-  // Sau khi CK → reveal mã DP (currentOrderId), không dùng memo (username)
-  var memo = window.currentOrderId || window.currentOrderMemo || ('DP' + Math.floor(100000 + Math.random() * 900000));
-  window.currentOrderMemo = memo; // cập nhật để các hàm copy dùng đúng
+  // Sau khi CK → reveal mã DP chính thức, không dùng memo (username)
+  var memo = window.currentOrderId || ('DP' + Math.floor(100000 + Math.random() * 900000));
+  window.currentOrderId = memo;
+  window.currentOrderMemo = memo;
 
   var confirmCodeEl = document.getElementById('paidConfirmCode');
   var detailCodeEl = document.getElementById('paidDetailCode');
@@ -4384,7 +4371,7 @@ function openPaidModal(tx) {
   if (confirmCodeEl) confirmCodeEl.textContent = memo;
   if (detailCodeEl) detailCodeEl.textContent = memo;
   if (detailProdEl) detailProdEl.textContent = currentProduct ? currentProduct.name : 'AimLock iOS';
-  if (detailPlanEl) detailPlanEl.textContent = currentPlan ? currentPlan.name : 'Gói 1 tháng';
+  if (detailPlanEl) detailPlanEl.textContent = currentPlan ? currentPlan.name : 'Gói phần mềm';
   if (detailPriceEl) detailPriceEl.textContent = currentPlan ? formatVND(currentPlan.price) : '50.000đ';
   if (detailTimeEl) detailTimeEl.textContent = formatCurrentDateTime();
 
@@ -4396,48 +4383,29 @@ function openPaidModal(tx) {
   var tlStep2 = document.getElementById('ntTimelineStep2');
   var tlNode2 = document.getElementById('ntTimelineNode2');
   var tlTitle2 = document.getElementById('ntTimelineTitle2');
-  var tlBadge2 = document.getElementById('ntTimelineBadge2');
   var tlDesc2 = document.getElementById('ntTimelineDesc2');
 
   var tlStep3 = document.getElementById('ntTimelineStep3');
   var tlNode3 = document.getElementById('ntTimelineNode3');
 
-  if (tx) {
-    if (headerIcon) headerIcon.textContent = '🎉';
-    if (headerTitle) headerTitle.textContent = 'Đã Xác Nhận Tiền Vào MBBank!';
-    if (headerSub) headerSub.textContent = 'Tài khoản MBBank đã nhận đủ tiền! Nhắn tin cho Anh Phú để nhận file hoặc bấm tải bên dưới.';
-    if (statusEl) {
-      statusEl.innerHTML = '✅ <span style="color:#34d399;font-weight:800;">ĐÃ THANH TOÁN THÀNH CÔNG (MBBank #' + (tx.reference || tx.id) + ')</span>';
-    }
-    if (keyBox) keyBox.style.display = 'block';
-    if (keyEl) keyEl.textContent = 'KEY-' + memo + '-' + Math.floor(1000 + Math.random() * 9000);
-
-    // Timeline: Step 2 Done, Step 3 Done
-    if (tlStep2) { tlStep2.className = 'nt-timeline-item done'; }
-    if (tlNode2) { tlNode2.innerHTML = '<i class="fa-solid fa-check"></i>'; }
-    if (tlTitle2) { tlTitle2.innerHTML = '<span>Đã nhận tiền qua MBBank</span> <span class="nt-badge-presence"><span class="nt-dot-live"></span> Đã khớp</span>'; }
-    if (tlDesc2) { tlDesc2.textContent = 'Ghi có +' + formatVND(tx.amount || 0) + ' khớp mã ' + memo + '.'; }
-
-    if (tlStep3) { tlStep3.className = 'nt-timeline-item done active'; }
-    if (tlNode3) { tlNode3.innerHTML = '<i class="fa-solid fa-unlock"></i>'; }
-  } else {
-    if (headerIcon) headerIcon.textContent = '💬';
-    if (headerTitle) headerTitle.textContent = 'Mã Đơn Của Bạn • Nhắn Zalo Anh Phú';
-    if (headerSub) headerSub.textContent = 'Sau khi chuyển khoản, gửi mã đơn này cho Anh Phú qua Zalo (0588500524) để nhận file cài đặt!';
-    if (statusEl) {
-      statusEl.innerHTML = '⏳ <span style="color:#38bdf8;font-weight:700;">Đã tạo đơn - Nhắn Anh Phú để nhận file (0588500524)</span>';
-    }
-    if (keyBox) keyBox.style.display = 'none';
-
-    // Timeline: Step 2 Waiting
-    if (tlStep2) { tlStep2.className = 'nt-timeline-item active'; }
-    if (tlNode2) { tlNode2.innerHTML = '<i class="fa-solid fa-rotate fa-spin"></i>'; }
-    if (tlTitle2) { tlTitle2.innerHTML = '<span>Đối soát biến động tiền MBBank</span> <span class="nt-badge-presence pending"><span class="nt-dot-live"></span> Đang chờ</span>'; }
-    if (tlDesc2) { tlDesc2.textContent = 'Nếu đã chuyển khoản, hệ thống sẽ tự động cập nhật hoặc bạn gửi bill qua Zalo Anh Phú để nhận file ngay lập tức.'; }
-
-    if (tlStep3) { tlStep3.className = 'nt-timeline-item'; }
-    if (tlNode3) { tlNode3.innerHTML = '<i class="fa-solid fa-key"></i>'; }
+  var refText = tx ? (tx.reference || tx.id || 'MBBANK') : 'CONFIRMED';
+  if (headerIcon) headerIcon.textContent = '🎉';
+  if (headerTitle) headerTitle.textContent = 'Đã Xác Nhận Tiền Vào MBBank!';
+  if (headerSub) headerSub.textContent = 'Tài khoản MBBank đã nhận đủ tiền! Nhắn tin cho Anh Phú để nhận file hoặc bấm tải bên dưới.';
+  if (statusEl) {
+    statusEl.innerHTML = '✅ <span style="color:#34d399;font-weight:800;">ĐÃ THANH TOÁN THÀNH CÔNG (MBBank #' + refText + ')</span>';
   }
+  if (keyBox) keyBox.style.display = 'block';
+  if (keyEl) keyEl.textContent = 'KEY-' + memo + '-' + Math.floor(1000 + Math.random() * 9000);
+
+  // Timeline: Step 2 Done, Step 3 Done
+  if (tlStep2) { tlStep2.className = 'nt-timeline-item done'; }
+  if (tlNode2) { tlNode2.innerHTML = '<i class="fa-solid fa-check"></i>'; }
+  if (tlTitle2) { tlTitle2.innerHTML = '<span>Đã nhận tiền qua MBBank</span> <span class="nt-badge-presence"><span class="nt-dot-live"></span> Đã khớp</span>'; }
+  if (tlDesc2) { tlDesc2.textContent = 'Ghi có +' + formatVND((tx && tx.amount) || (currentPlan ? currentPlan.price : 0)) + ' khớp mã ' + memo + '.'; }
+
+  if (tlStep3) { tlStep3.className = 'nt-timeline-item done active'; }
+  if (tlNode3) { tlNode3.innerHTML = '<i class="fa-solid fa-unlock"></i>'; }
 
   var m = document.getElementById('paidModal');
   if (m) m.classList.add('open');
@@ -4744,16 +4712,17 @@ function renderRecentOrders() {
   }
 
   var allOrders = getOrders();
-  // Chỉ lọc các đơn hàng của chính tài khoản này
+  // CHỈ LỌC CÁC ĐƠN ĐÃ THANH TOÁN THÀNH CÔNG ('approved') CỦA CHÍNH TÀI KHOẢN NÀY
   var list = allOrders.filter(function(o) {
     if (!o.user) return false;
+    if (o.status !== 'approved') return false; // TUYỆT ĐỐI KHÔNG HIỂN THỊ ĐƠN CHƯA THANH TOÁN
     return o.user.toLowerCase() === user.username.toLowerCase();
   });
 
   if (list.length === 0) {
     container.innerHTML = '<div style="text-align:center;padding:24px 12px;font-size:13px;color:#94a3b8;">'
       + '<i class="fa-solid fa-bag-shopping" style="font-size:30px;margin-bottom:8px;display:block;opacity:0.4;"></i>'
-      + 'Bạn chưa mua sản phẩm nào trên tài khoản <b>' + escapeHTML(user.username) + '</b>.<br>'
+      + 'Bạn chưa có đơn hàng đã thanh toán nào trên tài khoản <b>' + escapeHTML(user.username) + '</b>.<br>'
       + '<a href="#products" onclick="closeOrderCheckModal();" style="color:#00f0ff;font-weight:700;text-decoration:none;margin-top:8px;display:inline-block;">Xem sản phẩm & mua ngay &rarr;</a>'
       + '</div>';
     return;
@@ -4761,18 +4730,9 @@ function renderRecentOrders() {
 
   var html = '';
   list.forEach(function(o) {
-    var statusText = '⏳ Chờ thanh toán';
-    var statusColor = '#38bdf8';
-    var statusBg = 'rgba(56,189,248,0.15)';
-    if (o.status === 'approved') {
-      statusText = '✅ Đã thanh toán';
-      statusColor = '#4ade80';
-      statusBg = 'rgba(34,197,94,0.15)';
-    } else if (o.status === 'rejected') {
-      statusText = '❌ Sai tiền / Lỗi';
-      statusColor = '#f87171';
-      statusBg = 'rgba(239,68,68,0.15)';
-    }
+    var statusText = '✅ Đã thanh toán';
+    var statusColor = '#4ade80';
+    var statusBg = 'rgba(34,197,94,0.15)';
 
     var cleanId = escapeHTML(o.id || '');
     var prodName = escapeHTML(o.productName || o.product || o.planName || o.plan || 'Sản phẩm');
