@@ -68,11 +68,15 @@ module.exports = async function handler(req, res) {
 
     const cleanContent = cleanToken(rawContent);
 
-    // 1. Tìm đơn chờ khớp mã đơn hoặc tài khoản
+    // 1. Tìm đơn chờ khớp mã đơn duy nhất (DP...) hoặc tài khoản
     let matchedOrder = existingOrders.find(o => {
       if (o.status === 'approved') return false;
+      const expectedPrice = Number(o.price) || 0;
+      if (expectedPrice > 0 && amount < expectedPrice) return false; // Không duyệt nếu chuyển thiếu tiền!
+
       const oId = cleanToken(o.id || '');
       const uName = cleanToken(o.user || '');
+      // Ưu tiên khớp chính xác mã đơn DP...
       const matchId = oId && oId.length >= 4 && cleanContent.includes(oId);
       const matchUser = uName && uName.length >= 3 && cleanContent.includes(uName);
       return matchId || matchUser;

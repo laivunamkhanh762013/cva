@@ -144,15 +144,63 @@ async function parseBody(req) {
   });
 }
 
-function validateOrderId(id) {
-  if (!id || typeof id !== 'string') return false;
-  return /^DP[A-Z0-9]{4,15}$/i.test(id.trim());
+function signUserToken(username, durationMs = 30 * 86400000) {
+  const payload = {
+    user: username,
+    iat: Date.now(),
+    exp: Date.now() + durationMs
+  };
+  const p = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const sig = crypto.createHmac('sha256', JWT_SECRET).update(p).digest('base64url');
+  return p + '.' + sig;
+}
+
+function verifyUserToken(req) {
+  const authHeader = req.headers && (req.headers['authorization'] || req.headers['x-user-token']);
+  let token = null;
+  if (authHeader) {
+    token = String(authHeader).replace(/^Bearer\s+/i, '').trim();
+  }
+  if (!token) {
+    const cookies = parseCookies(req);
+    token = cookies['user_token'];
+  }
+  if (!token || typeof token !== 'string') return null;
+
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+
+  const [p, sig] = parts;
+  const expectedSig = crypto.createHmac('sha256', JWT_SECRET).update(p).digest('base64url');
+  const bSig = Buffer.from(sig);
+  const bExpected = Buffer.from(expectedSig);
+
+  if (bSig.length !== bExpected.length) return null;
+  if (!crypto.timingSafeEqual(bSig, bExpected)) return null;
+
+  try {
+    const data = JSON.parse(Buffer.from(p, 'base64url').toString('utf8'));
+    if (!data.exp || data.exp < Date.now() || !data.user) {
+      return null;
+    }
+    return data;
+  } catch(e) {
+    return null;
+  }
+}
+
+function generateSecureOrderId() {
+  const num = crypto.randomInt(100000, 999999);
+  return 'DP' + num;
 }
 
 module.exports = {
   verifyAdminPassword,
   signAdminToken,
   verifyAdminToken,
+  signUserToken,
+  verifyUserToken,
+  generateSecureOrderId,
   checkRateLimit,
   recordFailedLogin,
   resetFailedLogin,

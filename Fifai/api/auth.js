@@ -1,4 +1,5 @@
 const { getGist, updateGist } = require('./db');
+const { signUserToken } = require('./_security');
 
 function maskPhone(phone) {
   if (!phone || phone.length < 6) return '***';
@@ -68,9 +69,11 @@ module.exports = async function handler(req, res) {
         const trimmedUsers = users.slice(0, 500);
         await updateGist({ users: trimmedUsers });
 
+        const token = signUserToken(newUser.username);
         return res.status(200).json({
           success: true,
           message: 'Đăng ký tài khoản thành công!',
+          token: token,
           user: { username: newUser.username, phone: newUser.phone }
         });
       } else {
@@ -83,9 +86,11 @@ module.exports = async function handler(req, res) {
           return res.status(401).json({ success: false, error: 'Mật khẩu không chính xác!' });
         }
 
+        const token = signUserToken(existing.username);
         return res.status(200).json({
           success: true,
           message: 'Đăng nhập thành công!',
+          token: token,
           user: { username: existing.username, phone: existing.phone }
         });
       }

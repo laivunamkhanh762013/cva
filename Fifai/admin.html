@@ -516,16 +516,12 @@ async function checkAuth() {
       stopAutoRefresh();
     }
   } catch (err) {
-    if (sessionStorage.getItem('daiphu_admin_auth') === 'true') {
-      loginOverlay.style.display = 'none';
-      adminContent.style.display = 'block';
-      bindTableEvents();
-      loadAllOrders();
-      startAutoRefresh();
-    } else {
-      loginOverlay.style.display = 'flex';
-      adminContent.style.display = 'none';
-    }
+    adminAuthToken = '';
+    sessionStorage.removeItem('daiphu_admin_token');
+    sessionStorage.removeItem('daiphu_admin_auth');
+    loginOverlay.style.display = 'flex';
+    adminContent.style.display = 'none';
+    stopAutoRefresh();
   }
 }
 
@@ -632,7 +628,11 @@ function loadAllOrders(silent) {
       const cloudOrders = (data && data.orders) ? data.orders : [];
       allOrders = cloudOrders;
       allOrders.sort(function(a, b) {
-        return new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime();
+        const da = parseOrderDate(a.time);
+        const db = parseOrderDate(b.time);
+        const ta = da ? da.getTime() : 0;
+        const tb = db ? db.getTime() : 0;
+        return tb - ta;
       });
       renderDashboard();
       if (!silent) showToast('☁️ Đã tải ' + allOrders.length + ' đơn từ hệ thống!');

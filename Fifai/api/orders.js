@@ -1,5 +1,5 @@
 const { getGist, updateGist } = require('./db');
-const { verifyAdminToken, parseBody, validateOrderId } = require('./_security');
+const { verifyAdminToken, verifyUserToken, generateSecureOrderId, parseBody, validateOrderId } = require('./_security');
 const { getCanonicalPrice } = require('./_catalog');
 
 function sanitizeText(str, maxLen) {
@@ -10,7 +10,7 @@ function sanitizeText(str, maxLen) {
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token, x-user-token');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
@@ -31,34 +31,62 @@ module.exports = async function handler(req, res) {
   }
 
   const isAdmin = verifyAdminToken(req);
+  const userPayload = verifyUserToken(req);
 
   try {
-    // ── LẤY DANH SÁCH ĐƠN HÀNG (GET) ──
+    // ── LẤY DANH SÁCH / KIỂM TRA ĐƠN HÀNG (GET) ──
     if (req.method === 'GET') {
       const { orders } = await getGist();
       const all = orders || [];
 
-      // 1. Nếu là Admin: Cho phép xem toàn bộ danh sách đơn hàng
+      // 1. Nếu là Admin: Xem toàn bộ đơn hàng
       if (isAdmin) {
         return res.status(200).json({ success: true, orders: all });
       }
 
-      // 2. Nếu là Khách / Chưa đăng nhập Admin:
-      // BẢO VỆ BẢN QUYỀN & DỮ LIỆU KHÁCH HÀNG: Tuyệt đối KHÔNG trả toàn bộ danh sách khách hàng!
-      const queryCode = String(query.id || query.code || query.memo || '').trim().toUpperCase();
-      if (!queryCode) {
-        return res.status(401).json({
-          success: false,
-          error: 'Unauthorized: Bạn cần đăng nhập Admin để xem danh sách toàn bộ khách hàng. Vui lòng cung cấp mã đơn để tra cứu.'
+      // 2. Poll trạng thái đơn của khách qua ID (?id=DP... hoặc ?code=DP...)
+      const queryId = String(query.id || query.code || query.memo || '').trim().toUpperCase();
+      const userParam = String(query.user || '').trim();
+
+      // Nếu khách yêu cầu lấy lịch sử đơn của chính mình
+      if (userParam || (queryId && !queryId.startsWith('DP'))) {
+        const targetUsername = userParam || queryId;
+        // Bắt buộc xác thực tài khoản qua User Token nếu muốn xem danh sách đơn theo user
+        if (!userPayload || userPayload.user.toLowerCase() !== targetUsername.toLowerCase()) {
+          return res.status(401).json({
+            success: false,
+            error: 'Bạn cần đăng nhập tài khoản ' + targetUsername + ' để xem lịch sử đơn hàng của mình.'
+          });
+        }
+        const userOrders = all.filter(o => o.user && o.user.toLowerCase() === targetUsername.toLowerCase() && o.status === 'approved');
+        return res.status(200).json({
+          success: true,
+          orders: userOrders.map(o => ({
+            id: o.id,
+            product: o.product,
+            plan: o.plan,
+            price: o.price,
+            user: o.user,
+            time: o.time,
+            status: o.status,
+            txId: o.txId
+          }))
         });
       }
 
-      const found = all.find(o => (o.id && o.id.toUpperCase() === queryCode) || (o.user && o.user.toUpperCase() === queryCode));
-      if (!found) {
-        return res.status(404).json({ success: false, error: 'Không tìm thấy đơn hàng với mã: ' + queryCode });
+      if (!queryId) {
+        return res.status(400).json({
+          success: false,
+          error: 'Vui lòng cung cấp mã đơn hàng (id) để kiểm tra trạng thái.'
+        });
       }
 
-      // Trả về thông tin an toàn của đúng 1 đơn hàng khách tra cứu
+      const found = all.find(o => o.id && o.id.toUpperCase() === queryId);
+      if (!found) {
+        return res.status(404).json({ success: false, error: 'Không tìm thấy đơn hàng: ' + queryId });
+      }
+
+      // Trả về thông tin an toàn của đơn hàng
       return res.status(200).json({
         success: true,
         order: {
@@ -118,7 +146,48 @@ module.exports = async function handler(req, res) {
         return res.status(200).json({ success: true, message: 'Đã xóa vĩnh viễn đơn ' + cleanId, remaining: filtered.length });
       }
 
-      // 3. TẠO HOẶC CẬP NHẬT ĐƠN HÀNG
+      // 3. TẠO ĐƠN HÀNG MỚI TỪ SERVER (Chỉ sinh đơn pending, lấy giá từ Catalog)
+      if (body._action === 'create' || body.action === 'create') {
+        const prodKey = sanitizeText(body.productId || body.product, 60);
+        const planName = sanitizeText(body.planName || body.plan, 40);
+        const canonicalPrice = getCanonicalPrice(prodKey, planName);
+        if (!canonicalPrice || canonicalPrice <= 0) {
+          return res.status(400).json({ success: false, error: 'Sản phẩm hoặc gói bạn chọn không hợp lệ trong hệ thống!' });
+        }
+
+        const newId = generateSecureOrderId();
+        const username = userPayload ? userPayload.user : (sanitizeText(body.user, 40) || 'Khách vãng lai');
+        const phone = sanitizeText(body.phone, 15);
+
+        const newOrder = {
+          id: newId,
+          product: prodKey,
+          plan: planName,
+          price: canonicalPrice,
+          user: username,
+          phone: phone,
+          time: new Date().toLocaleString('vi-VN'),
+          status: 'pending',
+          txId: ''
+        };
+
+        const { orders } = await getGist();
+        const existingOrders = orders || [];
+        existingOrders.unshift(newOrder);
+        const trimmed = existingOrders.slice(0, 300);
+        await updateGist({ orders: trimmed });
+
+        // Tạo link VietQR chuẩn xác với nội dung chuyển khoản là MÃ ĐƠN HÀNG
+        const qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + canonicalPrice + '&addInfo=' + encodeURIComponent(newId) + '&accountName=BUI%20VAN%20CAO';
+
+        return res.status(200).json({
+          success: true,
+          order: newOrder,
+          qrUrl: qrUrl
+        });
+      }
+
+      // 4. CẬP NHẬT HOẶC DUYỆT ĐƠN HÀNG (CHỈ ADMIN HOẶC SEPAY MỚI ĐƯỢC DUYỆT)
       if (!body.id) {
         return res.status(400).json({ success: false, error: 'Thiếu mã đơn hàng' });
       }
@@ -132,21 +201,22 @@ module.exports = async function handler(req, res) {
       const existingOrders = orders || [];
       const existingIdx = existingOrders.findIndex(o => o.id === cleanId);
 
-      // Strix Security Guard: Chỉ Admin hoặc giao dịch có mã xác nhận ngân hàng mới duyệt đơn
+      // Strix Security Guard: Chỉ Admin mới có quyền cập nhật đơn hàng ở endpoint này
       let status = 'pending';
       if (isAdmin && body.status) {
         const validStatuses = ['pending', 'approved', 'rejected'];
         const rawStatus = String(body.status).toLowerCase();
         if (validStatuses.includes(rawStatus)) status = rawStatus;
-      } else if (body.status === 'approved' && body.txId) {
-        status = 'approved';
       } else if (existingIdx >= 0) {
         status = existingOrders[existingIdx].status || 'pending';
+      } else {
+        // Client thường không được tự tạo đơn không qua action 'create'
+        status = 'pending';
       }
 
-      // Nếu client không phải Admin mà cố tình gửi status='approved' không kèm txId -> Từ chối ngay
-      if ((body.status === 'approved' || body.status === 'rejected') && !isAdmin && !body.txId) {
-        return res.status(403).json({ success: false, error: 'Không thể tự ý duyệt đơn mà không có xác thực máy chủ!' });
+      // Nếu client không phải Admin mà cố tình gửi status='approved' -> Chặn tuyệt đối 100%
+      if ((body.status === 'approved' || body.status === 'rejected') && !isAdmin) {
+        return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối: Chỉ quản trị viên hoặc SePay mới được duyệt đơn!' });
       }
 
       // Strix Security Guard: Ngăn chặn 1 giao dịch ngân hàng duyệt cho 2 đơn khác nhau (Idempotency)

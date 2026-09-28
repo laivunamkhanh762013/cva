@@ -3561,6 +3561,9 @@ function handleLoginSubmit(e) {
     if (data && data.success) {
       var userObj = data.user || { username: u, phone: '' };
       localStorage.setItem('daiphu_user', JSON.stringify(userObj));
+      if (data.token) {
+        localStorage.setItem('daiphu_user_token', data.token);
+      }
       updateAuthUI();
       closeLoginModal();
       toast('🎉', 'Đăng nhập thành công! Chào mừng ' + u);
@@ -3578,11 +3581,7 @@ function handleLoginSubmit(e) {
   })
   .catch(function(err) {
     if (btn) { btn.disabled = false; btn.innerHTML = oldBtn; }
-    var userObj = { username: u, phone: '' };
-    localStorage.setItem('daiphu_user', JSON.stringify(userObj));
-    updateAuthUI();
-    closeLoginModal();
-    toast('🎉', 'Đăng nhập thành công! Chào mừng ' + u);
+    toast('❌', 'Không thể kết nối máy chủ xác thực: ' + (err.message || 'Lỗi mạng'));
   });
 }
 
@@ -3608,6 +3607,9 @@ function handleRegisterSubmit(e) {
     if (data && data.success) {
       var userObj = data.user || { username: u, phone: phone };
       localStorage.setItem('daiphu_user', JSON.stringify(userObj));
+      if (data.token) {
+        localStorage.setItem('daiphu_user_token', data.token);
+      }
       updateAuthUI();
       closeLoginModal();
       toast('🎉', 'Đăng ký tài khoản thành công! Chào mừng ' + u);
@@ -3625,16 +3627,13 @@ function handleRegisterSubmit(e) {
   })
   .catch(function(err) {
     if (btn) { btn.disabled = false; btn.innerHTML = oldBtn; }
-    var userObj = { username: u, phone: phone };
-    localStorage.setItem('daiphu_user', JSON.stringify(userObj));
-    updateAuthUI();
-    closeLoginModal();
-    toast('🎉', 'Đăng ký tài khoản thành công! Chào mừng ' + u);
+    toast('❌', 'Không thể kết nối máy chủ đăng ký: ' + (err.message || 'Lỗi mạng'));
   });
 }
 
 function handleLogout() {
   localStorage.removeItem('daiphu_user');
+  localStorage.removeItem('daiphu_user_token');
   updateAuthUI();
   toast('👋', 'Đã đăng xuất khỏi tài khoản.');
 }
@@ -3997,17 +3996,11 @@ function startPaymentForPlan(p, plan) {
   currentProduct = p;
   currentPlan = plan;
   window.currentPayAmountRaw = plan.price;
-  window.currentOrderId = null; // CHƯA CÓ MÃ ĐƠN KHI CHƯA CHUYỂN KHOẢN!
+  window.currentOrderId = null;
+  window.currentOrderMemo = null;
 
-  // Lấy thông tin user
   var currentUser = getCurrentUser();
-  var rawUser = currentUser && currentUser.username ? currentUser.username : '';
-
-  // TRƯỚC KHI CK: Nội dung CK BẮT BUỘC là Username trên web
-  // Bỏ dấu tiếng Việt để nội dung CK sạch sẽ 100%, ngân hàng quét VietQR chính xác
-  var memoForCK = rawUser ? stripVietnamese(rawUser).replace(/[^A-Za-z0-9]/g, '') : ('KHACH' + Math.floor(1000 + Math.random() * 9000));
-  window.currentOrderMemo = memoForCK;
-  window.currentOrderMemoFull = memoForCK;
+  var userToken = localStorage.getItem('daiphu_user_token') || '';
 
   // Điền thông tin vào Step 2
   var s2Prod = document.getElementById('mStep2ProdName');
@@ -4022,51 +4015,78 @@ function startPaymentForPlan(p, plan) {
   if (s2Price) s2Price.textContent = formatVND(plan.price);
   if (payAmt) payAmt.textContent = formatVND(plan.price);
 
-  // Trước khi CK: Hiển thị nội dung chuyển khoản là Username
-  if (memoEl) memoEl.textContent = memoForCK;
-  if (adminCodeEl) adminCodeEl.textContent = memoForCK;
+  if (memoEl) memoEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang khởi tạo mã đơn...';
+  if (adminCodeEl) adminCodeEl.textContent = 'Đang khởi tạo...';
 
-  var cardMemoEl = document.getElementById('mCardOrderMemo');
-  if (cardMemoEl) cardMemoEl.textContent = memoForCK;
-
-  // Reset về tab Quét QR ngân hàng mặc định
   switchPayMethod('bank');
-
-  // TUYỆT ĐỐI KHÔNG TẠO VÀ LƯU ĐƠN PENDING TRƯỚC KHI CK!
-  // Chỉ khi SePay xác nhận tiền vào MBBank thì mới sinh mã DP và lưu vào hệ thống!
-
-  // Tạo mã VietQR — addInfo = username (nội dung chuyển khoản trước khi CK là Username)
-  var qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + plan.price + '&addInfo=' + encodeURIComponent(memoForCK) + '&accountName=BUI%20VAN%20CAO';
-  var qrEl = document.getElementById('mQrCode');
-  if (qrEl) qrEl.src = qrUrl;
-
-  // Chuyển sang Bước 2
   goToStep(2);
 
-  // Khởi động trình tự động kiểm tra giao dịch SePay
-  startPaymentWatcher(memoForCK, plan.price);
-
-  // Cuộn lên đầu cột chi tiết
+  // Cuộn lên đầu
   var col = document.querySelector('.m-info-col');
   if (col) col.scrollTo({ top: 0, behavior: 'smooth' });
 
-  toast('🛒', 'Đã chọn gói: ' + plan.name + ' (' + formatVND(plan.price) + '). Vui lòng quét mã QR thanh toán.');
+  // GỌI SERVER TẠO ĐƠN HÀNG DUY NHẤT & SINH MÃ VIETQR CHUẨN
+  fetch('/api/orders', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-user-token': userToken
+    },
+    body: JSON.stringify({
+      action: 'create',
+      productId: p.id,
+      planName: plan.name,
+      user: currentUser ? currentUser.username : 'Khách vãng lai',
+      phone: currentUser ? (currentUser.phone || '') : ''
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (!res.success || !res.order) {
+      toast('❌', res.error || 'Không thể tạo đơn hàng trên máy chủ.');
+      return;
+    }
+
+    var order = res.order;
+    window.currentOrderId = order.id;
+    window.currentOrderMemo = order.id;
+
+    if (memoEl) memoEl.textContent = order.id;
+    if (adminCodeEl) adminCodeEl.textContent = order.id;
+
+    var cardMemoEl = document.getElementById('mCardOrderMemo');
+    if (cardMemoEl) cardMemoEl.textContent = order.id;
+
+    // Cập nhật ảnh VietQR chứa mã đơn duy nhất trong nội dung chuyển khoản
+    var qrEl = document.getElementById('mQrCode');
+    if (qrEl) qrEl.src = res.qrUrl;
+
+    // Lưu đơn pending vào cache của khách
+    saveOrder(order);
+
+    // Bắt đầu lắng nghe trạng thái đơn từ server
+    startPaymentWatcher(order.id, order.price);
+    toast('🛒', 'Đã khởi tạo đơn hàng: ' + order.id + '. Vui lòng chuyển khoản đúng nội dung.');
+  })
+  .catch(function(err) {
+    console.error('Create order error:', err);
+    toast('⚠️', 'Lỗi kết nối máy chủ tạo đơn.');
+  });
 }
 
 
-/* ═══════ SEPAY AUTOMATED BANKING TRANSACTION VERIFICATION ═══════ */
+/* ═══════ SERVER-SIDE PAYMENT STATUS POLLING (AN TOÀN BẢO MẬT) ═══════ */
 var paymentPollTimer = null;
 var isCheckingPayment = false;
 
 function startPaymentWatcher(orderId, price) {
   stopPaymentWatcher();
   isCheckingPayment = false;
-  var memoFull = window.currentOrderMemoFull || orderId;
   var memoEl = document.getElementById('mPlsMemo');
-  if (memoEl) memoEl.textContent = memoFull;
-  updateLiveStatus('waiting', 'HỆ THỐNG ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...', 'Sau khi chuyển khoản với nội dung <b>' + memoFull + '</b>, hệ thống SePay sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!');
+  if (memoEl) memoEl.textContent = orderId;
+  updateLiveStatus('waiting', 'HỆ THỐNG ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...', 'Sau khi chuyển khoản với nội dung <b>' + orderId + '</b>, hệ thống SePay sẽ tự động nhận diện và hoàn tất mua hàng trong 3 giây!');
 
-  // Tự động kiểm tra mỗi 3 giây
+  // Tự động kiểm tra trạng thái đơn qua máy chủ mỗi 3 giây
   paymentPollTimer = setInterval(function() {
     checkPaymentApi(orderId, price, false);
   }, 3000);
@@ -4081,15 +4101,13 @@ function stopPaymentWatcher() {
 
 // Lắng nghe khi người dùng chuyển từ App Ngân hàng (MBBank/Momo) quay lại web
 document.addEventListener('visibilitychange', function() {
-  if (!document.hidden && window.currentOrderMemo && window.currentPayAmountRaw) {
-    isCheckingPayment = false;
-    checkPaymentApi(window.currentOrderMemo, window.currentPayAmountRaw, false);
+  if (!document.hidden && window.currentOrderId) {
+    checkPaymentApi(window.currentOrderId, window.currentPayAmountRaw, false);
   }
 });
 window.addEventListener('focus', function() {
-  if (window.currentOrderMemo && window.currentPayAmountRaw) {
-    isCheckingPayment = false;
-    checkPaymentApi(window.currentOrderMemo, window.currentPayAmountRaw, false);
+  if (window.currentOrderId) {
+    checkPaymentApi(window.currentOrderId, window.currentPayAmountRaw, false);
   }
 });
 
@@ -4114,28 +4132,26 @@ function updateLiveStatus(state, title, desc) {
 }
 
 function checkPaymentApi(orderId, price, isManual) {
-  if (isCheckingPayment || !orderId) return;
+  if (!orderId || isCheckingPayment) return;
   isCheckingPayment = true;
 
-  var currentUser = getCurrentUser();
-  var username = currentUser && currentUser.username ? currentUser.username : '';
-  var memoParam = encodeURIComponent(orderId);
-  var orderIdParam = encodeURIComponent(window.currentOrderId || '');
-  var userParam = encodeURIComponent(username);
-  fetch('/api/check-payment?memo=' + memoParam + '&orderId=' + orderIdParam + '&user=' + userParam + '&price=' + encodeURIComponent(price || 0))
+  // Hỏi trực tiếp máy chủ xem đơn hàng này đã được Webhook SePay duyệt chưa
+  fetch('/api/orders?id=' + encodeURIComponent(orderId))
     .then(function(res) {
       if (!res.ok) throw new Error('API status ' + res.status);
       return res.json();
     })
     .then(function(data) {
       isCheckingPayment = false;
-      if (data && data.paid) {
-        // MATCHED! Tiền thực sự đã vào MBBank!
+      if (data && data.success && data.order && data.order.status === 'approved') {
+        // SERVER ĐÃ DUYỆT THÀNH CÔNG!
         stopPaymentWatcher();
-        updateLiveStatus('success', '✅ ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!', 'MBBank 0941414448 đã ghi có +' + formatVND(data.transaction.amount) + ' cho tài khoản ' + (username || orderId) + '. Đang tạo mã đơn và mở key...');
+        updateLiveStatus('success', '✅ ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!', 'MBBank đã ghi có +' + formatVND(data.order.price) + ' khớp mã đơn ' + orderId + '.');
         toast('🎉', 'Đã xác nhận tiền vào MBBank thành công!');
+        saveOrder(data.order);
         setTimeout(function() {
-          onPaymentVerifiedSuccess(data.transaction);
+          closeBuyModal();
+          openPaidModal(data.order);
         }, 800);
       } else {
         if (isManual) {
@@ -4148,40 +4164,21 @@ function checkPaymentApi(orderId, price, isManual) {
             fb.innerHTML = '<div style="display:flex;align-items:flex-start;gap:10px;">'
               + '<i class="fa-solid fa-circle-exclamation" style="color:#ef4444;font-size:18px;margin-top:2px;"></i>'
               + '<div>'
-                + '<b style="color:#f87171;font-size:13px;">Hệ thống chưa nhận được tiền cho tài khoản: ' + orderId + '</b>'
+                + '<b style="color:#f87171;font-size:13px;">Hệ thống chưa nhận được tiền cho đơn: ' + orderId + '</b>'
                 + '<div style="margin-top:4px;color:#cbd5e1;font-size:11.5px;line-height:1.5;">'
-                  + '• Nếu <b>chưa chuyển khoản</b>: Vui lòng mở App Ngân hàng quét mã VietQR ở trên (Nội dung phải là <b>' + orderId + '</b>).<br>'
-                  + '• Nếu <b>vừa chuyển xong</b>: Ngân hàng có thể mất 5 - 15 giây để báo biến động số dư. Đừng lo lắng, tiền của bạn luôn được bảo đảm an toàn 100%! Bạn có thể bấm lại nút kiểm tra sau vài giây hoặc gửi ảnh bill cho <b>Anh Phú (Zalo: 0588500524)</b> để nhận file ngay!'
+                  + '• Vui lòng mở App Ngân hàng quét mã VietQR ở trên (Nội dung chuyển khoản phải là <b>' + orderId + '</b>).<br>'
+                  + '• Ngân hàng có thể mất 5 - 15 giây để gửi thông báo. Bạn có thể bấm lại sau vài giây hoặc gửi ảnh bill cho <b>Anh Phú (Zalo: 0588500524)</b> để nhận file ngay!'
                 + '</div>'
               + '</div>'
             + '</div>';
           }
-          toast('⏳', 'Hệ thống chưa nhận được tiền. Vui lòng kiểm tra lại chuyển khoản!');
+          toast('⏳', 'Hệ thống đang chờ tiền vào. Vui lòng kiểm tra lại chuyển khoản!');
         }
       }
     })
     .catch(function(err) {
       isCheckingPayment = false;
-      console.warn('Check payment poll warning:', err);
-      if (isManual) {
-        var fb = document.getElementById('checkPayFeedback');
-        if (fb) {
-          fb.style.display = 'block';
-          fb.style.background = 'rgba(234, 179, 8, 0.12)';
-          fb.style.border = '1px solid rgba(234, 179, 8, 0.45)';
-          fb.style.color = '#fef08a';
-          fb.innerHTML = '<div style="display:flex;align-items:flex-start;gap:10px;">'
-            + '<i class="fa-solid fa-triangle-exclamation" style="color:#eab308;font-size:18px;margin-top:2px;"></i>'
-            + '<div>'
-              + '<b style="color:#facc15;font-size:13px;">Đang kết nối đối soát MBBank...</b>'
-              + '<div style="margin-top:4px;color:#cbd5e1;font-size:11.5px;line-height:1.5;">'
-                + 'Nếu bạn đã chuyển khoản thành công, hãy chụp ảnh bill gửi cho <b>Zalo Anh Phú (0588500524)</b> kèm tài khoản <b>' + (username || orderId) + '</b> để nhận file và key nhé!'
-              + '</div>'
-            + '</div>'
-          + '</div>';
-        }
-        toast('⚠️', 'Chưa thấy giao dịch! Gửi bill Zalo Anh Phú để nhận file ngay.');
-      }
+      console.warn('Check order status error:', err);
     });
 }
 
@@ -4194,7 +4191,7 @@ function manualCheckPayment() {
   }
   if (fb) fb.style.display = 'none';
 
-  checkPaymentApi(window.currentOrderMemo, window.currentPayAmountRaw, true);
+  checkPaymentApi(window.currentOrderId, window.currentPayAmountRaw, true);
 
   setTimeout(function() {
     if (btn) {
@@ -4202,34 +4199,6 @@ function manualCheckPayment() {
       btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Kiểm tra xác nhận tiền vào MBBank ngay';
     }
   }, 2500);
-}
-
-function onPaymentVerifiedSuccess(tx) {
-  // Sinh mã đơn chính thức DP... CHỈ KHI TIỀN ĐÃ VÀO MBBANK
-  var orderId = 'DP' + Math.floor(100000 + Math.random() * 900000);
-  window.currentOrderId = orderId;
-  window.currentOrderMemo = orderId;
-
-  var currentUser = getCurrentUser();
-  var rawUser = currentUser && currentUser.username ? currentUser.username : (window.currentOrderMemoFull || 'Khách');
-
-  var approvedOrder = {
-    id: orderId,
-    productName: currentProduct ? currentProduct.name : 'AimLock FF',
-    planName: currentPlan ? currentPlan.name : 'Gói phần mềm',
-    price: currentPlan ? currentPlan.price : (tx ? parseFloat(tx.amount || 0) : 0),
-    user: rawUser,
-    phone: currentUser ? (currentUser.phone || '') : '',
-    time: formatCurrentDateTime(),
-    status: 'approved',
-    txId: tx ? (tx.reference || String(tx.id)) : ''
-  };
-
-  saveOrder(approvedOrder);
-
-  // Mở modal xác nhận với trạng thái ĐÃ XÁC NHẬN TIỀN
-  closeBuyModal();
-  openPaidModal(tx);
 }
 
 
@@ -4349,9 +4318,8 @@ function sendOrderToPhu() {
   }, 350);
 }
 
-function openPaidModal(tx) {
-  // Sau khi CK → reveal mã DP chính thức, không dùng memo (username)
-  var memo = window.currentOrderId || ('DP' + Math.floor(100000 + Math.random() * 900000));
+function openPaidModal(order) {
+  var memo = (order && order.id) || window.currentOrderId || 'DP000000';
   window.currentOrderId = memo;
   window.currentOrderMemo = memo;
 
@@ -4370,10 +4338,10 @@ function openPaidModal(tx) {
 
   if (confirmCodeEl) confirmCodeEl.textContent = memo;
   if (detailCodeEl) detailCodeEl.textContent = memo;
-  if (detailProdEl) detailProdEl.textContent = currentProduct ? currentProduct.name : 'AimLock iOS';
-  if (detailPlanEl) detailPlanEl.textContent = currentPlan ? currentPlan.name : 'Gói phần mềm';
-  if (detailPriceEl) detailPriceEl.textContent = currentPlan ? formatVND(currentPlan.price) : '50.000đ';
-  if (detailTimeEl) detailTimeEl.textContent = formatCurrentDateTime();
+  if (detailProdEl) detailProdEl.textContent = (order && order.product) || (currentProduct ? currentProduct.name : 'AimLock iOS');
+  if (detailPlanEl) detailPlanEl.textContent = (order && order.plan) || (currentPlan ? currentPlan.name : 'Gói phần mềm');
+  if (detailPriceEl) detailPriceEl.textContent = formatVND((order && order.price) || (currentPlan ? currentPlan.price : 50000));
+  if (detailTimeEl) detailTimeEl.textContent = (order && order.time) || formatCurrentDateTime();
 
   var statusEl = document.querySelector('.paid-status');
 
@@ -4388,21 +4356,21 @@ function openPaidModal(tx) {
   var tlStep3 = document.getElementById('ntTimelineStep3');
   var tlNode3 = document.getElementById('ntTimelineNode3');
 
-  var refText = tx ? (tx.reference || tx.id || 'MBBANK') : 'CONFIRMED';
+  var refText = (order && order.txId) ? order.txId : 'MBBANK';
   if (headerIcon) headerIcon.textContent = '🎉';
   if (headerTitle) headerTitle.textContent = 'Đã Xác Nhận Tiền Vào MBBank!';
-  if (headerSub) headerSub.textContent = 'Tài khoản MBBank đã nhận đủ tiền! Nhắn tin cho Anh Phú để nhận file hoặc bấm tải bên dưới.';
+  if (headerSub) headerSub.textContent = 'Tài khoản MBBank đã nhận đủ tiền! Nhắn tin cho Anh Phú để nhận file cài đặt & kích hoạt ngay.';
   if (statusEl) {
-    statusEl.innerHTML = '✅ <span style="color:#34d399;font-weight:800;">ĐÃ THANH TOÁN THÀNH CÔNG (MBBank #' + refText + ')</span>';
+    statusEl.innerHTML = '✅ <span style="color:#34d399;font-weight:800;">ĐÃ THANH TOÁN THÀNH CÔNG (MBBank #' + escapeHTML(refText) + ')</span>';
   }
   if (keyBox) keyBox.style.display = 'block';
-  if (keyEl) keyEl.textContent = 'KEY-' + memo + '-' + Math.floor(1000 + Math.random() * 9000);
+  if (keyEl) keyEl.textContent = 'MÃ ĐƠN: ' + memo + ' (Bản quyền xác thực)';
 
   // Timeline: Step 2 Done, Step 3 Done
   if (tlStep2) { tlStep2.className = 'nt-timeline-item done'; }
   if (tlNode2) { tlNode2.innerHTML = '<i class="fa-solid fa-check"></i>'; }
   if (tlTitle2) { tlTitle2.innerHTML = '<span>Đã nhận tiền qua MBBank</span> <span class="nt-badge-presence"><span class="nt-dot-live"></span> Đã khớp</span>'; }
-  if (tlDesc2) { tlDesc2.textContent = 'Ghi có +' + formatVND((tx && tx.amount) || (currentPlan ? currentPlan.price : 0)) + ' khớp mã ' + memo + '.'; }
+  if (tlDesc2) { tlDesc2.textContent = 'Ghi có +' + formatVND((order && order.price) || 0) + ' khớp mã đơn ' + memo + '.'; }
 
   if (tlStep3) { tlStep3.className = 'nt-timeline-item done active'; }
   if (tlNode3) { tlNode3.innerHTML = '<i class="fa-solid fa-unlock"></i>'; }
@@ -4654,25 +4622,31 @@ function openMyOrderHistory() {
   if (resultBox) resultBox.style.display = 'none';
   renderRecentOrders();
 
-  // Đồng bộ đơn hàng của chính tài khoản này từ Cloud Database
+  // Đồng bộ đơn hàng của chính tài khoản này từ Cloud Database qua User Token
   if (u.username) {
-    fetch('/api/orders?code=' + encodeURIComponent(u.username))
+    var userToken = localStorage.getItem('daiphu_user_token') || '';
+    fetch('/api/orders?user=' + encodeURIComponent(u.username), {
+      headers: {
+        'x-user-token': userToken
+      }
+    })
       .then(function(res) { return res.json(); })
       .then(function(data) {
-        if (data && data.success && data.order) {
-          var found = data.order;
-          var ord = {
-            id: found.id,
-            productName: found.product,
-            planName: found.plan,
-            price: found.price,
-            user: found.user,
-            phone: found.phone || '',
-            time: found.time,
-            status: found.status,
-            txId: found.txId
-          };
-          saveOrder(ord);
+        if (data && data.success && data.orders) {
+          data.orders.forEach(function(found) {
+            var ord = {
+              id: found.id,
+              productName: found.product,
+              planName: found.plan,
+              price: found.price,
+              user: found.user,
+              phone: found.phone || '',
+              time: found.time,
+              status: found.status,
+              txId: found.txId
+            };
+            saveOrder(ord);
+          });
           renderRecentOrders();
         }
       })
@@ -4723,7 +4697,7 @@ function renderRecentOrders() {
     var cleanPrice = formatVND(o.price || o.amount || 0);
     var cleanTime = escapeHTML(o.time || '');
 
-    html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background=\'rgba(255,255,255,0.08)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.04)\'" onclick="lookupOrderCode(\'' + cleanId + '\')">'
+    html += '<div class="recent-order-item" data-id="' + cleanId + '" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:all 0.15s;">'
       + '<div style="flex:1;min-width:0;">'
         + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap;">'
           + '<strong style="color:#00f0ff;font-family:monospace;font-size:13px;">' + cleanId + '</strong>'
@@ -4737,6 +4711,16 @@ function renderRecentOrders() {
   });
 
   container.innerHTML = html;
+
+  if (!container.dataset.eventBound) {
+    container.dataset.eventBound = 'true';
+    container.addEventListener('click', function(e) {
+      var item = e.target.closest('.recent-order-item');
+      if (item && item.getAttribute('data-id')) {
+        lookupOrderCode(item.getAttribute('data-id'));
+      }
+    });
+  }
 }
 
 function clearOrdersHistory() {
