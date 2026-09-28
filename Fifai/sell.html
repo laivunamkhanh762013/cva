@@ -4567,27 +4567,36 @@ function lookupOrderCode(manualCode) {
     }
 
     var cleanId = escapeHTML(o.id || '');
+    var codeDisplayHtml = '';
+    if (o.status === 'approved') {
+      codeDisplayHtml = '<strong style="color:#00f0ff;font-family:monospace;font-size:15px;">Mã đơn: ' + cleanId + '</strong>';
+    } else {
+      // THEO YÊU CẦU ANH PHÚ: Khi chờ duyệt TUYỆT ĐỐI KHÔNG HIỂN THỊ MÃ DP... tránh gian lận
+      codeDisplayHtml = '<strong style="color:#fbbf24;font-size:13px;display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-lock"></i> Mã đơn: <i>(Cấp sau khi duyệt thanh toán)</i></strong>';
+    }
+
     var cleanProd = escapeHTML(o.productName || o.product || o.planName || o.plan || 'Sản phẩm');
     var cleanPlan = escapeHTML(o.planName || o.plan || 'Gói');
     var cleanUser = escapeHTML(o.user || 'Khách');
     var cleanPhone = escapeHTML(o.phone || '');
     var cleanTime = escapeHTML(o.time || '');
-    var cleanTxId = o.txId ? '<div style="color:#34d399;font-weight:700;">• Giao dịch MBBank: ' + escapeHTML(o.txId) + '</div>' : '';
+    var cleanTxId = (o.status === 'approved' && o.txId) ? '<div style="color:#34d399;font-weight:700;">• Giao dịch MBBank: ' + escapeHTML(o.txId) + '</div>' : '';
 
     resultBox.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;flex-wrap:wrap;gap:8px;">'
-      + '<strong style="color:#00f0ff;font-family:monospace;font-size:15px;">Mã đơn: ' + cleanId + '</strong>'
+      + codeDisplayHtml
       + statusBadge
     + '</div>'
     + '<div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#cbd5e1;">'
-      + '<div>🛒 <b>Sản phẩm đã mua:</b> <span style="color:#fff;font-weight:700;">' + cleanProd + '</span> (' + cleanPlan + ')</div>'
-      + '<div>💰 <b>Số tiền thanh toán:</b> <span style="color:#10b981;font-weight:800;">' + formatVND(o.price || o.amount || 0) + '</span></div>'
-      + '<div>👤 <b>Tài khoản:</b> <span style="color:#fff;">' + cleanUser + '</span>' + (cleanPhone ? ' • SĐT/Zalo: <span style="color:#f59e0b;">' + cleanPhone + '</span>' : '') + '</div>'
-      + '<div>⏰ <b>Thời gian đặt hàng:</b> ' + cleanTime + '</div>'
+      + '<div>🛒 <b>Sản phẩm đã chọn:</b> <span style="color:#fff;font-weight:700;">' + cleanProd + '</span> (' + cleanPlan + ')</div>'
+      + '<div>💰 <b>Số tiền:</b> <span style="color:#10b981;font-weight:800;">' + formatVND(o.price || o.amount || 0) + '</span></div>'
+      + '<div>👤 <b>Tài khoản mua:</b> <span style="color:#fff;">' + cleanUser + '</span>' + (cleanPhone ? ' • SĐT/Zalo: <span style="color:#f59e0b;">' + cleanPhone + '</span>' : '') + '</div>'
+      + '<div>⏰ <b>Thời gian:</b> ' + cleanTime + '</div>'
       + cleanTxId
+      + (o.status !== 'approved' ? '<div style="margin-top:6px;padding:8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;color:#fbbf24;font-size:11.5px;"><i class="fa-solid fa-circle-info"></i> Nội dung chuyển khoản là <b>Tên tài khoản (Username)</b> của bạn. Sau khi MBBank xác nhận tiền vào, hệ thống sẽ tự động duyệt đơn và cấp mã đơn chính thức!</div>' : '')
     + '</div>'
     + '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:8px;">'
       + '<a href="https://zalo.me/0588500524" target="_blank" rel="noopener" class="btn" style="background:#0284c7;color:#fff;font-size:12px;padding:7px 14px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-weight:700;">'
-        + '<i class="fa-solid fa-headset"></i> Cần hỗ trợ đơn này? Nhắn Zalo Anh Phú'
+        + '<i class="fa-solid fa-headset"></i> Cần hỗ trợ? Nhắn Zalo Anh Phú (0588500524)'
       + '</a>'
     + '</div>';
   }

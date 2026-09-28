@@ -79,7 +79,7 @@ module.exports = async function handler(req, res) {
     });
 
     if (matchedOrder) {
-      // Khớp đơn đã tạo -> Duyệt thành công
+      // Khớp đơn đã tạo trên shop -> Duyệt thành công
       matchedOrder.status = 'approved';
       matchedOrder.txId = refCode;
       matchedOrder.price = Math.max(matchedOrder.price || 0, amount);
@@ -87,40 +87,10 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true, action: 'order_approved', orderId: matchedOrder.id });
     }
 
-    // 2. Nếu khách chuyển trực tiếp qua VietQR với nội dung là username mà chưa mở trước đơn trên web:
-    // Tự động tìm user trong danh sách thành viên để tạo đơn approved ngay lập tức
-    let detectedUser = 'Khách MBBank';
-    if (users && users.length) {
-      const foundUser = users.find(u => {
-        const uClean = cleanToken(u.username);
-        return uClean && uClean.length >= 3 && cleanContent.includes(uClean);
-      });
-      if (foundUser) detectedUser = foundUser.username;
-    }
-
-    const autoOrderId = 'DP' + Math.floor(100000 + Math.random() * 900000);
-    const newApprovedOrder = {
-      id: autoOrderId,
-      product: 'Gói Bản Quyền FF (SePay Auto)',
-      plan: 'Thanh toán trực tiếp MBBank',
-      price: amount,
-      user: detectedUser,
-      phone: '',
-      time: new Date().toLocaleString('vi-VN'),
-      status: 'approved',
-      txId: refCode
-    };
-
-    existingOrders.unshift(newApprovedOrder);
-    const trimmed = existingOrders.slice(0, 300);
-    await updateGist({ orders: trimmed });
-
+    // Nếu không khớp đơn hàng nào trên shop -> Đây là bill ngoài (tiền cá nhân/chuyển khoản ngoài), bỏ qua!
     return res.status(200).json({
       success: true,
-      action: 'auto_order_created',
-      orderId: autoOrderId,
-      user: detectedUser,
-      amount: amount
+      message: 'Bỏ qua: Giao dịch ngân hàng không khớp đơn hàng nào trên shop (bill ngoài).'
     });
   } catch (err) {
     console.error('SePay Webhook Error:', err);
