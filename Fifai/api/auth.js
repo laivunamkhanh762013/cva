@@ -1,6 +1,5 @@
 ﻿const { getGist, updateGist } = require('./db');
 const { signUserToken, parseBody, checkApiDdos } = require('./_security');
-const { signUserToken } = require('./_security');
 
 function maskPhone(phone) {
   if (!phone || phone.length < 6) return '***';
@@ -108,4 +107,5 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
+
 
