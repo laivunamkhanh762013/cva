@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
-// Băm SHA-256 của mật khẩu mặc định 'DaiPhuFF@Secure2026!#'
-const DEFAULT_PASS_SHA256 = 'ddee4e42c55e623ee26687d7d9b8cdb2c935418ff79d17ce05dc2b4b907f405d';
+// Băm SHA-256 của mật khẩu mặc định 'daiphu2026'
+const DEFAULT_PASS_SHA256 = 'a0b65ee17d6da3d0026a121dd8c3cca8bce355c53bbb3f74dd0fe9198b8ab25f';
 const JWT_SECRET = process.env.JWT_SECRET || 'DP_SECURE_HMAC_KEY_98471204812398471203984';
 
 // In-memory rate limiter chống dò mật khẩu (5 lần sai / 15 phút)
