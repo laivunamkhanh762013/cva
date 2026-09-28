@@ -1,4 +1,4 @@
-const { getGist, updateGist } = require('./db');
+﻿const { getGist, updateGist } = require('./db');
 const { parseBody } = require('./_security');
 
 const SEPAY_API_KEY = process.env.SEPAY_API_KEY || 'YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV';
@@ -76,10 +76,9 @@ module.exports = async function handler(req, res) {
 
       const oId = cleanToken(o.id || '');
       const uName = cleanToken(o.user || '');
-      // Ưu tiên khớp chính xác mã đơn DP...
-      const matchId = oId && oId.length >= 4 && cleanContent.includes(oId);
-      const matchUser = uName && uName.length >= 3 && cleanContent.includes(uName);
-      return matchId || matchUser;
+      // CHỈ khớp chính xác theo mã đơn DP... (không dùng username để tránh bị hijack)
+      const matchId = oId && oId.length >= 6 && cleanContent.includes(oId);
+      return matchId;
     });
 
     if (matchedOrder) {
@@ -101,3 +100,4 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
+
