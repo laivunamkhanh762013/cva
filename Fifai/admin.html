@@ -146,8 +146,9 @@
     .btn-scan:hover { background: linear-gradient(135deg, rgba(139,92,246,0.45), rgba(0,240,255,0.35)); color: #fff; }
 
     /* STATS */
-    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
-    @media(max-width:900px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+    .stats-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; margin-bottom: 24px; }
+    @media(max-width:1100px) { .stats-grid { grid-template-columns: repeat(3,1fr); } }
+    @media(max-width:768px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
     @media(max-width:500px) { .stats-grid { grid-template-columns: 1fr; } }
     .stat-card {
       background: var(--card-bg); border: 1px solid var(--card-border);
@@ -294,8 +295,15 @@
       <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
     </div>
     <div class="stat-card stat-rev">
-      <div class="stat-data"><small>Tổng Doanh Thu (Tất Cả)</small><strong id="statTotalRevenue">0đ</strong></div>
+      <div class="stat-data"><small>Doanh Thu Đơn Hàng</small><strong id="statTotalRevenue">0đ</strong></div>
       <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+    </div>
+    <div class="stat-card stat-sepay" style="border-color:rgba(16,185,129,0.35);">
+      <div class="stat-data">
+        <small style="color:#34d399;"><i class="fa-solid fa-building-columns"></i> Thực Nhận SePay MB</small>
+        <strong id="statSepayTotal" style="color:#10b981;">0đ</strong>
+      </div>
+      <div class="stat-icon" style="background:rgba(16,185,129,0.18);color:#10b981;"><i class="fa-solid fa-money-bill-transfer"></i></div>
     </div>
     <div class="stat-card stat-wait">
       <div class="stat-data"><small>Đơn Đang Chờ Duyệt</small><strong id="statPendingOrders" style="color:#fbbf24;">0</strong></div>
@@ -590,12 +598,35 @@ function loadAllOrders(silent) {
         return new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime();
       });
       renderDashboard();
+      loadSepaySummary();
       if (!silent) showToast('☁️ Đã tải ' + allOrders.length + ' đơn từ hệ thống!');
       autoScanPendingOrders(true);
     })
     .catch(function(err) {
       console.warn('Orders fetch failed:', err);
       if (!silent) showToast('⚠️ ' + (err.message || 'Không thể tải đơn hàng từ máy chủ.'));
+    });
+}
+
+/* ═══════ TẢI & TÍNH TỔNG TIỀN THỰC NHẬN TRỰC TIẾP TỪ SEPAY MBBANK ═══════ */
+function loadSepaySummary() {
+  fetch('/api/transactions?limit=100', {
+    headers: getAuthHeaders()
+  })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      const txs = (data && data.transactions) ? data.transactions : [];
+      let totalAmountIn = 0;
+      txs.forEach(function(t) {
+        totalAmountIn += parseFloat(t.amount_in || 0);
+      });
+      const sepayEl = document.getElementById('statSepayTotal');
+      if (sepayEl) {
+        sepayEl.textContent = formatVND(totalAmountIn);
+      }
+    })
+    .catch(function(err) {
+      console.warn('Load SePay summary error:', err);
     });
 }
 
@@ -610,6 +641,7 @@ function autoScanPendingOrders(silent) {
   if (isAutoScanning) return;
   const pendingOrders = allOrders.filter(function(o) { return o.status === 'pending' || !o.status; });
   if (pendingOrders.length === 0) {
+    loadSepaySummary();
     if (!silent) showToast('ℹ️ Không có đơn hàng nào đang chờ duyệt.');
     return;
   }
@@ -617,7 +649,7 @@ function autoScanPendingOrders(silent) {
   isAutoScanning = true;
   if (!silent) showToast('⚡ Đang quét SePay MBBank cho ' + pendingOrders.length + ' đơn chờ...');
 
-  fetch('/api/transactions?limit=50', {
+  fetch('/api/transactions?limit=100', {
     headers: getAuthHeaders()
   })
     .then(function(r) {
@@ -632,6 +664,16 @@ function autoScanPendingOrders(silent) {
       if (!txs.length) {
         if (!silent) showToast('ℹ️ Không tìm thấy lịch sử giao dịch từ MBBank.');
         return;
+      }
+
+      // Cập nhật tổng tiền SePay thực nhận
+      let totalAmountIn = 0;
+      txs.forEach(function(t) {
+        totalAmountIn += parseFloat(t.amount_in || 0);
+      });
+      const sepayEl = document.getElementById('statSepayTotal');
+      if (sepayEl) {
+        sepayEl.textContent = formatVND(totalAmountIn);
       }
 
       // BẢO VỆ CHỐNG DUPLICATE ĐƠN: 1 GIAO DỊCH NGÂN HÀNG CHỈ DUYỆT ĐÚNG 1 ĐƠN HÀNG
@@ -679,7 +721,7 @@ function autoScanPendingOrders(silent) {
       if (approvedCount > 0) {
         showToast('🎉 SePay tự động phát hiện & duyệt ' + approvedCount + ' đơn đã chuyển khoản!');
       } else if (!silent) {
-        showToast('🔍 Đã quét 50 giao dịch MBBank gần nhất: Chưa thấy giao dịch khớp đơn chờ.');
+        showToast('🔍 Đã quét ' + txs.length + ' giao dịch MBBank gần nhất: Chưa thấy giao dịch khớp đơn chờ.');
       }
     })
     .catch(function(err) {
