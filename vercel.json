@@ -35,5 +35,9 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/Tranquocviet/(.*)", "destination": "/Tranquocviet/$1" },
+    { "source": "/tranquocviet/(.*)", "destination": "/Tranquocviet/$1" }
   ]
 }
