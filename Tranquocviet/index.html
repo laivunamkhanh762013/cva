@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; script-src 'self'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://api.vietqr.io data:; base-uri 'self';">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lix Shop | Hệ Thống Bán Key Game & Nạp Auto Bank 24/7</title>
+    <meta name="description" content="Lix Shop - Nền tảng mua bán Key Game, Aimlock, Dpi và Menu cao cấp. Hệ thống tự động 24/7, an toàn và uy tín.">
+    <!-- Fonts & Icons with SRI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" referrerpolicy="no-referrer">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin referrerpolicy="no-referrer">
+    <link referrerpolicy="no-referrer" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+    <a href="#categorySection" class="skip-link">Chuyển đến nội dung chính</a>
+
+    <!-- Background Canvas Particles -->
+    
+    <noscript><div class="noscript-banner">Vui lòng bật JavaScript để trải nghiệm đầy đủ tính năng của Lix Shop.</div></noscript>
+    <div class="particles-bg" id="particles-bg"></div>
+
+    <!-- Header Navigation -->
+    <header>
+        <nav class="navbar" aria-label="Main Navigation">
+            <div class="nav-inner">
+                <a href="#heroSection" class="logo">
+                    <div class="logo-badge"><i class="fas fa-bolt"></i></div>
+                    <span class="logo-text">Lix<span class="logo-highlight">Shop</span></span>
+                </a>
+                <div class="nav-links" id="navLinks">
+                    <a href="#heroSection" class="nav-link active"><i class="fas fa-home"></i> TRANG CHỦ</a>
+                    <a href="#categorySection" class="nav-link"><i class="fas fa-gamepad"></i> DANH MỤC</a>
+                    <button type="button" class="nav-link" id="topupNavBtn"><i class="fas fa-qrcode"></i> NẠP TIỀN</button>
+                    <button type="button" class="nav-link" id="historyNavBtn"><i class="fas fa-history"></i> LỊCH SỬ</button>
+                </div>
+                <div class="nav-actions">
+                    <span class="user-balance" id="userBalance"><i class="fas fa-wallet"></i> 0 ₫</span>
+                    <button id="themeToggle" class="theme-toggle" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện Sáng / Tối"><i class="fas fa-moon"></i></button>
+                    <button class="btn-login" id="loginNavBtn"><i class="fas fa-user"></i> ĐĂNG NHẬP</button>
+                    <button class="menu-toggle" id="menuToggle" aria-label="Menu Mobile"><i class="fas fa-bars"></i></button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section (Chính xác giao diện shoplixvip - Không nhạc) -->
+        <section class="hero-section" id="heroSection">
+            <div class="hero-inner">
+                <div class="hero-status">
+                    <span class="hero-status-dot"></span>
+                    <span>Đang hoạt động — Cập nhật mới nhất 2026</span>
+                </div>
+                <h1 class="hero-title">
+                    <div class="logo-badge hero-logo-box"><i class="fas fa-bolt"></i></div>
+                    <span id="heroShopName" class="gradient-text">Lix Shop VIP</span>
+                </h1>
+                <p class="hero-desc" id="heroShopDesc">
+                    Cung cấp hỗ trợ, file Aimlock & Dpi chất lượng cao cho iOS, Android và PC. Cập nhật liên tục, hỗ trợ 24/7, an toàn và uy tín.
+                </p>
+                <div class="hero-btns">
+                    <a href="#categorySection" class="hero-btn-primary"><i class="fas fa-rocket"></i> Khám Phá Ngay</a>
+                    <button class="hero-btn-secondary" id="heroTopupBtn" type="button"><i class="fas fa-bolt"></i> Nạp Tiền Ngay</button>
+                </div>
+                <div class="hero-badges-row">
+                    <span class="hero-badge-pill"><i class="fas fa-fire"></i> NỔI BẬT</span>
+                    <span class="hero-badge-pill"><i class="fas fa-bolt"></i> AUTO 24/7</span>
+                    <span class="hero-badge-pill"><i class="fas fa-shield-halved"></i> AN TOÀN</span>
+                    <span class="hero-badge-pill"><i class="fas fa-feather-pointed"></i> SIÊU MƯỢT KHÔNG LAG</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="category-section" id="categorySection" >
+            <div class="container">
+                <div class="section-header">
+                    <div class="header-left">
+                        <h2 class="section-title"><i class="fas fa-th-large"></i> KHO SẢN PHẨM & KEY GAME</h2>
+                        <div class="section-line"></div>
+                        <p class="sub-text">Hệ thống đang phục vụ <span class="highlight" id="productCount">0</span> sản phẩm tự động</p>
+                    </div>
+                    <div class="api-status-badge">
+                        <span class="api-pulse"></span> HỆ THỐNG: <strong>HOẠT ĐỘNG 24/7</strong>
+                    </div>
+                </div>
+
+                <div class="category-layout">
+                    <!-- Sidebar -->
+                    <aside class="sidebar" aria-label="Bộ lọc sản phẩm">
+                        <div class="search-box">
+                            <input type="text" placeholder="Tìm kiếm game, key..." class="search-input" id="searchInput" aria-label="Tìm kiếm game, key">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                        <div class="sidebar-card">
+                            <h3><i class="fas fa-folder"></i> DANH MỤC</h3>
+                            <nav id="categoriesList" aria-label="Danh mục">
+                                <a href="#" class="cat-item active" data-cat="all">Tất cả <span id="count-all">0</span></a>
+                                <a href="#" class="cat-item" data-cat="aimlock">Aimlock VIP <span id="count-aimlock">0</span></a>
+                                <a href="#" class="cat-item" data-cat="dpi">Dpi Tối Ưu <span id="count-dpi">0</span></a>
+                                <a href="#" class="cat-item" data-cat="filza">Filza & 3105 VIP <span id="count-filza">0</span></a>
+                            </nav>
+                        </div>
+                        <div class="sidebar-card">
+                            <h3><i class="fas fa-arrow-up-wide-short"></i> SẮP XẾP</h3>
+                            <div id="sortList">
+                                <a href="#" class="sort-item active" data-sort="default"><i class="fas fa-sparkles"></i> Mặc định</a>
+                                <a href="#" class="sort-item" data-sort="price_asc"><i class="fas fa-arrow-down-1-9"></i> Giá thấp → cao</a>
+                                <a href="#" class="sort-item" data-sort="price_desc"><i class="fas fa-arrow-up-9-1"></i> Giá cao → thấp</a>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Product Grid (16 sản phẩm theo yêu cầu) -->
+                    <div class="product-grid" id="productGrid" role="region" aria-label="Danh sách sản phẩm"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (Không Feedback, Chuẩn Giao Diện Gốc) -->
+    <footer class="footer">
+        <div class="footer-grid container">
+            <div class="footer-logo">
+                <div class="logo">
+                    <div class="logo-badge"><i class="fas fa-bolt"></i></div>
+                    <span class="logo-text">Lix<span class="logo-highlight">Shop</span></span>
+                </div>
+                <p>Website phân phối key game, hỗ trợ iOS, Android và PC uy tín. Tự động hóa hoàn toàn 24/7, an toàn và bảo mật.</p>
+                <div class="footer-social">
+                    <a href="https://t.me" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
+                    <a href="https://zalo.me" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Zalo" title="Zalo"><i class="fas fa-comment-dots"></i></a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="YouTube" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <nav class="footer-col" aria-label="Hệ thống">
+                <h4>HỆ THỐNG</h4>
+                <ul>
+                    <li><a href="#heroSection">Trang chủ</a></li>
+                    <li><a href="#categorySection">Kho sản phẩm</a></li>
+                    <li><button type="button" id="footerTopupBtn" class="footer-btn-link">Nạp tiền tài khoản</button></li>
+                    <li><button type="button" id="footerHistoryBtn" class="footer-btn-link">Lịch sử đơn hàng</button></li>
+                </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Danh mục">
+                <h4>DANH MỤC</h4>
+                <ul>
+                    <li><a href="#" class="footer-cat-link" data-target-cat="aimlock">Gói Aimlock VIP</a></li>
+                    <li><a href="#" class="footer-cat-link" data-target-cat="dpi">Tối ưu Dpi</a></li>
+                    <li><a href="#" class="footer-cat-link" data-target-cat="filza">Menu & Filza 3105</a></li>
+                </ul>
+            </nav>
+            <div class="footer-col">
+                <h4>LIÊN HỆ & HỖ TRỢ</h4>
+                <div class="footer-contact-item"><i class="fas fa-shield-alt"></i> Bảo hành trọn đời key</div>
+                <div class="footer-contact-item"><i class="fas fa-clock"></i> Hỗ trợ kỹ thuật 24/7</div>
+                <div class="footer-contact-item"><i class="fas fa-bolt"></i> Cập nhật tính năng liên tục</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>© 2026 Lix Shop. Toàn bộ bản quyền thuộc về hệ thống.</p>
+                <div class="footer-payment-tags">
+                    <span class="bank-tag"><i class="fas fa-qrcode"></i> VietQR Auto</span>
+                    <span class="bank-tag"><i class="fas fa-university"></i> MBBank</span>
+                    <span class="bank-tag"><i class="fas fa-shield-halved"></i> SSL Secure</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Product Purchase Modal -->
+    <div class="modal-overlay" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalProductName">
+        <div class="modal-content card-3d">
+            <button class="modal-close" aria-label="Đóng"><i class="fas fa-times"></i></button>
+            <h2 id="modalProductName">Tên sản phẩm</h2>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <div class="modal-img-placeholder" id="modalImgBox">
+                        <i class="fas fa-crosshairs modal-icon-display"></i>
+                    </div>
+                </div>
+                <div class="modal-details">
+                    <p class="modal-price-row">
+                        <strong>Đơn giá:</strong> <span id="modalProductPrice" class="price-highlight">0 ₫</span>
+                    </p>
+                    <p><strong>Nền tảng hỗ trợ:</strong> <span id="modalProductPlatforms" class="badge-platform">iOS • Android • PC</span></p>
+                    <p><strong>Trạng thái:</strong> <span class="badge-status in-stock"><i class="fas fa-check-circle"></i> CÒN HÀNG</span></p>
+                    <p id="modalProductDesc" class="modal-desc"></p>
+                    
+                    <div class="quantity-selector">
+                        <label for="qtyInput">Số lượng:</label>
+                        <div class="qty-control">
+                            <button id="qtyMinus" type="button" aria-label="Giảm số lượng">-</button>
+                            <input type="text" id="qtyInput" value="1" inputmode="numeric" readonly aria-label="Số lượng chọn">
+                            <button id="qtyPlus" type="button" aria-label="Tăng số lượng">+</button>
+                        </div>
+                        <span id="totalPriceDisplay" class="total-price-text">Tổng: 0 ₫</span>
+                    </div>
+
+                    <div class="modal-actions" id="modalActionArea">
+                        <button class="btn-buy-now" id="btnBuyNow" type="button"><i class="fas fa-shopping-cart"></i> Mua Ngay</button>
+                        <button class="btn-deposit-alt" id="btnDepositPrompt" type="button"><i class="fas fa-qrcode"></i> Nạp Thêm Tiền</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Topup Modal (VietQR 24/7) -->
+    <div class="modal-overlay" id="topupModal" role="dialog" aria-modal="true" aria-label="Nạp tiền tự động">
+        <div class="modal-content topup-modal card-3d">
+            <button class="modal-close" aria-label="Đóng"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-qrcode"></i> NẠP TIỀN TỰ ĐỘNG 24/7</h2>
+            <p class="sub-text">Hệ thống xử lý tự động qua VietQR - Tiền vào tài khoản sau 1-3 giây</p>
+            <div class="topup-body">
+                <div class="qr-container">
+                    <img id="vietqrImg" src="https://api.vietqr.io/image/970422-0388888888-compact2.jpg?amount=50000&addInfo=NAP%20LIXSHOP" alt="VietQR Nạp tiền" class="qr-code-img" loading="lazy" decoding="async" width="200" height="200">
+                    <span class="qr-badge"><i class="fas fa-bolt"></i> Quét mã để nạp nhanh</span>
+                </div>
+                <div class="topup-info">
+                    <div class="bank-row">
+                        <span>Ngân hàng:</span>
+                        <strong>MB BANK (Quân Đội)</strong>
+                    </div>
+                    <div class="bank-row">
+                        <span>Số tài khoản:</span>
+                        <strong class="copyable" id="copyBankAccBtn" role="button" tabindex="0" title="Nhấp để sao chép"><span>0388888888</span> <i class="fas fa-copy"></i></strong>
+                    </div>
+                    <div class="bank-row">
+                        <span>Chủ tài khoản:</span>
+                        <strong>LIX SHOP ADMIN</strong>
+                    </div>
+                    <div class="bank-row">
+                        <span>Nội dung chuyển:</span>
+                        <strong class="copyable highlight-syntax" id="copyBankMemoBtn" role="button" tabindex="0" title="Nhấp để sao chép"><span>NAP LIXSHOP</span> <i class="fas fa-copy"></i></strong>
+                    </div>
+                    <div class="notice-box">
+                        <i class="fas fa-info-circle"></i> Vui lòng ghi đúng nội dung chuyển khoản để hệ thống cộng tiền tự động.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal-overlay" id="historyModal" role="dialog" aria-modal="true" aria-label="Lịch sử mua hàng">
+        <div class="modal-content history-modal card-3d">
+            <button class="modal-close" aria-label="Đóng"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-history"></i> LỊCH SỬ MUA HÀNG</h2>
+            <div id="historyList" class="history-list"></div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal" role="dialog" aria-modal="true" aria-label="Đăng nhập tài khoản">
+        <div class="modal-content login-modal card-3d">
+            <button class="modal-close" aria-label="Đóng"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-user-lock"></i> ĐĂNG NHẬP HỆ THỐNG</h2>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginUsername"><i class="fas fa-user"></i> Tài khoản hoặc SĐT</label>
+                    <input type="text" id="loginUsername" name="username" required placeholder="Nhập tài khoản của bạn" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword"><i class="fas fa-lock"></i> Mật khẩu</label>
+                    <input type="password" id="loginPassword" name="password" required placeholder="Nhập mật khẩu" autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary w-full"><i class="fas fa-sign-in-alt"></i> Đăng Nhập</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- Scripts -->
+    <script src="products.js" defer></script>
+    <script src="app.js" defer></script>
+    
+</body>
+</html>
