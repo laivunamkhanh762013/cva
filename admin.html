@@ -718,7 +718,8 @@ function autoScanPendingOrders(silent) {
       pendingOrders.forEach(function(o) {
         const price = Number(o.price) || 0;
         const cleanOId = cleanToken(o.id || '');
-        const cleanUName = cleanToken(o.user || '');
+          const cleanMemo = cleanToken(o.memo || '');
+          const cleanUName = cleanToken(o.user || '');
 
         const matchedTx = txs.find(function(t) {
           const ref = String(t.reference_number || t.id || '').trim().toUpperCase();
@@ -733,10 +734,9 @@ function autoScanPendingOrders(silent) {
 
           const rawContent = (t.transaction_content || '');
           const content = cleanToken(rawContent);
-          const matchId = cleanOId && cleanOId.length >= 4 && content.includes(cleanOId);
-          const matchUser = cleanUName && cleanUName.length >= 3 && cleanUName !== 'KHACHVANGLAI' && content.includes(cleanUName);
-
-          return matchId || matchUser;
+          const matchMemo = cleanMemo && cleanMemo.length >= 4 && content.includes(cleanMemo);
+            const matchId = cleanOId && cleanOId.length >= 4 && content.includes(cleanOId);
+            return matchMemo || matchId;
         });
 
         if (matchedTx) {
@@ -777,7 +777,7 @@ function checkSePay(orderId, price, btnEl) {
   }
 
   if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
-  const memoToCheck = (order && order.user && order.user !== 'Khách vãng lai') ? order.user : orderId;
+  const memoToCheck = (order && order.memo) ? order.memo : (order && order.user && order.user !== 'Khách vãng lai') ? order.user : orderId;
   const userToCheck = (order && order.user) ? order.user : '';
 
   fetch('/api/check-payment?memo=' + encodeURIComponent(memoToCheck) + '&orderId=' + encodeURIComponent(orderId) + '&user=' + encodeURIComponent(userToCheck) + '&price=' + encodeURIComponent(price || 0), {
@@ -987,6 +987,7 @@ function renderDashboard() {
     const prodName = o.productName || o.product || '—';
     const planName = o.planName || o.plan || '';
     const cleanId = escapeHTML(o.id);
+      const cleanMemo = escapeHTML(o.memo || o.id);
     const cleanUser = escapeHTML(o.user || 'Khách vãng lai');
     const cleanPhone = escapeHTML(o.phone || '');
     const cleanProd = escapeHTML(prodName);
@@ -1004,7 +1005,7 @@ function renderDashboard() {
       : 'background:rgba(0,240,255,0.12);color:#00f0ff;border-color:rgba(0,240,255,0.3);';
 
     html += '<tr>' +
-      '<td><span class="order-code-badge">' + cleanId + '</span>' + txInfo + '</td>' +
+      '<td><span class="order-code-badge">' + cleanId + '</span><div style="font-size:10px;color:#f87171;margin-top:4px;">ND: ' + cleanMemo + '</div>' + txInfo + '</td>' +
       '<td style="color:#94a3b8;font-size:11px;">' + escapeHTML(o.time || 'Vừa xong') + '</td>' +
       '<td><strong style="color:#fff;">' + cleanUser + '</strong>' +
         (cleanPhone ? '<div style="font-size:11px;color:#f59e0b;"><i class="fa-solid fa-phone"></i> ' + cleanPhone + '</div>' : '') +
@@ -1063,7 +1064,14 @@ function setFilter(f) {
   document.querySelectorAll('.filter-pill').forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-filter') === f); });
   renderDashboard();
 }
-function handleSearch(v) { searchQuery = v.trim(); renderDashboard(); }
+var searchDebounceTimer = null;
+  function handleSearch(v) {
+    searchQuery = v.trim();
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(function() {
+      renderDashboard();
+    }, 250);
+  }
 function refreshOrders() { loadAllOrders(); }
 
 /* ═══════ CẬP NHẬT TRẠNG THÁI ĐƠN (ĐỒNG BỘ MÁY CHỦ TRƯỚC KHI ĐỔI GIAO DIỆN) ═══════ */
@@ -1260,7 +1268,7 @@ async function runStrixSecurityScan() {
   if (isError) {
       appendLog('<br><span style="color:#ef4444;font-weight:800;">[CẢNH BÁO STRIX]: PHÁT HIỆN LỖI BẢO MẬT. VUI LÒNG KIỂM TRA LẠI CÁC MỤC MÀU ĐỎ!</span>');
   } else {
-      appendLog('<br><span class="log-ok" style="font-weight:800;">[KẾT LUẬN STRIX]: HỆ THỐNG ĐÃ ĐƯỢC BẢO VỆ TOÀN DIỆN 100%!</span>');
+      appendLog('<br><span class="log-ok" style="font-weight:800;">[KẾT LUẬN STRIX]: AUDIT HOÀN TẤT. Một số kiểm tra bảo mật phía client/server đã PASS.!</span>');
   }
 }
 

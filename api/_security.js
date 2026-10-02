@@ -1,4 +1,4 @@
-﻿const crypto = require('crypto');
+const crypto = require('crypto');
 
 // Băm SHA-256 của mật khẩu mặc định 'daiphu2026'
 const DEFAULT_PASS_SHA256 = 'a0b65ee17d6da3d0026a121dd8c3cca8bce355c53bbb3f74dd0fe9198b8ab25f';
@@ -8,7 +8,22 @@ const JWT_SECRET = process.env.JWT_SECRET || 'DP_SECURE_HMAC_KEY_984712048123984
 const failedAttempts = new Map();
 const apiRateLimits = new Map(); // Anti-DDoS API
 
+function cleanExpiredLimits() {
+  const now = Date.now();
+  if (failedAttempts.size > 1000) {
+    for (const [k, v] of failedAttempts.entries()) {
+      if (now - v.firstAttempt > 15 * 60 * 1000) failedAttempts.delete(k);
+    }
+  }
+  if (apiRateLimits.size > 2000) {
+    for (const [k, v] of apiRateLimits.entries()) {
+      if (now > v.resetAt) apiRateLimits.delete(k);
+    }
+  }
+}
+
 function checkApiDdos(req, limit = 60, windowMs = 60000) {
+  cleanExpiredLimits();
   const ip = getClientIp(req);
   const now = Date.now();
   
@@ -41,6 +56,7 @@ function getClientIp(req) {
 }
 
 function checkRateLimit(req) {
+  cleanExpiredLimits();
   const ip = getClientIp(req);
   const now = Date.now();
   const entry = failedAttempts.get(ip);
@@ -160,10 +176,10 @@ async function parseBody(req) {
     try { return JSON.parse(req.body); } catch(e) { return {}; }
   }
   return new Promise(resolve => {
-    let d = '';
-    req.on('data', chunk => d += chunk);
+    const chunks = [];
+    req.on('data', chunk => chunks.push(chunk));
     req.on('end', () => {
-      try { resolve(JSON.parse(d)); } catch(e) { resolve({}); }
+      try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); } catch(e) { resolve({}); }
     });
     req.on('error', () => resolve({}));
   });
@@ -215,8 +231,8 @@ function verifyUserToken(req) {
 }
 
 function generateSecureOrderId() {
-  const num = crypto.randomInt(100000, 999999);
-  return 'DP' + num;
+  const num = crypto.randomInt(100000, 1000000);
+  return 'DPVN' + num;
 }
 
 function validateOrderId(id) {
@@ -239,4 +255,5 @@ module.exports = {
   parseBody,
   validateOrderId
 };
+
 

@@ -1,23 +1,69 @@
-﻿const { getGist, updateGist } = require('./db');
-const { verifyAdminToken, verifyUserToken, generateSecureOrderId, parseCookies, parseBody, checkApiDdos, validateOrderId } = require('./_security');
-const { getCanonicalPrice } = require('./_catalog');
-const createLimits = new Map();
+const crypto = require('crypto');
+const { getGist, updateGist } = require('./db');
+const { verifyAdminToken, verifyUserToken, generateSecureOrderId, parseBody, checkApiDdos, validateOrderId, getClientIp } = require('./_security');
+const { getProductInfo, getCanonicalPrice } = require('./_catalog');
+const { Mutex } = require('./_mutex');
 
-function sanitizeText(str, maxLen) {
+const orderMutex = new Mutex();
+
+const BANK_CONFIG = Object.freeze({
+  bankId: process.env.VIETQR_BANK_ID || 'MB',
+  accountNo: process.env.VIETQR_ACCOUNT_NO || '0941414448',
+  accountName: process.env.VIETQR_ACCOUNT_NAME || 'BUI VAN CAO'
+});
+
+const ORDER_CONFIG = Object.freeze({
+  maxOrdersLimit: 300,
+  createRateLimitCount: 5,
+  createRateLimitWindowMs: 60000,
+  maxIpLimitCache: 1000,
+  memoCollisionMaxRetries: 50
+});
+
+// In-process rate limiter with memory bound & cleanup
+const createLimits = new Map();
+function isCreationRateLimited(ip) {
+  const now = Date.now();
+  if (createLimits.size > ORDER_CONFIG.maxIpLimitCache) {
+    for (const [k, v] of createLimits.entries()) {
+      if (now > v.resetAt) createLimits.delete(k);
+    }
+    if (createLimits.size > ORDER_CONFIG.maxIpLimitCache) {
+      createLimits.clear();
+    }
+  }
+  const entry = createLimits.get(ip) || { count: 0, resetAt: now + ORDER_CONFIG.createRateLimitWindowMs };
+  if (now > entry.resetAt) {
+    entry.count = 0;
+    entry.resetAt = now + ORDER_CONFIG.createRateLimitWindowMs;
+  }
+  entry.count++;
+  createLimits.set(ip, entry);
+  return entry.count > ORDER_CONFIG.createRateLimitCount;
+}
+
+// Whitelist-based text sanitizer (Alphanumeric, unicode letters, spaces, safe punctuation)
+function sanitizeText(str, maxLen = 50) {
   if (!str) return '';
-  return String(str).replace(/[<>'"]/g, '').trim().substring(0, maxLen || 50);
+  return String(str)
+    .replace(/[^\p{L}\p{N}\s_.@+-]/gu, '')
+    .trim()
+    .substring(0, maxLen);
 }
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token, x-user-token');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  // Anti-DDoS API Rate Limit (60 req / 1 min)
-  const ddosCheck = checkApiDdos(req, 60, 60000);
+  // Anti-DDoS Rate Limit (120 req / 1 min)
+  const ddosCheck = checkApiDdos(req, 120, 60000);
   if (!ddosCheck.allowed) {
-    return res.status(429).json({ success: false, error: 'Too Many Requests (DDoS Protection). Vui lòng thử lại sau ' + ddosCheck.retryAfter + 's.' });
+    return res.status(429).json({ success: false, error: 'Too Many Requests. Vui lòng thử lại sau ' + ddosCheck.retryAfter + 's.' });
   }
 
   if (req.method === 'OPTIONS') {
@@ -26,46 +72,38 @@ module.exports = async function handler(req, res) {
 
   let body = {};
   if (req.method === 'POST' || req.method === 'DELETE') {
-    body = await parseBody(req);
-  }
-
-  let query = req.query || {};
-  if (req.url && req.url.includes('?')) {
     try {
-      const u = new URL(req.url, 'http://localhost');
-      query = Object.assign({}, Object.fromEntries(u.searchParams), query);
-    } catch(e) {}
+      body = await parseBody(req);
+    } catch (e) {
+      return res.status(400).json({ success: false, error: 'Dữ liệu JSON không hợp lệ.' });
+    }
   }
 
+  const query = req.query || {};
   const isAdmin = verifyAdminToken(req);
   const userPayload = verifyUserToken(req);
 
   try {
-    // ── LẤY DANH SÁCH / KIỂM TRA ĐƠN HÀNG (GET) ──
+    // ════════ LẤY DANH SÁCH / TRA CỨU ĐƠN HÀNG (GET) ════════
     if (req.method === 'GET') {
       const { orders } = await getGist();
-      const all = orders || [];
+      const all = Array.isArray(orders) ? orders : [];
 
-      // 1. Nếu là Admin: Xem toàn bộ đơn hàng
+      // 1. Quản trị viên: Xem danh sách đơn hàng
       if (isAdmin) {
         return res.status(200).json({ success: true, orders: all });
       }
 
-      // 2. Poll trạng thái đơn của khách qua ID (?id=DP... hoặc ?code=DP...)
-      const queryId = String(query.id || query.code || query.memo || '').trim().toUpperCase();
-      const userParam = String(query.user || '').trim();
-
-      // Nếu khách yêu cầu lấy lịch sử đơn của chính mình
-      if (userParam || (queryId && !queryId.startsWith('DP'))) {
-        const targetUsername = userParam || queryId;
-        // Bắt buộc xác thực tài khoản qua User Token nếu muốn xem danh sách đơn theo user
-        if (!userPayload || userPayload.user.toLowerCase() !== targetUsername.toLowerCase()) {
-          return res.status(401).json({
-            success: false,
-            error: 'Bạn cần đăng nhập tài khoản ' + targetUsername + ' để xem lịch sử đơn hàng của mình.'
-          });
+      // 2. Tra cứu lịch sử đơn hàng của người dùng đã đăng nhập (?view=my_orders)
+      if (query.view === 'my_orders' || query.user) {
+        if (!userPayload) {
+          return res.status(401).json({ success: false, error: 'Bạn cần đăng nhập để xem lịch sử đơn hàng.' });
         }
-        const userOrders = all.filter(o => o.user && o.user.toLowerCase() === targetUsername.toLowerCase() && o.status === 'approved');
+        const requestedUser = String(query.user || userPayload.user).trim();
+        if (userPayload.user.toLowerCase() !== requestedUser.toLowerCase()) {
+          return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối: Không thể xem đơn hàng của người khác.' });
+        }
+        const userOrders = all.filter(o => o.user && o.user.toLowerCase() === requestedUser.toLowerCase() && o.status === 'approved');
         return res.status(200).json({
           success: true,
           orders: userOrders.map(o => ({
@@ -81,20 +119,18 @@ module.exports = async function handler(req, res) {
         });
       }
 
-      if (!queryId) {
-        return res.status(400).json({
-          success: false,
-          error: 'Vui lòng cung cấp mã đơn hàng (id) để kiểm tra trạng thái.'
-        });
+      // 3. Tra cứu 1 đơn hàng cụ thể theo ID hoặc Memo chuyển khoản
+      const lookupCode = String(query.id || query.code || query.memo || '').trim().toUpperCase();
+      if (!lookupCode) {
+        return res.status(400).json({ success: false, error: 'Vui lòng cung cấp mã đơn hàng để kiểm tra trạng thái.' });
       }
 
-      const found = all.find(o => o.id && o.id.toUpperCase() === queryId);
+      const found = all.find(o => (o.id && o.id.toUpperCase() === lookupCode) || (o.memo && o.memo.toUpperCase() === lookupCode));
       if (!found) {
-        return res.status(404).json({ success: false, error: 'Không tìm thấy đơn hàng: ' + queryId });
+        return res.status(404).json({ success: false, error: 'Không tìm thấy thông tin đơn hàng.' });
       }
 
-      // Trả về thông tin an toàn của đơn hàng
-            const isOwner = userPayload && userPayload.user.toLowerCase() === (found.user || '').toLowerCase();
+      const isOwner = userPayload && userPayload.user.toLowerCase() === (found.user || '').toLowerCase();
       const canViewFull = isAdmin || isOwner;
       return res.status(200).json({
         success: true,
@@ -111,181 +147,177 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // ── XÓA ĐƠN HÀNG (DELETE) ──
+    // ════════ XÓA ĐƠN HÀNG (DELETE) (CHỈ ADMIN) ════════
     if (req.method === 'DELETE') {
       if (!isAdmin) {
-        return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối: Cần đăng nhập Admin để xóa đơn hàng!' });
+        return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối: Chỉ Quản trị viên mới được xóa đơn hàng!' });
       }
-      const targetId = String(query.id || body.id || '').replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
-      if (!targetId) {
-        return res.status(400).json({ success: false, error: 'Thiếu mã đơn cần xóa' });
+      const rawTargetId = String(query.id || body.id || '').trim().toUpperCase();
+      if (!validateOrderId(rawTargetId)) {
+        return res.status(400).json({ success: false, error: 'Mã đơn xóa không hợp lệ.' });
       }
-      const { orders } = await getGist();
-      const filtered = (orders || []).filter(o => o.id !== targetId);
-      await updateGist({ orders: filtered });
-      return res.status(200).json({ success: true, message: 'Đã xóa vĩnh viễn đơn ' + targetId, remaining: filtered.length });
+
+      let orderExisted = false;
+      const deleteResult = await orderMutex.run(async () => {
+        const { orders } = await getGist();
+        const list = Array.isArray(orders) ? orders : [];
+        const initialLen = list.length;
+        const filtered = list.filter(o => o.id !== rawTargetId);
+        orderExisted = filtered.length < initialLen;
+        if (orderExisted) {
+          await updateGist({ orders: filtered });
+        }
+        return { remaining: filtered.length };
+      });
+
+      if (!orderExisted) {
+        return res.status(404).json({ success: false, error: 'Không tìm thấy đơn hàng cần xóa.' });
+      }
+
+      return res.status(200).json({ success: true, message: 'Đã xóa đơn hàng thành công.', remaining: deleteResult.remaining });
     }
 
-    // ── XỬ LÝ POST (LƯU ĐƠN / DUYỆT ĐƠN / XÓA ĐƠN / RESET) ──
+    // ════════ XỬ LÝ POST ════════
     if (req.method === 'POST') {
-      // 1. RESET TOÀN BỘ ĐƠN HÀNG (Chỉ Admin + Cần cụm từ xác thực)
-      if (body._reset === true) {
+      // 1. Reset toàn bộ dữ liệu đơn hàng (Chỉ Admin)
+      if (Boolean(body._reset) === true) {
         if (!isAdmin) {
-          return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối: Cần đăng nhập Admin để xóa toàn bộ đơn hàng!' });
+          return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối!' });
         }
         if (body.confirmPhrase !== 'RESET_CONFIRM_ALL_DATA') {
-          return res.status(400).json({
-            success: false,
-            error: 'Xác nhận xóa không hợp lệ. Vui lòng gửi kèm confirmPhrase: "RESET_CONFIRM_ALL_DATA"'
-          });
+          return res.status(400).json({ success: false, error: 'Sai cụm từ xác nhận xóa.' });
         }
-        await updateGist({ orders: [] });
-        return res.status(200).json({ success: true, message: 'Đã xóa sạch toàn bộ đơn hàng.' });
+        await orderMutex.run(async () => {
+          await updateGist({ orders: [] });
+        });
+        return res.status(200).json({ success: true, message: 'Đã làm trống toàn bộ dữ liệu đơn hàng.' });
       }
 
-      // 2. XÓA 1 ĐƠN HÀNG QUA POST (Chỉ Admin)
-      if ((body._delete === true || body._action === 'delete') && (body.id || query.id)) {
-        if (!isAdmin) {
-          return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối: Cần đăng nhập Admin để xóa đơn hàng!' });
-        }
-        const cleanId = String(body.id || query.id).replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase();
-        const { orders } = await getGist();
-        const filtered = (orders || []).filter(o => o.id !== cleanId);
-        await updateGist({ orders: filtered });
-        return res.status(200).json({ success: true, message: 'Đã xóa vĩnh viễn đơn ' + cleanId, remaining: filtered.length });
-      }
-
-      // 3. TẠO ĐƠN HÀNG MỚI TỪ SERVER (Chỉ sinh đơn pending, lấy giá từ Catalog)
-            if (body._action === 'create' || body.action === 'create') {
-        const ip = req.headers['x-forwarded-for'] || '127.0.0.1';
-        const now = Date.now();
-        const entry = createLimits.get(ip) || { count: 0, resetAt: now + 60000 };
-        if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + 60000; }
-        entry.count++;
-        createLimits.set(ip, entry);
-        if (entry.count > 5) {
+      // 2. Tạo đơn hàng mới (Chỉ sinh pending, kiểm tra catalog)
+      if (body._action === 'create' || body.action === 'create') {
+        const ip = getClientIp ? getClientIp(req) : (req.headers['x-forwarded-for'] || '127.0.0.1');
+        if (isCreationRateLimited(ip)) {
           return res.status(429).json({ success: false, error: 'Bạn tạo đơn quá nhanh. Vui lòng chờ 1 phút.' });
         }
+
         const prodKey = sanitizeText(body.productId || body.product, 60);
         const planName = sanitizeText(body.planName || body.plan, 40);
-        const canonicalPrice = getCanonicalPrice(prodKey, planName);
-        if (!canonicalPrice || canonicalPrice <= 0) {
-          return res.status(400).json({ success: false, error: 'Sản phẩm hoặc gói bạn chọn không hợp lệ trong hệ thống!' });
+
+        const prodObj = getProductInfo(prodKey);
+        if (prodObj && prodObj.soldOut) {
+          return res.status(400).json({ success: false, error: 'Sản phẩm này hiện đang CHÁY HÀNG! Vui lòng liên hệ Admin.' });
         }
 
+        const canonicalPrice = getCanonicalPrice(prodKey, planName);
+        if (!canonicalPrice || canonicalPrice <= 0) {
+          return res.status(400).json({ success: false, error: 'Gói sản phẩm bạn chọn không hợp lệ trong hệ thống!' });
+        }
+
+        const realProductName = (prodObj && prodObj.name) || prodKey;
         const newId = generateSecureOrderId();
         const username = userPayload ? userPayload.user : (sanitizeText(body.user, 40) || 'Khách vãng lai');
         const phone = sanitizeText(body.phone, 15);
 
-        const newOrder = {
-          id: newId,
-          product: prodKey,
-          plan: planName,
-          price: canonicalPrice,
-          user: username,
-          phone: phone,
-          time: new Date().toLocaleString('vi-VN'),
-          status: 'pending',
-          txId: ''
-        };
+        let creationError = null;
+        const orderCreationResult = await orderMutex.run(async () => {
+          const { orders } = await getGist();
+          const list = Array.isArray(orders) ? orders : [];
 
-        const { orders } = await getGist();
-        const existingOrders = orders || [];
-        existingOrders.unshift(newOrder);
-        const trimmed = existingOrders.slice(0, 300);
-        await updateGist({ orders: trimmed });
+          let memoCode = '';
+          const pendingMemos = new Set(list.filter(o => o.status === 'pending').map(o => o.memo));
+          for (let i = 0; i < ORDER_CONFIG.memoCollisionMaxRetries; i++) {
+            const candidate = 'DP' + crypto.randomInt(10000, 100000);
+            if (!pendingMemos.has(candidate)) {
+              memoCode = candidate;
+              break;
+            }
+          }
 
-        // Tạo link VietQR chuẩn xác với nội dung chuyển khoản là MÃ ĐƠN HÀNG
-        const qrUrl = 'https://img.vietqr.io/image/MB-0941414448-compact2.png?amount=' + canonicalPrice + '&addInfo=' + encodeURIComponent(newId) + '&accountName=BUI%20VAN%20CAO';
+          if (!memoCode) {
+            creationError = 'Hệ thống đang bận xử lý nhiều đơn hàng. Vui lòng thử lại sau giây lát.';
+            return null;
+          }
+
+          const orderItem = {
+            id: newId,
+            memo: memoCode,
+            product: realProductName,
+            plan: planName,
+            price: canonicalPrice,
+            user: username,
+            phone: phone,
+            time: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }),
+            createdAt: Date.now(),
+            status: 'pending',
+            txId: ''
+          };
+
+          list.unshift(orderItem);
+          await updateGist({ orders: list.slice(0, ORDER_CONFIG.maxOrdersLimit) });
+          return orderItem;
+        });
+
+        if (creationError || !orderCreationResult) {
+          return res.status(503).json({ success: false, error: creationError || 'Không thể khởi tạo đơn hàng lúc này.' });
+        }
+
+        const qrUrl = 'https://img.vietqr.io/image/' + encodeURIComponent(BANK_CONFIG.bankId) + '-' + encodeURIComponent(BANK_CONFIG.accountNo) + '-compact2.png?amount=' + canonicalPrice + '&addInfo=' + encodeURIComponent(orderCreationResult.memo) + '&accountName=' + encodeURIComponent(BANK_CONFIG.accountName);
 
         return res.status(200).json({
           success: true,
-          order: newOrder,
+          order: orderCreationResult,
           qrUrl: qrUrl
         });
       }
 
-      // 4. CẬP NHẬT HOẶC DUYỆT ĐƠN HÀNG (CHỈ ADMIN HOẶC SEPAY MỚI ĐƯỢC DUYỆT)
-      if (!body.id) {
-        return res.status(400).json({ success: false, error: 'Thiếu mã đơn hàng' });
+      // 3. Cập nhật / Duyệt đơn hàng (BẮT BUỘC ADMIN)
+      if (!isAdmin) {
+        return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối: Chỉ quản trị viên mới được cập nhật đơn hàng!' });
       }
 
-      const cleanId = String(body.id).replace(/[^a-zA-Z0-9_-]/g, '').trim().toUpperCase().substring(0, 20);
-      if (!validateOrderId(cleanId)) {
-        return res.status(400).json({ success: false, error: 'Mã đơn không đúng định dạng (phải bắt đầu bằng DP...)' });
+      const rawId = String(body.id || '').trim().toUpperCase();
+      if (!validateOrderId(rawId)) {
+        return res.status(400).json({ success: false, error: 'Mã đơn không hợp lệ.' });
       }
 
-      const { orders } = await getGist();
-      const existingOrders = orders || [];
-      const existingIdx = existingOrders.findIndex(o => o.id === cleanId);
-
-      // Strix Security Guard: Chỉ Admin mới có quyền cập nhật đơn hàng ở endpoint này
-      let status = 'pending';
-      if (isAdmin && body.status) {
-        const validStatuses = ['pending', 'approved', 'rejected'];
-        const rawStatus = String(body.status).toLowerCase();
-        if (validStatuses.includes(rawStatus)) status = rawStatus;
-      } else if (existingIdx >= 0) {
-        status = existingOrders[existingIdx].status || 'pending';
-      } else {
-        // Client thường không được tự tạo đơn không qua action 'create'
-        status = 'pending';
-      }
-
-      // Nếu client không phải Admin mà cố tình gửi status='approved' -> Chặn tuyệt đối 100%
-      if ((body.status === 'approved' || body.status === 'rejected') && !isAdmin) {
-        return res.status(403).json({ success: false, error: 'Quyền hạn bị từ chối: Chỉ quản trị viên hoặc SePay mới được duyệt đơn!' });
-      }
-
-      // Strix Security Guard: Ngăn chặn 1 giao dịch ngân hàng duyệt cho 2 đơn khác nhau (Idempotency)
+      const validStatuses = ['pending', 'approved', 'rejected'];
+      const rawStatus = String(body.status || 'pending').toLowerCase();
+      const statusToSet = validStatuses.includes(rawStatus) ? rawStatus : 'pending';
       const cleanTxId = sanitizeText(body.txId, 40);
-      if (status === 'approved' && cleanTxId) {
-        const dupTx = existingOrders.find(o => o.id !== cleanId && o.status === 'approved' && o.txId && o.txId.toUpperCase() === cleanTxId.toUpperCase());
-        if (dupTx) {
-          return res.status(409).json({ success: false, error: 'Mã giao dịch ngân hàng ' + cleanTxId + ' đã được dùng cho đơn ' + dupTx.id });
+
+      const updateResult = await orderMutex.run(async () => {
+        const { orders } = await getGist();
+        const list = Array.isArray(orders) ? orders : [];
+        const existingIdx = list.findIndex(o => o.id === rawId);
+
+        if (existingIdx === -1) {
+          return { error: 'Không tìm thấy đơn hàng cần cập nhật.', status: 404 };
         }
+
+        if (statusToSet === 'approved' && cleanTxId) {
+          const dupTx = list.find(o => o.id !== rawId && o.status === 'approved' && o.txId && o.txId.toUpperCase() === cleanTxId.toUpperCase());
+          if (dupTx) {
+            return { error: 'Mã giao dịch ngân hàng đã được gán cho đơn hàng khác.', status: 409 };
+          }
+        }
+
+        list[existingIdx].status = statusToSet;
+        if (cleanTxId) list[existingIdx].txId = cleanTxId;
+
+        await updateGist({ orders: list.slice(0, ORDER_CONFIG.maxOrdersLimit) });
+        return { success: true, order: list[existingIdx] };
+      });
+
+      if (updateResult.error) {
+        return res.status(updateResult.status || 400).json({ success: false, error: updateResult.error });
       }
 
-      // Tra cứu bảng giá chuẩn từ Server (Chống Price Tampering)
-      const productName = sanitizeText(body.product, 60) || 'AimLock FF';
-      const planName = sanitizeText(body.plan, 40) || '1 tháng';
-      const canonicalPrice = getCanonicalPrice(productName, planName);
-      let finalPrice = typeof body.price === 'number' ? Math.max(0, body.price) : (parseFloat(body.price) || 0);
-      if (canonicalPrice && canonicalPrice > 0) {
-        finalPrice = canonicalPrice;
-      }
-
-      const orderItem = {
-        id: cleanId,
-        product: productName,
-        plan: planName,
-        price: finalPrice,
-        user: sanitizeText(body.user, 40) || 'Khách vãng lai',
-        phone: sanitizeText(body.phone, 15) || '',
-        time: body.time ? sanitizeText(body.time, 35) : new Date().toLocaleString('vi-VN'),
-        status: status,
-        txId: cleanTxId || (existingIdx >= 0 ? existingOrders[existingIdx].txId : '')
-      };
-
-      if (existingIdx >= 0) {
-        existingOrders[existingIdx] = Object.assign({}, existingOrders[existingIdx], orderItem);
-      } else {
-        existingOrders.unshift(orderItem);
-      }
-
-      // Giới hạn 300 đơn gần nhất
-      const trimmed = existingOrders.slice(0, 300);
-      await updateGist({ orders: trimmed });
-
-      return res.status(200).json({ success: true, order: orderItem });
+      return res.status(200).json({ success: true, order: updateResult.order });
     }
 
     return res.status(405).json({ error: 'Method Not Allowed' });
   } catch (err) {
-    return res.status(500).json({ success: false, error: err.message });
+    console.error('Orders API Internal Error:', err);
+    return res.status(500).json({ success: false, error: 'Lỗi hệ thống máy chủ. Vui lòng thử lại sau.' });
   }
 };
-
-
-
-

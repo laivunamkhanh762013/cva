@@ -1,285 +1,531 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; script-src 'self'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://api.vietqr.io data:; base-uri 'self';">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lix Shop | Hệ Thống Bán Key Game & Nạp Auto Bank 24/7</title>
-    <meta name="description" content="Lix Shop - Nền tảng mua bán Key Game, Aimlock, Dpi và Menu cao cấp. Hệ thống tự động 24/7, an toàn và uy tín.">
-    <!-- Fonts & Icons with SRI -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" referrerpolicy="no-referrer">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin referrerpolicy="no-referrer">
-    <link referrerpolicy="no-referrer" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>NEXUS STORE - Kho Sản Phẩm & Key Game Kỹ Thuật Số Uy Tín 24/7</title>
+  <meta name="description" content="Hệ thống cung cấp key game, tài khoản và công cụ gaming kỹ thuật số uy tín hàng đầu. Giao diện cyber dark mode, cấp key tự động 24/7.">
+  
+  <!-- FontAwesome & Google Font Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="assets/css/theme.css">
 </head>
-<body data-theme="dark">
-    <a href="#categorySection" class="skip-link">Chuyển đến nội dung chính</a>
+<body>
 
-    <!-- Background Canvas Particles -->
-    
-    <noscript><div class="noscript-banner">Vui lòng bật JavaScript để trải nghiệm đầy đủ tính năng của Lix Shop.</div></noscript>
-    <div class="particles-bg" id="particles-bg"></div>
-
-    <!-- Header Navigation -->
-    <header>
-        <nav class="navbar" aria-label="Main Navigation">
-            <div class="nav-inner">
-                <a href="#heroSection" class="logo">
-                    <div class="logo-badge"><i class="fas fa-bolt"></i></div>
-                    <span class="logo-text">Lix<span class="logo-highlight">Shop</span></span>
-                </a>
-                <div class="nav-links" id="navLinks">
-                    <a href="#heroSection" class="nav-link active"><i class="fas fa-home"></i> TRANG CHỦ</a>
-                    <a href="#categorySection" class="nav-link"><i class="fas fa-gamepad"></i> DANH MỤC</a>
-                    <button type="button" class="nav-link" id="topupNavBtn"><i class="fas fa-qrcode"></i> NẠP TIỀN</button>
-                    <button type="button" class="nav-link" id="historyNavBtn"><i class="fas fa-history"></i> LỊCH SỬ</button>
-                </div>
-                <div class="nav-actions">
-                    <span class="user-balance" id="userBalance"><i class="fas fa-wallet"></i> 0 ₫</span>
-                    <button id="themeToggle" class="theme-toggle" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện Sáng / Tối"><i class="fas fa-moon"></i></button>
-                    <button class="btn-login" id="loginNavBtn"><i class="fas fa-user"></i> ĐĂNG NHẬP</button>
-                    <button class="menu-toggle" id="menuToggle" aria-label="Menu Mobile"><i class="fas fa-bars"></i></button>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section (Chính xác giao diện shoplixvip - Không nhạc) -->
-        <section class="hero-section" id="heroSection">
-            <div class="hero-inner">
-                <div class="hero-status">
-                    <span class="hero-status-dot"></span>
-                    <span>Đang hoạt động — Cập nhật mới nhất 2026</span>
-                </div>
-                <h1 class="hero-title">
-                    <div class="logo-badge hero-logo-box"><i class="fas fa-bolt"></i></div>
-                    <span id="heroShopName" class="gradient-text">Lix Shop VIP</span>
-                </h1>
-                <p class="hero-desc" id="heroShopDesc">
-                    Cung cấp hỗ trợ, file Aimlock & Dpi chất lượng cao cho iOS, Android và PC. Cập nhật liên tục, hỗ trợ 24/7, an toàn và uy tín.
-                </p>
-                <div class="hero-btns">
-                    <a href="#categorySection" class="hero-btn-primary"><i class="fas fa-rocket"></i> Khám Phá Ngay</a>
-                    <button class="hero-btn-secondary" id="heroTopupBtn" type="button"><i class="fas fa-bolt"></i> Nạp Tiền Ngay</button>
-                </div>
-                <div class="hero-badges-row">
-                    <span class="hero-badge-pill"><i class="fas fa-fire"></i> NỔI BẬT</span>
-                    <span class="hero-badge-pill"><i class="fas fa-bolt"></i> AUTO 24/7</span>
-                    <span class="hero-badge-pill"><i class="fas fa-shield-halved"></i> AN TOÀN</span>
-                    <span class="hero-badge-pill"><i class="fas fa-feather-pointed"></i> SIÊU MƯỢT KHÔNG LAG</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Products Section -->
-        <section class="category-section" id="categorySection" >
-            <div class="container">
-                <div class="section-header">
-                    <div class="header-left">
-                        <h2 class="section-title"><i class="fas fa-th-large"></i> KHO SẢN PHẨM & KEY GAME</h2>
-                        <div class="section-line"></div>
-                        <p class="sub-text">Hệ thống đang phục vụ <span class="highlight" id="productCount">0</span> sản phẩm tự động</p>
-                    </div>
-                    <div class="api-status-badge">
-                        <span class="api-pulse"></span> HỆ THỐNG: <strong>HOẠT ĐỘNG 24/7</strong>
-                    </div>
-                </div>
-
-                <div class="category-layout">
-                    <!-- Sidebar -->
-                    <aside class="sidebar" aria-label="Bộ lọc sản phẩm">
-                        <div class="search-box">
-                            <input type="text" placeholder="Tìm kiếm game, key..." class="search-input" id="searchInput" aria-label="Tìm kiếm game, key">
-                            <i class="fas fa-search search-icon"></i>
-                        </div>
-                        <div class="sidebar-card">
-                            <h3><i class="fas fa-folder"></i> DANH MỤC</h3>
-                            <nav id="categoriesList" aria-label="Danh mục">
-                                <a href="#" class="cat-item active" data-cat="all">Tất cả <span id="count-all">0</span></a>
-                                <a href="#" class="cat-item" data-cat="aimlock">Aimlock VIP <span id="count-aimlock">0</span></a>
-                                <a href="#" class="cat-item" data-cat="dpi">Dpi Tối Ưu <span id="count-dpi">0</span></a>
-                                <a href="#" class="cat-item" data-cat="filza">Filza & 3105 VIP <span id="count-filza">0</span></a>
-                            </nav>
-                        </div>
-                        <div class="sidebar-card">
-                            <h3><i class="fas fa-arrow-up-wide-short"></i> SẮP XẾP</h3>
-                            <div id="sortList">
-                                <a href="#" class="sort-item active" data-sort="default"><i class="fas fa-sparkles"></i> Mặc định</a>
-                                <a href="#" class="sort-item" data-sort="price_asc"><i class="fas fa-arrow-down-1-9"></i> Giá thấp → cao</a>
-                                <a href="#" class="sort-item" data-sort="price_desc"><i class="fas fa-arrow-up-9-1"></i> Giá cao → thấp</a>
-                            </div>
-                        </div>
-                    </aside>
-
-                    <!-- Product Grid (16 sản phẩm theo yêu cầu) -->
-                    <div class="product-grid" id="productGrid" role="region" aria-label="Danh sách sản phẩm"></div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer (Không Feedback, Chuẩn Giao Diện Gốc) -->
-    <footer class="footer">
-        <div class="footer-grid container">
-            <div class="footer-logo">
-                <div class="logo">
-                    <div class="logo-badge"><i class="fas fa-bolt"></i></div>
-                    <span class="logo-text">Lix<span class="logo-highlight">Shop</span></span>
-                </div>
-                <p>Website phân phối key game, hỗ trợ iOS, Android và PC uy tín. Tự động hóa hoàn toàn 24/7, an toàn và bảo mật.</p>
-                <div class="footer-social">
-                    <a href="https://t.me" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
-                    <a href="https://zalo.me" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Zalo" title="Zalo"><i class="fas fa-comment-dots"></i></a>
-                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="YouTube" title="YouTube"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <nav class="footer-col" aria-label="Hệ thống">
-                <h4>HỆ THỐNG</h4>
-                <ul>
-                    <li><a href="#heroSection">Trang chủ</a></li>
-                    <li><a href="#categorySection">Kho sản phẩm</a></li>
-                    <li><button type="button" id="footerTopupBtn" class="footer-btn-link">Nạp tiền tài khoản</button></li>
-                    <li><button type="button" id="footerHistoryBtn" class="footer-btn-link">Lịch sử đơn hàng</button></li>
-                </ul>
-            </nav>
-            <nav class="footer-col" aria-label="Danh mục">
-                <h4>DANH MỤC</h4>
-                <ul>
-                    <li><a href="#" class="footer-cat-link" data-target-cat="aimlock">Gói Aimlock VIP</a></li>
-                    <li><a href="#" class="footer-cat-link" data-target-cat="dpi">Tối ưu Dpi</a></li>
-                    <li><a href="#" class="footer-cat-link" data-target-cat="filza">Menu & Filza 3105</a></li>
-                </ul>
-            </nav>
-            <div class="footer-col">
-                <h4>LIÊN HỆ & HỖ TRỢ</h4>
-                <div class="footer-contact-item"><i class="fas fa-shield-alt"></i> Bảo hành trọn đời key</div>
-                <div class="footer-contact-item"><i class="fas fa-clock"></i> Hỗ trợ kỹ thuật 24/7</div>
-                <div class="footer-contact-item"><i class="fas fa-bolt"></i> Cập nhật tính năng liên tục</div>
-            </div>
+  <!-- STICKY HEADER -->
+  <header class="nexus-header" id="mainHeader">
+    <div class="nexus-container header-inner">
+      <a href="#home" class="brand-logo" id="brandLogo">
+        <div class="brand-icon">
+          <i class="fas fa-bolt"></i>
         </div>
-        <div class="footer-bottom">
-            <div class="container footer-bottom-inner">
-                <p>© 2026 Lix Shop. Toàn bộ bản quyền thuộc về hệ thống.</p>
-                <div class="footer-payment-tags">
-                    <span class="bank-tag"><i class="fas fa-qrcode"></i> VietQR Auto</span>
-                    <span class="bank-tag"><i class="fas fa-university"></i> MBBank</span>
-                    <span class="bank-tag"><i class="fas fa-shield-halved"></i> SSL Secure</span>
-                </div>
-            </div>
+        <div class="brand-text">
+          <h1>NEXUS STORE</h1>
+          <span>GAMING DIGITAL STORE</span>
         </div>
-    </footer>
+      </a>
 
-    <!-- Product Purchase Modal -->
-    <div class="modal-overlay" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalProductName">
-        <div class="modal-content card-3d">
-            <button class="modal-close" aria-label="Đóng"><i class="fas fa-times"></i></button>
-            <h2 id="modalProductName">Tên sản phẩm</h2>
-            <div class="modal-body">
-                <div class="modal-image">
-                    <div class="modal-img-placeholder" id="modalImgBox">
-                        <i class="fas fa-crosshairs modal-icon-display"></i>
-                    </div>
-                </div>
-                <div class="modal-details">
-                    <p class="modal-price-row">
-                        <strong>Đơn giá:</strong> <span id="modalProductPrice" class="price-highlight">0 ₫</span>
-                    </p>
-                    <p><strong>Nền tảng hỗ trợ:</strong> <span id="modalProductPlatforms" class="badge-platform">iOS • Android • PC</span></p>
-                    <p><strong>Trạng thái:</strong> <span class="badge-status in-stock"><i class="fas fa-check-circle"></i> CÒN HÀNG</span></p>
-                    <p id="modalProductDesc" class="modal-desc"></p>
-                    
-                    <div class="quantity-selector">
-                        <label for="qtyInput">Số lượng:</label>
-                        <div class="qty-control">
-                            <button id="qtyMinus" type="button" aria-label="Giảm số lượng">-</button>
-                            <input type="text" id="qtyInput" value="1" inputmode="numeric" readonly aria-label="Số lượng chọn">
-                            <button id="qtyPlus" type="button" aria-label="Tăng số lượng">+</button>
-                        </div>
-                        <span id="totalPriceDisplay" class="total-price-text">Tổng: 0 ₫</span>
-                    </div>
+      <!-- Navigation Menu -->
+      <nav class="nav-menu" id="navMenu">
+        <a href="#home" class="nav-link active" data-nav="home"><i class="fas fa-house"></i> TRANG CHỦ</a>
+        <a href="#products" class="nav-link" data-nav="products"><i class="fas fa-layer-group"></i> DANH MỤC</a>
+        <a href="#topup" class="nav-link" id="navTopupBtn"><i class="fas fa-wallet"></i> NẠP TIỀN</a>
+        <a href="#history" class="nav-link" id="navHistoryBtn"><i class="fas fa-clock-rotate-left"></i> LỊCH SỬ</a>
+        <a href="#feedback" class="nav-link" data-nav="feedback"><i class="fas fa-comments"></i> ĐÁNH GIÁ</a>
+        <a href="#admin" class="nav-link" id="navAdminBtn"><i class="fas fa-shield-halved"></i> QUẢN TRỊ</a>
+      </nav>
 
-                    <div class="modal-actions" id="modalActionArea">
-                        <button class="btn-buy-now" id="btnBuyNow" type="button"><i class="fas fa-shopping-cart"></i> Mua Ngay</button>
-                        <button class="btn-deposit-alt" id="btnDepositPrompt" type="button"><i class="fas fa-qrcode"></i> Nạp Thêm Tiền</button>
-                    </div>
-                </div>
-            </div>
+      <!-- Right Header Actions -->
+      <div class="header-right">
+        <div class="balance-pill" id="userBalancePill" title="Số dư tài khoản của bạn">
+          <i class="fas fa-coins"></i>
+          <span id="userBalanceVal">0 ₫</span>
         </div>
+        <button class="btn-auth" id="headerAuthBtn" type="button">
+          <i class="fas fa-user"></i>
+          <span id="headerAuthText">ĐĂNG NHẬP</span>
+        </button>
+        <button class="menu-toggle-btn" id="mobileMenuBtn" aria-label="Mở menu điều hướng">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- Topup Modal (VietQR 24/7) -->
-    <div class="modal-overlay" id="topupModal" role="dialog" aria-modal="true" aria-label="Nạp tiền tự động">
-        <div class="modal-content topup-modal card-3d">
-            <button class="modal-close" aria-label="Đóng"><i class="fas fa-times"></i></button>
-            <h2><i class="fas fa-qrcode"></i> NẠP TIỀN TỰ ĐỘNG 24/7</h2>
-            <p class="sub-text">Hệ thống xử lý tự động qua VietQR - Tiền vào tài khoản sau 1-3 giây</p>
-            <div class="topup-body">
-                <div class="qr-container">
-                    <img id="vietqrImg" src="https://api.vietqr.io/image/970422-0388888888-compact2.jpg?amount=50000&addInfo=NAP%20LIXSHOP" alt="VietQR Nạp tiền" class="qr-code-img" loading="lazy" decoding="async" width="200" height="200">
-                    <span class="qr-badge"><i class="fas fa-bolt"></i> Quét mã để nạp nhanh</span>
-                </div>
-                <div class="topup-info">
-                    <div class="bank-row">
-                        <span>Ngân hàng:</span>
-                        <strong>MB BANK (Quân Đội)</strong>
-                    </div>
-                    <div class="bank-row">
-                        <span>Số tài khoản:</span>
-                        <strong class="copyable" id="copyBankAccBtn" role="button" tabindex="0" title="Nhấp để sao chép"><span>0388888888</span> <i class="fas fa-copy"></i></strong>
-                    </div>
-                    <div class="bank-row">
-                        <span>Chủ tài khoản:</span>
-                        <strong>LIX SHOP ADMIN</strong>
-                    </div>
-                    <div class="bank-row">
-                        <span>Nội dung chuyển:</span>
-                        <strong class="copyable highlight-syntax" id="copyBankMemoBtn" role="button" tabindex="0" title="Nhấp để sao chép"><span>NAP LIXSHOP</span> <i class="fas fa-copy"></i></strong>
-                    </div>
-                    <div class="notice-box">
-                        <i class="fas fa-info-circle"></i> Vui lòng ghi đúng nội dung chuyển khoản để hệ thống cộng tiền tự động.
-                    </div>
-                </div>
+  <!-- MAIN STOREFRONT VIEW -->
+  <main id="storefrontView">
+    <!-- HERO SECTION -->
+    <section class="nexus-hero" id="home">
+      <div class="hero-glow-blob"></div>
+      <div class="nexus-container hero-content">
+        <div class="hero-status-pill">
+          <span class="status-dot-pulse"></span>
+          <span>Hệ thống trực tuyến 24/7 • Cấp Key tự động</span>
+        </div>
+
+        <h2 class="hero-title">
+          WELCOME TO <br>
+          <span class="title-accent">NEXUS GAMING STORE</span>
+        </h2>
+
+        <p class="hero-subtitle">UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN</p>
+        <p class="hero-description">
+          Trung tâm phân phối bản quyền kỹ thuật số, công cụ tối ưu FPS và hỗ trợ game thủ chuyên nghiệp. Giao dịch tức thì, bảo mật cao cấp và chăm sóc khách hàng 24/7.
+        </p>
+
+        <!-- Feature Badges -->
+        <div class="hero-badges-grid">
+          <div class="hero-badge-item"><i class="fas fa-robot"></i> <span>AUTO 24/7</span></div>
+          <div class="hero-badge-item"><i class="fas fa-shield-check"></i> <span>AN TOÀN 100%</span></div>
+          <div class="hero-badge-item"><i class="fas fa-bolt-lightning"></i> <span>CẤP KEY TỨC THÌ</span></div>
+          <div class="hero-badge-item"><i class="fas fa-headset"></i> <span>HỖ TRỢ 24/7</span></div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="hero-cta-group">
+          <a href="#products" class="btn-cta-primary"><i class="fas fa-gamepad"></i> KHÁM PHÁ SẢN PHẨM</a>
+          <button class="btn-cta-secondary" id="heroTopupBtn" type="button"><i class="fas fa-qrcode"></i> NẠP TIỀN NGAY</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS SECTION -->
+    <section class="nexus-products-section" id="products">
+      <div class="nexus-container">
+        <div class="section-header-row">
+          <div class="section-title-wrap">
+            <h2><i class="fas fa-box-open"></i> KHO SẢN PHẨM & KEY GAME</h2>
+            <span class="section-status-tag"><i class="fas fa-circle-check"></i> Hệ thống hoạt động 24/7 • Kho hàng luôn sẵn sàng</span>
+          </div>
+        </div>
+
+        <!-- Search, Filter & Sort Toolbar -->
+        <div class="products-filter-toolbar">
+          <div class="filter-top-row">
+            <div class="search-input-box">
+              <i class="fas fa-magnifying-glass"></i>
+              <input type="text" id="productSearchInput" placeholder="Tìm kiếm game, key bản quyền, config..." autocomplete="off">
             </div>
+            <div class="sort-select-box">
+              <select id="productSortSelect">
+                <option value="newest">Sắp xếp: Mới nhất</option>
+                <option value="price_asc">Giá: Thấp → Cao</option>
+                <option value="price_desc">Giá: Cao → Thấp</option>
+                <option value="popular">Bán chạy nhất</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category Pills -->
+          <div class="category-pills-list" id="categoryPillsList">
+            <button class="cat-pill-btn active" data-category="all"><i class="fas fa-border-all"></i> Tất cả</button>
+            <button class="cat-pill-btn" data-category="freefire"><i class="fas fa-fire"></i> Free Fire</button>
+            <button class="cat-pill-btn" data-category="pubg"><i class="fas fa-crosshairs"></i> PUBG Mobile</button>
+            <button class="cat-pill-btn" data-category="pool"><i class="fas fa-circle-dot"></i> 8 Ball Pool</button>
+            <button class="cat-pill-btn" data-category="config"><i class="fas fa-gear"></i> ACC / CONFIG</button>
+            <button class="cat-pill-btn" data-category="download"><i class="fas fa-cloud-arrow-down"></i> FILE TẢI XUỐNG</button>
+          </div>
         </div>
-    </div>
 
-    <!-- History Modal -->
-    <div class="modal-overlay" id="historyModal" role="dialog" aria-modal="true" aria-label="Lịch sử mua hàng">
-        <div class="modal-content history-modal card-3d">
-            <button class="modal-close" aria-label="Đóng"><i class="fas fa-times"></i></button>
-            <h2><i class="fas fa-history"></i> LỊCH SỬ MUA HÀNG</h2>
-            <div id="historyList" class="history-list"></div>
+        <!-- Dynamic Products Grid -->
+        <div class="products-cards-grid" id="productsGrid">
+          <!-- Rendered dynamically by app.js -->
         </div>
-    </div>
+      </div>
+    </section>
 
-    <!-- Login Modal -->
-    <div class="modal-overlay" id="loginModal" role="dialog" aria-modal="true" aria-label="Đăng nhập tài khoản">
-        <div class="modal-content login-modal card-3d">
-            <button class="modal-close" aria-label="Đóng"><i class="fas fa-times"></i></button>
-            <h2><i class="fas fa-user-lock"></i> ĐĂNG NHẬP HỆ THỐNG</h2>
-            <form id="loginForm" class="auth-form">
-                <div class="form-group">
-                    <label for="loginUsername"><i class="fas fa-user"></i> Tài khoản hoặc SĐT</label>
-                    <input type="text" id="loginUsername" name="username" required placeholder="Nhập tài khoản của bạn" autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword"><i class="fas fa-lock"></i> Mật khẩu</label>
-                    <input type="password" id="loginPassword" name="password" required placeholder="Nhập mật khẩu" autocomplete="current-password">
-                </div>
-                <button type="submit" class="btn-primary w-full"><i class="fas fa-sign-in-alt"></i> Đăng Nhập</button>
-            </form>
+    <!-- FEEDBACK SECTION -->
+    <section class="nexus-feedback-section" id="feedback">
+      <div class="nexus-container">
+        <div class="section-header-row">
+          <div class="section-title-wrap">
+            <h2><i class="fas fa-star-half-stroke"></i> HÌNH ẢNH FEEDBACK & ĐÁNH GIÁ UY TÍN</h2>
+            <span class="section-status-tag"><i class="fas fa-shield-heart"></i> Hơn 10,000+ giao dịch thành công mỗi tháng</span>
+          </div>
+          <button class="btn-cta-secondary" id="openFeedbackModalBtn" type="button"><i class="fas fa-pen-to-square"></i> Gửi đánh giá mới</button>
         </div>
+
+        <div class="feedback-grid" id="feedbackGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ADMIN DASHBOARD VIEW (SPA MODE) -->
+  <section class="admin-view-wrapper" id="adminDashboardView">
+    <aside class="admin-sidebar">
+      <div class="admin-menu-item active" data-admin-tab="overview"><i class="fas fa-chart-line"></i> Tổng quan</div>
+      <div class="admin-menu-item" data-admin-tab="members"><i class="fas fa-users-gear"></i> Thành viên & Phân quyền</div>
+      <div class="admin-menu-item" data-admin-tab="products"><i class="fas fa-boxes-stacked"></i> Kho sản phẩm</div>
+      <div class="admin-menu-item" data-admin-tab="downloads"><i class="fas fa-download"></i> File miễn phí</div>
+      <div class="admin-menu-item" data-admin-tab="coupons"><i class="fas fa-ticket"></i> Mã giảm giá</div>
+      <div class="admin-menu-item" data-admin-tab="orders"><i class="fas fa-file-invoice-dollar"></i> Đơn hàng</div>
+      <div class="admin-menu-item" data-admin-tab="feedbacks"><i class="fas fa-comments"></i> Feedback</div>
+      <div class="admin-menu-item" data-admin-tab="support"><i class="fas fa-headset"></i> Chat hỗ trợ</div>
+      <div class="admin-menu-item" data-admin-tab="settings"><i class="fas fa-sliders"></i> Cấu hình hệ thống</div>
+      <div class="admin-menu-item" id="adminExitBtn" style="margin-top: auto; color: var(--neon-red);"><i class="fas fa-arrow-right-from-bracket"></i> Thoát quản trị</div>
+    </aside>
+
+    <div class="admin-main-panel" id="adminMainPanel">
+      <!-- Admin Content injected by app.js -->
     </div>
+  </section>
 
-    <!-- Notification Toast Container -->
-    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+  <!-- FOOTER -->
+  <footer class="nexus-footer">
+    <div class="nexus-container">
+      <div class="footer-main-grid">
+        <div class="footer-col footer-col-about">
+          <div class="brand-logo">
+            <div class="brand-icon"><i class="fas fa-bolt"></i></div>
+            <div class="brand-text">
+              <h1>NEXUS STORE</h1>
+              <span>GAMING DIGITAL STORE</span>
+            </div>
+          </div>
+          <p>Hệ thống cung cấp giải pháp, key bản quyền và tiện ích kỹ thuật số hàng đầu cho game thủ. Tự động hóa thanh toán và cấp phát key chuẩn xác 24/7.</p>
+          <div class="footer-support-status">
+            <i class="fas fa-headset"></i>
+            <span>HỖ TRỢ KHÁCH HÀNG 24/7</span>
+          </div>
+        </div>
 
-    <!-- Scripts -->
-    <script src="products.js" defer></script>
-    <script src="app.js" defer></script>
-    
+        <div class="footer-col">
+          <h4>LIÊN KẾT NHANH</h4>
+          <ul>
+            <li><a href="#home">Trang chủ</a></li>
+            <li><a href="#products">Kho sản phẩm</a></li>
+            <li><a href="#topup" id="footerTopupLink">Nạp tiền vào ví</a></li>
+            <li><a href="#history" id="footerHistoryLink">Lịch sử giao dịch</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>DANH MỤC GAME</h4>
+          <ul>
+            <li><a href="#products" class="footer-cat-link" data-cat="freefire">Free Fire</a></li>
+            <li><a href="#products" class="footer-cat-link" data-cat="pubg">PUBG Mobile</a></li>
+            <li><a href="#products" class="footer-cat-link" data-cat="pool">8 Ball Pool</a></li>
+            <li><a href="#products" class="footer-cat-link" data-cat="config">Config FPS</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>KÊNH HỖ TRỢ</h4>
+          <div class="footer-contact-box">
+            <div class="contact-item"><i class="fas fa-phone"></i> <span>Hotline: 0987.654.321</span></div>
+            <div class="contact-item"><i class="fab fa-telegram"></i> <span>Telegram: @nexusgamingshop</span></div>
+            <div class="contact-item"><i class="fab fa-discord"></i> <span>Discord: discord.gg/nexusgaming</span></div>
+            <div class="contact-item"><i class="fas fa-envelope"></i> <span>Email: support@nexusstore.vn</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <span>© 2026 NEXUS GAMING STORE. All rights reserved. Nền tảng phân phối sản phẩm số hợp pháp.</span>
+        <span>Thiết kế bởi Tranquocviet • Công nghệ Glassmorphism & Cyber Neon</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MODALS SYSTEM
+       ========================================================================== -->
+
+  <!-- 1. PRODUCT DETAIL & BUY MODAL -->
+  <div class="nexus-modal-backdrop" id="productModalBackdrop">
+    <div class="nexus-modal-card">
+      <div class="modal-header-row">
+        <h3><i class="fas fa-cube"></i> CHI TIẾT SẢN PHẨM</h3>
+        <button class="modal-close-btn" type="button" aria-label="Đóng"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body-content" id="productModalBody">
+        <!-- Rendered by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. TOPUP WALLET MODAL -->
+  <div class="nexus-modal-backdrop" id="topupModalBackdrop">
+    <div class="nexus-modal-card">
+      <div class="modal-header-row">
+        <h3><i class="fas fa-wallet"></i> NẠP TIỀN TÀI KHOẢN</h3>
+        <button class="modal-close-btn" type="button" aria-label="Đóng"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body-content">
+        <!-- Payment Method Tabs -->
+        <div class="category-pills-list" style="margin-bottom: 18px;">
+          <button class="cat-pill-btn active" id="tabPayQr"><i class="fas fa-qrcode"></i> Quét mã VietQR / Ngân hàng</button>
+          <button class="cat-pill-btn" id="tabPayCard"><i class="fas fa-credit-card"></i> Thẻ cào điện thoại</button>
+        </div>
+
+        <!-- VietQR Box -->
+        <div id="boxPayQr">
+          <label style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; display: block;">Chọn nhanh mệnh giá nạp:</label>
+          <div class="quick-amounts-grid">
+            <button class="quick-amt-btn active" data-amt="20000">20.000 đ</button>
+            <button class="quick-amt-btn" data-amt="50000">50.000 đ</button>
+            <button class="quick-amt-btn" data-amt="100000">100.000 đ</button>
+            <button class="quick-amt-btn" data-amt="200000">200.000 đ</button>
+            <button class="quick-amt-btn" data-amt="500000">500.000 đ</button>
+            <button class="quick-amt-btn" data-amt="1000000">1.000.000 đ</button>
+          </div>
+
+          <div class="form-group-field">
+            <label for="customTopupAmount">Hoặc nhập số tiền tùy chọn (VNĐ):</label>
+            <input type="number" id="customTopupAmount" placeholder="Ví dụ: 150000" min="10000" step="10000" value="20000">
+          </div>
+
+          <button class="btn-cta-primary" id="btnGenQr" style="width: 100%; justify-content: center; margin-bottom: 16px;">
+            <i class="fas fa-bolt"></i> TẠO MÃ QR THANH TOÁN
+          </button>
+
+          <!-- QR Result Container -->
+          <div id="qrResultArea" style="display: none;">
+            <div class="qr-pay-wrapper">
+              <img id="qrDisplayImg" src="" alt="Mã VietQR thanh toán">
+              <span style="font-size: 11px; color: #333; font-weight: 700; margin-top: 6px; display: block;">Quét bằng app ngân hàng bất kỳ</span>
+            </div>
+
+            <div class="bank-meta-info">
+              <div class="bank-meta-row">
+                <span>Ngân hàng:</span>
+                <strong>MB BANK (Quân Đội)</strong>
+              </div>
+              <div class="bank-meta-row">
+                <span>Số tài khoản:</span>
+                <strong>0987654321098 <button class="copy-badge-btn" data-copy="0987654321098">Sao chép</button></strong>
+              </div>
+              <div class="bank-meta-row">
+                <span>Chủ tài khoản:</span>
+                <strong>TRAN QUOC VIET</strong>
+              </div>
+              <div class="bank-meta-row">
+                <span>Số tiền:</span>
+                <strong id="qrTotalDisplay" style="color: var(--neon-cyan);">20.000 ₫</strong>
+              </div>
+              <div class="bank-meta-row">
+                <span>Nội dung chuyển:</span>
+                <strong id="qrMemoDisplay" style="color: var(--neon-green);">NEXUS NAP 8812</strong>
+                <button class="copy-badge-btn" id="btnCopyMemo">Sao chép</button>
+              </div>
+            </div>
+
+            <!-- Fake Auto Verify status for Demo -->
+            <div style="margin-top: 14px; text-align: center;">
+              <span id="topupStatusBadge" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius-full); background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-size: 12.5px; font-weight: 700;">
+                <i class="fas fa-spinner fa-spin"></i> Đang chờ thanh toán tự động...
+              </span>
+              <button class="btn-cta-secondary" id="btnSimulateSuccess" style="margin-top: 10px; width: 100%; justify-content: center; font-size: 13px;">
+                <i class="fas fa-circle-check"></i> [DEMO] Giả lập thanh toán thành công ngay
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Card Box -->
+        <div id="boxPayCard" style="display: none;">
+          <div class="form-group-field">
+            <label for="cardTypeSelect">Nhà mạng:</label>
+            <select id="cardTypeSelect">
+              <option value="viettel">Viettel (Chiết khấu 0%)</option>
+              <option value="vinaphone">Vinaphone (Chiết khấu 0%)</option>
+              <option value="mobifone">Mobifone (Chiết khấu 0%)</option>
+            </select>
+          </div>
+          <div class="form-group-field">
+            <label for="cardAmountSelect">Mệnh giá thẻ:</label>
+            <select id="cardAmountSelect">
+              <option value="20000">20.000 ₫ (Nhận 20.000 ₫)</option>
+              <option value="50000">50.000 ₫ (Nhận 50.000 ₫)</option>
+              <option value="100000">100.000 ₫ (Nhận 100.000 ₫)</option>
+              <option value="200000">200.000 ₫ (Nhận 200.000 ₫)</option>
+              <option value="500000">500.000 ₫ (Nhận 500.000 ₫)</option>
+            </select>
+          </div>
+          <div class="form-group-field">
+            <label for="cardPinInput">Mã PIN thẻ cào:</label>
+            <input type="text" id="cardPinInput" placeholder="Nhập mã thẻ dưới lớp cào">
+          </div>
+          <div class="form-group-field">
+            <label for="cardSerialInput">Số Serial:</label>
+            <input type="text" id="cardSerialInput" placeholder="Nhập số seri in trên thẻ">
+          </div>
+          <button class="btn-cta-primary" id="btnSubmitCard" style="width: 100%; justify-content: center;">
+            <i class="fas fa-paper-plane"></i> NẠP THẺ NGAY
+          </button>
+        </div>
+
+        <!-- Topup History Table -->
+        <div style="margin-top: 24px;">
+          <h4 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 10px;">Lịch sử nạp tiền gần nhất</h4>
+          <div style="overflow-x: auto; background: var(--bg-surface-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px;" id="topupHistoryTable">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--border-glass); color: var(--text-muted); text-align: left;">
+                  <th style="padding: 8px 10px;">Thời gian</th>
+                  <th style="padding: 8px 10px;">Phương thức</th>
+                  <th style="padding: 8px 10px;">Mệnh giá</th>
+                  <th style="padding: 8px 10px;">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="topupHistoryBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ORDER HISTORY MODAL -->
+  <div class="nexus-modal-backdrop" id="historyModalBackdrop">
+    <div class="nexus-modal-card" style="max-width: 720px;">
+      <div class="modal-header-row">
+        <h3><i class="fas fa-file-invoice"></i> LỊCH SỬ ĐƠN HÀNG CỦA BẠN</h3>
+        <button class="modal-close-btn" type="button" aria-label="Đóng"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body-content">
+        <div id="orderHistoryList">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. AUTH & PROFILE MODAL -->
+  <div class="nexus-modal-backdrop" id="authModalBackdrop">
+    <div class="nexus-modal-card" style="max-width: 440px;">
+      <div class="modal-header-row">
+        <h3 id="authModalTitle"><i class="fas fa-user-lock"></i> ĐĂNG NHẬP</h3>
+        <button class="modal-close-btn" type="button" aria-label="Đóng"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body-content">
+        <!-- Auth Switch Tabs -->
+        <div class="category-pills-list" style="margin-bottom: 20px;">
+          <button class="cat-pill-btn active" id="tabAuthLogin">Đăng nhập</button>
+          <button class="cat-pill-btn" id="tabAuthRegister">Đăng ký</button>
+          <button class="cat-pill-btn" id="tabAuthPassword">Đổi mật khẩu</button>
+        </div>
+
+        <!-- Form Đăng nhập -->
+        <form id="formLogin">
+          <div class="form-group-field">
+            <label for="loginUsername">Username hoặc Email:</label>
+            <input type="text" id="loginUsername" required placeholder="Nhập username hoặc gmail...">
+          </div>
+          <div class="form-group-field">
+            <label for="loginPassword">Mật khẩu:</label>
+            <input type="password" id="loginPassword" required placeholder="••••••••">
+          </div>
+          <button class="btn-cta-primary" type="submit" style="width: 100%; justify-content: center; margin-top: 10px;">
+            <i class="fas fa-right-to-bracket"></i> ĐĂNG NHẬP
+          </button>
+        </form>
+
+        <!-- Form Đăng ký -->
+        <form id="formRegister" style="display: none;">
+          <div class="form-group-field">
+            <label for="regUsername">Tên tài khoản (Username):</label>
+            <input type="text" id="regUsername" required placeholder="Ví dụ: gamer_viet99">
+          </div>
+          <div class="form-group-field">
+            <label for="regEmail">Địa chỉ Email:</label>
+            <input type="email" id="regEmail" required placeholder="name@domain.com">
+          </div>
+          <div class="form-group-field">
+            <label for="regPassword">Mật khẩu:</label>
+            <input type="password" id="regPassword" required placeholder="Tối thiểu 6 ký tự">
+          </div>
+          <div class="form-group-field">
+            <label for="regConfirmPassword">Xác nhận mật khẩu:</label>
+            <input type="password" id="regConfirmPassword" required placeholder="Nhập lại mật khẩu">
+          </div>
+          <div class="form-group-field">
+            <label>Mã bảo vệ (CAPTCHA): <strong id="captchaVal" style="color: var(--neon-cyan); letter-spacing: 2px;">8892</strong></label>
+            <input type="text" id="regCaptchaInput" required placeholder="Nhập 4 số hiển thị ở trên">
+          </div>
+          <button class="btn-cta-primary" type="submit" style="width: 100%; justify-content: center; margin-top: 10px;">
+            <i class="fas fa-user-plus"></i> TẠO TÀI KHOẢN
+          </button>
+        </form>
+
+        <!-- Form Đổi mật khẩu -->
+        <form id="formPassword" style="display: none;">
+          <div class="form-group-field">
+            <label for="pwdCurrent">Mật khẩu hiện tại:</label>
+            <input type="password" id="pwdCurrent" required placeholder="••••••••">
+          </div>
+          <div class="form-group-field">
+            <label for="pwdNew">Mật khẩu mới:</label>
+            <input type="password" id="pwdNew" required placeholder="Mật khẩu mới">
+          </div>
+          <div class="form-group-field">
+            <label for="pwdConfirm">Xác nhận mật khẩu mới:</label>
+            <input type="password" id="pwdConfirm" required placeholder="Nhập lại mật khẩu mới">
+          </div>
+          <button class="btn-cta-primary" type="submit" style="width: 100%; justify-content: center; margin-top: 10px;">
+            <i class="fas fa-key"></i> LƯU MẬT KHẨU MỚI
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. FEEDBACK SUBMIT MODAL -->
+  <div class="nexus-modal-backdrop" id="feedbackModalBackdrop">
+    <div class="nexus-modal-card" style="max-width: 500px;">
+      <div class="modal-header-row">
+        <h3><i class="fas fa-pen-nib"></i> GỬI ĐÁNH GIÁ SẢN PHẨM</h3>
+        <button class="modal-close-btn" type="button" aria-label="Đóng"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body-content">
+        <form id="formFeedback">
+          <div class="form-group-field">
+            <label for="fbAuthor">Họ tên / Tên hiển thị:</label>
+            <input type="text" id="fbAuthor" required placeholder="Ví dụ: Hoàng Tuấn Gamer">
+          </div>
+          <div class="form-group-field">
+            <label for="fbProduct">Sản phẩm đã trải nghiệm:</label>
+            <select id="fbProductSelect">
+              <option value="Aimlock Free Fire V2 PRO">Aimlock Free Fire V2 PRO</option>
+              <option value="No Recoil PUBG Mobile Smart">No Recoil PUBG Mobile Smart</option>
+              <option value="Auto Guideline 8 Ball Pool">Auto Guideline 8 Ball Pool</option>
+              <option value="Gói Tinh Chỉnh DPI 100%">Gói Tinh Chỉnh DPI 100%</option>
+            </select>
+          </div>
+          <div class="form-group-field">
+            <label>Đánh giá số sao:</label>
+            <select id="fbStarsSelect">
+              <option value="5">⭐⭐⭐⭐⭐ 5 Sao (Cực kỳ xuất sắc)</option>
+              <option value="4">⭐⭐⭐⭐ 4 Sao (Hài lòng)</option>
+              <option value="3">⭐⭐⭐ 3 Sao (Tạm ổn)</option>
+            </select>
+          </div>
+          <div class="form-group-field">
+            <label for="fbContent">Nội dung đánh giá thực tế:</label>
+            <textarea id="fbContent" rows="3" required placeholder="Chia sẻ cảm nhận sau khi dùng key game hoặc config..."></textarea>
+          </div>
+          <button class="btn-cta-primary" type="submit" style="width: 100%; justify-content: center;">
+            <i class="fas fa-paper-plane"></i> GỬI ĐÁNH GIÁ
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="nexus-toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- SCRIPT FILES -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>

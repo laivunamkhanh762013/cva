@@ -1,111 +1,209 @@
-﻿const { getGist, updateGist } = require('./db');
-const { signUserToken, parseBody, checkApiDdos } = require('./_security');
+const crypto = require('crypto');
+const { promisify } = require('util');
+const { getGist, updateGist } = require('./db');
+const { signUserToken, checkApiDdos, verifyAdminToken } = require('./_security');
+const { Mutex } = require('./_mutex');
+
+const scryptAsync = promisify(crypto.scrypt);
+const userMutex = new Mutex();
+
+// Dynamic dummy credentials to prevent timing side-channel
+const DUMMY_SALT = crypto.randomBytes(16).toString('hex');
+const DUMMY_KEY = crypto.randomBytes(32).toString('hex');
+
+const AUTH_CONFIG = Object.freeze({
+  keyLength: 32,
+  saltLength: 16,
+  minUsernameLength: 3,
+  maxUsernameLength: 30,
+  minPasswordLength: 6,
+  maxPasswordLength: 100,
+  maxUsersLimit: 500
+});
 
 function maskPhone(phone) {
-  if (!phone || phone.length < 6) return '***';
+  if (!phone || typeof phone !== 'string' || phone.length < 6) return '***';
   return phone.substring(0, 3) + '****' + phone.substring(phone.length - 3);
 }
 
-function sanitizeText(str, maxLen) {
-  if (!str) return '';
-  return String(str).replace(/[<>'"]/g, '').trim().substring(0, maxLen || 50);
+function constantTimeEqual(a, b) {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
+async function hashPassword(plain) {
+  if (typeof plain !== 'string') throw new Error('Password must be a string');
+  const salt = crypto.randomBytes(AUTH_CONFIG.saltLength).toString('hex');
+  const derivedKey = await scryptAsync(plain, salt, AUTH_CONFIG.keyLength);
+  return salt + ':' + derivedKey.toString('hex');
+}
+
+async function verifyPassword(plain, stored) {
+  if (typeof plain !== 'string' || typeof stored !== 'string') return false;
+  const colonIdx = stored.indexOf(':');
+  if (colonIdx === -1) {
+    // Backward compatibility for legacy plain-text
+    return constantTimeEqual(plain, stored);
+  }
+  const salt = stored.substring(0, colonIdx);
+  const key = stored.substring(colonIdx + 1);
+  if (!salt || !key) return false;
+  const derivedKey = await scryptAsync(plain, salt, AUTH_CONFIG.keyLength);
+  return constantTimeEqual(key, derivedKey.toString('hex'));
 }
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  // Anti-DDoS API Rate Limit (30 req / 1 min for auth)
-  const ddosCheck = checkApiDdos(req, 30, 60000);
-  if (!ddosCheck.allowed) {
-    return res.status(429).json({ success: false, error: 'Quá nhiều yêu cầu. Vui lòng thử lại sau ' + ddosCheck.retryAfter + 's (Anti-DDoS).' });
-  }
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token, x-user-token');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
+  // Anti-DDoS Rate Limit (30 req / 1 min for auth)
+  const ddosCheck = checkApiDdos(req, 30, 60000);
+  if (!ddosCheck.allowed) {
+    return res.status(429).json({ success: false, error: 'Quá nhiều yêu cầu. Vui lòng thử lại sau ' + ddosCheck.retryAfter + 's.' });
+  }
+
   try {
+    // ════════ GET: LẤY DANH SÁCH USER (CHỈ DÀNH CHO ADMIN) ════════
     if (req.method === 'GET') {
+      if (!verifyAdminToken(req)) {
+        return res.status(401).json({ success: false, error: 'Quyền hạn bị từ chối: Chỉ Quản trị viên mới được xem danh sách thành viên.' });
+      }
+
       const { users } = await getGist();
-      // Mask sensitive phone numbers & never expose passwords
-      const safeUsers = users.map(u => ({
-        username: sanitizeText(u.username, 30),
+      const userList = Array.isArray(users) ? users : [];
+      const safeUsers = userList.map(u => ({
+        username: String(u.username || '').substring(0, 30),
         phone: maskPhone(u.phone),
         createdAt: u.createdAt || ''
       }));
       return res.status(200).json({ success: true, users: safeUsers });
     }
 
+    // ════════ POST: ĐĂNG KÝ / ĐĂNG NHẬP ════════
     if (req.method === 'POST') {
       let body = req.body;
       if (typeof body === 'string') {
-        try { body = JSON.parse(body); } catch(e) {}
+        try {
+          body = JSON.parse(body);
+        } catch(e) {
+          return res.status(400).json({ success: false, error: 'Dữ liệu JSON không hợp lệ.' });
+        }
+      }
+      if (!body || typeof body !== 'object' || Array.isArray(body)) {
+        return res.status(400).json({ success: false, error: 'Dữ liệu yêu cầu không hợp lệ.' });
       }
 
-      const action = body.action || 'login';
-      const username = sanitizeText(body.username, 30);
-      const password = (body.password || '').trim().substring(0, 100);
-      const phone = sanitizeText(body.phone, 15);
-
-      if (!username || username.length < 3) {
-        return res.status(400).json({ success: false, error: 'Tên đăng nhập phải có ít nhất 3 ký tự!' });
+      const action = String(body.action || 'login').toLowerCase().trim();
+      if (action !== 'login' && action !== 'register') {
+        return res.status(400).json({ success: false, error: 'Hành động không hợp lệ (Chỉ hỗ trợ login hoặc register).' });
       }
 
-      if (!password || password.length < 3) {
-        return res.status(400).json({ success: false, error: 'Mật khẩu phải có ít nhất 3 ký tự!' });
+      // Input Validation: Strict Whitelist Regex
+      const username = String(body.username || '').trim();
+      const password = typeof body.password === 'string' ? body.password : '';
+      const rawPhone = String(body.phone || '').trim().substring(0, 20);
+
+      if (!/^[a-zA-Z0-9_.@-]{3,30}$/.test(username)) {
+        return res.status(400).json({ success: false, error: 'Tên đăng nhập không hợp lệ (từ 3-30 ký tự, chỉ gồm chữ, số hoặc . _ @ -).' });
       }
 
-      const { users } = await getGist();
-      const existing = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+      if (password.length < AUTH_CONFIG.minPasswordLength || password.length > AUTH_CONFIG.maxPasswordLength) {
+        return res.status(400).json({ success: false, error: 'Mật khẩu phải từ 6 đến 100 ký tự!' });
+      }
 
+      // ──────────────── XỬ LÝ ĐĂNG KÝ (REGISTER) ────────────────
       if (action === 'register') {
-        if (existing) {
-          return res.status(400).json({ success: false, error: 'Tên tài khoản này đã có người sử dụng!' });
+        const cleanPhoneDigits = rawPhone.replace(/\s+/g, '');
+        if (!/^(0|\+84)[0-9]{8,11}$/.test(cleanPhoneDigits)) {
+          return res.status(400).json({ success: false, error: 'Bắt buộc nhập đúng Số điện thoại/Zalo (từ 9 đến 12 số)!' });
         }
 
-        const newUser = {
-          username: username,
-          password: password,
-          phone: phone,
-          createdAt: new Date().toLocaleString('vi-VN')
-        };
-        users.unshift(newUser);
-        const trimmedUsers = users.slice(0, 500);
-        await updateGist({ users: trimmedUsers });
+        const hashedPassword = await hashPassword(password);
 
-        const token = signUserToken(newUser.username);
+        const registerResult = await userMutex.run(async () => {
+          const { users } = await getGist();
+          const userList = Array.isArray(users) ? users : [];
+          const existing = userList.find(u => u && u.username && u.username.toLowerCase() === username.toLowerCase());
+          if (existing) {
+            return { error: 'Tên tài khoản này đã có người sử dụng!', code: 400 };
+          }
+
+          const newUser = {
+            username: username,
+            password: hashedPassword,
+            phone: cleanPhoneDigits,
+            createdAt: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+          };
+
+          userList.unshift(newUser);
+          await updateGist({ users: userList.slice(0, AUTH_CONFIG.maxUsersLimit) });
+          return { success: true, user: newUser };
+        });
+
+        if (registerResult.error) {
+          return res.status(registerResult.code || 400).json({ success: false, error: registerResult.error });
+        }
+
+        const token = signUserToken(registerResult.user.username);
         return res.status(200).json({
           success: true,
           message: 'Đăng ký tài khoản thành công!',
           token: token,
-          user: { username: newUser.username, phone: newUser.phone }
+          user: { username: registerResult.user.username, phone: maskPhone(registerResult.user.phone) }
         });
-      } else {
-        // Login
-        if (!existing) {
-          return res.status(400).json({ success: false, error: 'Tài khoản chưa tồn tại! Vui lòng bấm Đăng Ký.' });
+      }
+
+      // ──────────────── XỬ LÝ ĐĂNG NHẬP (LOGIN) ────────────────
+      if (action === 'login') {
+        const { users } = await getGist();
+        const userList = Array.isArray(users) ? users : [];
+        const user = userList.find(u => u && u.username && u.username.toLowerCase() === username.toLowerCase());
+
+        // Dummy hash execution to prevent timing enumeration
+        if (!user) {
+          await verifyPassword(password, `${DUMMY_SALT}:${DUMMY_KEY}`);
+          return res.status(401).json({ success: false, error: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
         }
 
-        if (existing.password && existing.password !== password) {
-          return res.status(401).json({ success: false, error: 'Mật khẩu không chính xác!' });
+        const isMatch = await verifyPassword(password, user.password || '');
+        if (!isMatch) {
+          return res.status(401).json({ success: false, error: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
         }
 
-        const token = signUserToken(existing.username);
+        // Tự động nâng cấp hash scrypt cho mật khẩu legacy (chưa có :)
+        if (user.password && !user.password.includes(':')) {
+          userMutex.run(async () => {
+            const freshGist = await getGist();
+            const freshUsers = Array.isArray(freshGist.users) ? freshGist.users : [];
+            const idx = freshUsers.findIndex(u => u && u.username && u.username.toLowerCase() === username.toLowerCase());
+            if (idx >= 0 && !freshUsers[idx].password.includes(':')) {
+              freshUsers[idx].password = await hashPassword(password);
+              await updateGist({ users: freshUsers });
+            }
+          }).catch(err => console.warn('Hash upgrade warning:', err.message));
+        }
+
+        const token = signUserToken(user.username);
         return res.status(200).json({
           success: true,
           message: 'Đăng nhập thành công!',
           token: token,
-          user: { username: existing.username, phone: existing.phone }
+          user: { username: user.username, phone: maskPhone(user.phone) }
         });
       }
     }
 
     return res.status(405).json({ error: 'Method Not Allowed' });
   } catch (err) {
-    return res.status(500).json({ success: false, error: err.message });
+    console.error('Auth API Internal Error:', err);
+    return res.status(500).json({ success: false, error: 'Lỗi máy chủ xác thực.' });
   }
 };
-
-

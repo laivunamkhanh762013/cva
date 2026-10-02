@@ -61,7 +61,7 @@ $('#auth-form')?.addEventListener('submit',async e=>{e.preventDefault();const bt
 $('#logout')?.addEventListener('click',async e=>{const btn=e.currentTarget;try{loading(btn,true);const r=await api('logout');location.href=r.redirect}catch(err){toast(err.message,true);loading(btn,false)}});
 
 // Small counter animation
-$$('[data-counter-text]').forEach(el=>{const target=Number(el.dataset.counterText||0);if(!target||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const isMoney=el.dataset.money==='1',start=performance.now(),duration=650;const step=now=>{const p=Math.min(1,(now-start)/duration),v=Math.round(target*(1-Math.pow(1-p,3)));el.textContent=isMoney?money(v):v.toLocaleString('vi-VN');if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});
+$$('[data-counter-text]').forEach(el=>{const target=Number(el.dataset.counterText||0);if(!target||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const isMoney=el.dataset.money==='1',start=performance.now(),duration=200;const step=now=>{const p=Math.min(1,(now-start)/duration),v=Math.round(target*(1-Math.pow(1-p,3)));el.textContent=isMoney?money(v):v.toLocaleString('vi-VN');if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});
 
 
 // Product detail purchase

@@ -1,5 +1,6 @@
 const https = require('https');
 const { getGist, updateGist } = require('./db');
+const { verifyAdminToken } = require('./_security');
 
 // Danh sách từ cấm / từ thông dụng trong ngân hàng không được dùng làm từ khóa đối soát
 const STOP_WORDS = new Set([
@@ -63,6 +64,10 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
+  if (!verifyAdminToken(req)) {
+    return res.status(401).json({ paid: false, error: 'Unauthorized: Chỉ admin mới được dùng tính năng này.' });
+  }
+
   let query = req.query || {};
   if (!query.memo && !query.user && !query.orderId && req.url && req.url.includes('?')) {
     try {
@@ -80,7 +85,7 @@ module.exports = async function handler(req, res) {
 
   // Phải có ít nhất 1 mã hợp lệ (độ dài >= 3 và không nằm trong STOP_WORDS)
   const validKeys = [];
-  [cleanMemo, cleanOrderId, cleanUser].forEach(k => {
+  [cleanMemo, cleanOrderId].forEach(k => {
     if (k && k.length >= 3 && !STOP_WORDS.has(k) && !validKeys.includes(k)) {
       validKeys.push(k);
     }
@@ -131,7 +136,7 @@ module.exports = async function handler(req, res) {
       const amountIn = parseFloat(t.amount_in || 0);
 
       // Số tiền thực nhận phải >= 100% giá gói (nếu có giá), tối thiểu >= 10.000đ để tránh spam 1đ
-      const hasValidAmount = (minAmount > 0) ? (amountIn >= minAmount) : (amountIn >= 10000);
+      const hasValidAmount = (minAmount > 0) ? (amountIn === minAmount) : (amountIn >= 10000);
       if (!hasValidAmount) return false;
 
       // Khớp một trong các mã hợp lệ (Username hoặc Mã DP...)
@@ -151,7 +156,7 @@ module.exports = async function handler(req, res) {
           let updated = false;
           existingOrders.forEach(o => {
             const isMatch = (cleanOrderId && cleanToken(o.id) === cleanOrderId) ||
-                            (cleanMemo && (cleanToken(o.id) === cleanMemo || cleanToken(o.user) === cleanMemo)) ||
+                            (cleanMemo && (cleanToken(o.id) === cleanMemo || cleanToken(o.memo) === cleanMemo || cleanToken(o.user) === cleanMemo)) ||
                             (cleanUser && cleanToken(o.user) === cleanUser);
             if (isMatch && o.status !== 'approved') {
               o.status = 'approved';
