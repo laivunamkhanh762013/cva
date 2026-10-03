@@ -19,6 +19,9 @@
     docEl.classList.add('nx-intro-complete');
     document.body.style.overflow = '';
 
+    const headerBrandLogo = document.getElementById('brandLogo');
+    if (headerBrandLogo) headerBrandLogo.style.opacity = '1';
+
     if (introEl) {
       introEl.classList.add('nx-intro-fading');
       setTimeout(() => {
@@ -54,51 +57,68 @@
       if (seen) {
         // Returning user in same session: fast 1.2s smooth unlock
         docEl.classList.add('nx-p1', 'nx-p2');
-        at(400, () => morphToHeader());
+        at(300, () => morphToHeader());
       } else {
         try { sessionStorage.setItem('nx_brand_seen', '1'); } catch(e) {}
 
-        // PHASE 1 (0 -> 1s): Shared Hero background with gentle neon glow at center. Bolt appears.
+        // PHASE 1 (0 -> 1s): Shared Hero background with gentle neon glow at center
         at(80, () => docEl.classList.add('nx-p1'));
 
-        // PHASE 2 (1.1 -> 2.2s): Brand reveal "WELCOME TO QUOCVIET AURA"
-        at(1100, () => docEl.classList.add('nx-p2'));
+        // PHASE 2 (1.0 -> 2.2s): Brand Cluster revealed at center
+        at(900, () => docEl.classList.add('nx-p2'));
 
-        // PHASE 3 (2.5 -> 3.2s): Logo smoothly flies from center into HEADER position
-        at(2400, () => morphToHeader());
+        // PHASE 3 (2.4s): Brand Cluster morphs continuously directly into HEADER position
+        at(2200, () => morphToHeader());
       }
 
       function morphToHeader() {
         if (introDone) return;
-        const morphLogo = document.getElementById('nxMorphLogo');
-        const headerBrandIcon = document.querySelector('.brand-icon');
+        const morphCluster = document.getElementById('nxMorphCluster');
+        const headerBrandLogo = document.getElementById('brandLogo');
 
-        // Activate Phase 3 (Header reveals Navbar, Balance, Auth buttons)
+        // Reveal Header elements, but keep header brandLogo hidden until morph cluster arrives
         docEl.classList.add('nx-p3');
+        if (headerBrandLogo) headerBrandLogo.style.opacity = '0';
 
-        if (morphLogo && headerBrandIcon && morphLogo.animate) {
-          const fromRect = morphLogo.getBoundingClientRect();
-          const toRect = headerBrandIcon.getBoundingClientRect();
+        if (morphCluster && headerBrandLogo && morphCluster.animate) {
+          // Mirror innerHTML to guarantee 100% exact text, tags, font-weight and image equality
+          morphCluster.innerHTML = headerBrandLogo.innerHTML;
 
-          const dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
-          const dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
-          const scale = toRect.width / (fromRect.width || 76);
+          const isMobile = window.innerWidth <= 768;
+          const initialScale = isMobile ? 1.4 : 2.0;
 
-          const anim = morphLogo.animate([
-            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-            { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(' + scale + ')', opacity: 0.95 }
+          // Compute exact centers for continuous interpolation
+          const fromRect = morphCluster.getBoundingClientRect();
+          const toRect = headerBrandLogo.getBoundingClientRect();
+
+          const fromCenterX = fromRect.left + fromRect.width / 2;
+          const fromCenterY = fromRect.top + fromRect.height / 2;
+          const toCenterX = toRect.left + toRect.width / 2;
+          const toCenterY = toRect.top + toRect.height / 2;
+
+          const dx = toCenterX - fromCenterX;
+          const dy = toCenterY - fromCenterY;
+
+          // Smooth continuous morph: translate + scale from center straight into header
+          const anim = morphCluster.animate([
+            { transform: 'scale(' + initialScale + ')', opacity: 1 },
+            { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(1)', opacity: 1 }
           ], {
-            duration: 650,
+            duration: 750,
             easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
             fill: 'forwards'
           });
 
           anim.onfinish = () => {
-            headerBrandIcon.classList.add('nx-arrived');
-            setTimeout(() => headerBrandIcon.classList.remove('nx-arrived'), 750);
+            // Seamless handover to header logo
+            headerBrandLogo.style.opacity = '1';
+            headerBrandLogo.classList.add('nx-arrived');
+            setTimeout(() => headerBrandLogo.classList.remove('nx-arrived'), 750);
+            morphCluster.style.opacity = '0';
             startHeroCascade();
           };
         } else {
+          if (headerBrandLogo) headerBrandLogo.style.opacity = '1';
           startHeroCascade();
         }
       }
