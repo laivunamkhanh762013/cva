@@ -22,24 +22,38 @@
   <link rel="stylesheet" href="assets/css/decor.css">
 </head>
 <body>
-  <!-- ══ INTRO: logo bay thẳng vào logo ở đầu trang ══ -->
-  <div id="gamingIntro" class="dp-intro-overlay" onclick="skipIntro()" role="alertdialog" aria-modal="true" aria-label="Giới thiệu Quốc Việt Aura">
+  <!-- ══ INTRO: hệ thống khởi động → kết thúc đúng bằng Hero ══ -->
+  <div id="gamingIntro" class="qi" role="dialog" aria-modal="true" aria-label="QuocvietAura đang khởi động">
     <div class="qi-scan" aria-hidden="true"></div>
-    <div class="dp-intro-center" id="dpIntroCenter">
-      <div class="dp-intro-logo-box" id="dpIntroLogoBox">
+    <div class="qi-sys" aria-hidden="true">QUOCVIET&nbsp;SYSTEM</div>
+    <div class="qi-stage">
+      <div class="qi-logo" id="qiLogo">
         <span class="qi-ring qi-ring-1" aria-hidden="true"></span>
         <span class="qi-ring qi-ring-2" aria-hidden="true"></span>
-        <img src="assets/img/logo.jpg" alt="" class="dp-intro-logo-img">
+        <span class="qi-pulse" aria-hidden="true"></span>
+        <img src="assets/img/logo.jpg" alt="">
       </div>
-      <div class="dp-intro-text-box" id="dpIntroTextBox">
-        <div class="dp-intro-title">QUỐC VIỆT AURA</div>
-        <div class="dp-intro-subline">GAMING STORE • MOD &amp; UTILITIES</div>
-        <div class="qi-bar"><span></span></div>
+      <div class="qi-slot">
+        <div class="qi-brand">
+          <div class="qi-name">QUOCVIET AURA</div>
+          <div class="qi-tag">GAMING DIGITAL STORE</div>
+        </div>
+        <h2 class="hero-title qi-welcome" id="qiWelcome">WELCOME TO <br><span class="title-accent">QUOCVIET AURA</span></h2>
+      </div>
+      <div class="qi-slot qi-slot-low">
+        <ul class="qi-status" aria-live="polite">
+          <li>CONNECTING TO QUOCVIET SERVER... <b>OK</b></li>
+          <li>VERIFYING SYSTEM... <b>OK</b></li>
+          <li>STORE <b class="on">● ONLINE</b></li>
+          <li>AUTO DELIVERY: <b>READY</b></li>
+          <li>SUPPORT: <b>24/7</b></li>
+        </ul>
+        <button type="button" class="qi-enter" id="qiEnter"><i class="fas fa-bolt"></i> ENTER STORE</button>
       </div>
     </div>
-    <button type="button" class="intro-skip-btn" onclick="skipIntro(event)" aria-label="Bỏ qua giới thiệu">Bỏ qua ✕</button>
+    <button type="button" class="intro-skip-btn" id="qiSkip" aria-label="Bỏ qua giới thiệu">Bỏ qua ✕</button>
   </div>
-  <script>document.documentElement.classList.add('intro-playing');</script>
+  <script>document.documentElement.classList.add('intro-playing','intro-hold');</script>
 
   <div class="nx-bg" aria-hidden="true">
     <div class="nx-bg-grid"></div>
