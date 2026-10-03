@@ -1,12 +1,14 @@
 const https = require('https');
 const { getGist, updateGist } = require('./db');
 const { verifyAdminToken } = require('./_security');
+const { storeMutex } = require('./_mutex');
+const { creditTopupIfNeeded } = require('./_payments');
 
 // Danh sách từ cấm / từ thông dụng trong ngân hàng không được dùng làm từ khóa đối soát
 const STOP_WORDS = new Set([
   'MB', 'BANK', 'MBBANK', 'NAPAS', 'QR', 'VIETQR', 'CK', 'CHUYEN', 'TIEN',
   'KHOAN', 'GD', 'VND', 'DONG', 'NGAN', 'HANG', 'THE', 'CAO', 'MUA', 'HANG',
-  'ADMIN', 'DAIPHU', 'THANHTOAN', 'NGAY', 'THANG', 'NAM'
+  'ADMIN', 'QUOCVIETAURA', 'THANHTOAN', 'NGAY', 'THANG', 'NAM'
 ]);
 
 function stripVietnamese(str) {
@@ -60,7 +62,7 @@ function fetchSePay(path) {
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -152,24 +154,34 @@ module.exports = async function handler(req, res) {
     if (matched) {
       const txRef = matched.reference_number || String(matched.id);
 
-      // Tự động cập nhật trạng thái đơn thành 'approved' trong Database nếu đơn đã tồn tại
+      // Tự động cập nhật trạng thái đơn thành 'approved' trong Database (chạy trong Mutex an toàn)
       try {
-        if (existingOrders && existingOrders.length) {
+        await storeMutex.run(async () => {
+          const freshData = await getGist();
+          const list = Array.isArray(freshData.orders) ? freshData.orders : [];
           let updated = false;
-          existingOrders.forEach(o => {
+          let needCreditUser = false;
+          list.forEach(o => {
             const isMatch = (cleanOrderId && cleanToken(o.id) === cleanOrderId) ||
                             (cleanMemo && (cleanToken(o.id) === cleanMemo || cleanToken(o.memo) === cleanMemo || cleanToken(o.user) === cleanMemo)) ||
                             (cleanUser && cleanToken(o.user) === cleanUser);
             if (isMatch && o.status !== 'approved') {
               o.status = 'approved';
               o.txId = txRef;
+              o.paidAmount = matched.amount_in;
+              o.paidAt = Date.now();
+              if (creditTopupIfNeeded(freshData, o, matched.amount_in)) {
+                needCreditUser = true;
+              }
               updated = true;
             }
           });
           if (updated) {
-            await updateGist({ orders: existingOrders });
+            const updates = { orders: list };
+            if (needCreditUser) updates.users = freshData.users;
+            await updateGist(updates);
           }
-        }
+        });
       } catch(dbErr) {
         console.warn('Auto-update DB in check-payment error:', dbErr.message);
       }
