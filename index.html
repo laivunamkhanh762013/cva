@@ -22,30 +22,24 @@
   <link rel="stylesheet" href="assets/css/decor.css">
 </head>
 <body>
-  <!-- ══ GAMING SPLASH SCREEN INTRO (Smooth Logo Glide -> Burst Center) ══ -->
-  <div id="gamingIntro" class="dp-intro-overlay" onclick="skipIntro()" onkeydown="if(event.key==='Enter'||event.key==='Escape')skipIntro()" role="alertdialog" aria-modal="true" aria-label="Giới thiệu Quốc Việt Aura">
-    <div class="qi-grid" aria-hidden="true"></div>
+  <!-- ══ INTRO: logo bay thẳng vào logo ở đầu trang ══ -->
+  <div id="gamingIntro" class="dp-intro-overlay" onclick="skipIntro()" role="alertdialog" aria-modal="true" aria-label="Giới thiệu Quốc Việt Aura">
     <div class="qi-scan" aria-hidden="true"></div>
-    <div class="qi-flash" aria-hidden="true"></div>
-    <div class="qi-sparks" aria-hidden="true">
-      <i style="--a:0deg"></i><i style="--a:30deg"></i><i style="--a:60deg"></i><i style="--a:90deg"></i>
-      <i style="--a:120deg"></i><i style="--a:150deg"></i><i style="--a:180deg"></i><i style="--a:210deg"></i>
-      <i style="--a:240deg"></i><i style="--a:270deg"></i><i style="--a:300deg"></i><i style="--a:330deg"></i>
-    </div>
     <div class="dp-intro-center" id="dpIntroCenter">
       <div class="dp-intro-logo-box" id="dpIntroLogoBox">
         <span class="qi-ring qi-ring-1" aria-hidden="true"></span>
         <span class="qi-ring qi-ring-2" aria-hidden="true"></span>
-        <img src="assets/img/logo.jpg" alt="Logo Quốc Việt Aura" class="dp-intro-logo-img">
+        <img src="assets/img/logo.jpg" alt="" class="dp-intro-logo-img">
       </div>
       <div class="dp-intro-text-box" id="dpIntroTextBox">
-        <div class="dp-intro-title qi-glitch" data-text="QUỐC VIỆT AURA">QUỐC VIỆT AURA</div>
+        <div class="dp-intro-title">QUỐC VIỆT AURA</div>
         <div class="dp-intro-subline">GAMING STORE • MOD &amp; UTILITIES</div>
         <div class="qi-bar"><span></span></div>
       </div>
     </div>
     <button type="button" class="intro-skip-btn" onclick="skipIntro(event)" aria-label="Bỏ qua giới thiệu">Bỏ qua ✕</button>
   </div>
+  <script>document.documentElement.classList.add('intro-playing');</script>
 
   <div class="nx-bg" aria-hidden="true">
     <div class="nx-bg-grid"></div>

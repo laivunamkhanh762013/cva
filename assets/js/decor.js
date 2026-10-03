@@ -2,36 +2,58 @@
   'use strict';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // â•â• GAMING SPLASH SCREEN CONTROLLER â•â•
-  let introTimeoutId = null;
+  // ══ INTRO: logo bay vào logo hero rồi trang chủ hiện dần ══
+  const docEl = document.documentElement;
+  let introTimer = null, introDone = false;
+  function revealPage() {
+    docEl.classList.add('intro-landed');
+    docEl.classList.remove('intro-playing');
+    document.body.style.overflow = '';
+  }
   function skipIntro(e) {
     if (e && e.stopPropagation) e.stopPropagation();
-    if (introTimeoutId) {
-      clearTimeout(introTimeoutId);
-      introTimeoutId = null;
-    }
+    if (introDone) return;
+    introDone = true;
+    clearTimeout(introTimer);
     const intro = document.getElementById('gamingIntro');
-    if (intro && intro.parentNode) {
-      document.body.style.overflow = '';
-      intro.style.transition = 'opacity .35s ease';
-      intro.style.opacity = '0';
-      intro.style.pointerEvents = 'none';
-      setTimeout(() => {
-        if (intro.parentNode) intro.parentNode.removeChild(intro);
-      }, 350);
+    if (!intro) { revealPage(); return; }
+    const from = document.getElementById('dpIntroLogoBox');
+    const target = document.querySelector('.hero-logo-wrap');
+    intro.classList.add('qi-leaving');
+    const finish = () => {
+      if (target) {
+        target.classList.add('qi-arrive');
+        target.addEventListener('animationend', () => target.classList.remove('qi-arrive'), { once: true });
+      }
+      intro.remove();
+    };
+    if (!from || !target || reduced || !from.animate) {
+      revealPage(); intro.style.opacity = '0'; setTimeout(finish, 400); return;
     }
+    const a = from.getBoundingClientRect(), b = target.getBoundingClientRect();
+    const dx = (b.left + b.width / 2) - (a.left + a.width / 2);
+    const dy = (b.top + b.height / 2) - (a.top + a.height / 2);
+    const s = b.width / a.width;
+    // nền tan dần để lộ trang chủ trong khi logo đang bay
+    intro.style.backgroundColor = 'transparent';
+    intro.style.background = 'transparent';
+    revealPage();
+    const anim = from.animate([
+      { transform: 'translate(0,0) scale(1)' },
+      { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + s + ')' }
+    ], { duration: 700, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'forwards' });
+    anim.onfinish = finish;
   }
   window.skipIntro = skipIntro;
-
-  const introEl = document.getElementById('gamingIntro');
-  if (introEl) {
-    if (reduced) {
-      skipIntro();
-    } else {
+  if (document.getElementById('gamingIntro')) {
+    if (reduced) { skipIntro(); }
+    else {
       document.body.style.overflow = 'hidden';
-      introTimeoutId = setTimeout(skipIntro, 2650);
+      scrollTo(0, 0);
+      introTimer = setTimeout(skipIntro, 1700);
+      addEventListener('keydown', ev => { if (ev.key === 'Escape' || ev.key === 'Enter') skipIntro(); }, { once: true });
     }
-  }
+  } else { revealPage(); }
 
   // Particles (lightweight, paused when tab hidden)
   const cv = document.getElementById('nxParticles');
@@ -49,7 +71,7 @@
       }));
     }
     function draw() {
-      if (!document.hidden) {
+      if (!document.hidden && !docEl.classList.contains('intro-playing')) {
         ctx.clearRect(0, 0, w, h);
         for (let i = 0; i < pts.length; i++) {
           const p = pts[i];
