@@ -858,8 +858,8 @@
             ${'★'.repeat(fb.rating)}${'☆'.repeat(5 - fb.rating)}
           </div>
           <p class="feedback-content-text">${escapeHtml(fb.content)}</p>
-          <div class="feedback-product-tag">
-            <i class="fas fa-gamepad"></i> <span>${escapeHtml(fb.product)}</span>
+          <div class="feedback-product-tag" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: var(--neon-green);">
+            <i class="fas fa-shield-check"></i> <span>Giao dịch thành công</span>
           </div>
           ${imgHtml}
         </div>
