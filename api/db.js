@@ -14,7 +14,8 @@ const PENDING_TTL_MS = 3600000;
 const FILES = Object.freeze({
   orders: 'orders.json',
   users: 'users.json',
-  processed: 'processed_tx.json' // Sổ giao dịch ngân hàng đã xử lý (chống replay / duyệt trùng)
+  processed: 'processed_tx.json', // Sổ giao dịch ngân hàng đã xử lý (chống replay / duyệt trùng)
+  settings: 'settings.json'
 });
 
 function getToken() {
@@ -64,6 +65,16 @@ function parseArray(content, name) {
   return v;
 }
 
+function parseObject(content, name) {
+  if (content === null || content === undefined || content === '') return {};
+  try {
+    const v = JSON.parse(content);
+    return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+  } catch(e) {
+    return {};
+  }
+}
+
 // QUAN TRỌNG: Mọi lỗi đọc đều throw (không trả về mảng rỗng), để tránh
 // việc ghi đè làm MẤT toàn bộ đơn hàng / tài khoản khi GitHub lỗi tạm thời.
 async function getGist() {
@@ -84,6 +95,7 @@ async function getGist() {
   let orders = parseArray(await readFileContent(files[FILES.orders]), FILES.orders);
   const users = parseArray(await readFileContent(files[FILES.users]), FILES.users);
   const processed = parseArray(await readFileContent(files[FILES.processed]), FILES.processed);
+  const settings = parseObject(await readFileContent(files[FILES.settings]), FILES.settings);
 
   // Ẩn đơn pending quá 1 giờ (chỉ lọc trong bộ nhớ; sẽ được lưu ở lần ghi kế tiếp
   // bên trong mutex — không ghi nền ngoài khóa để tránh lost update).
@@ -96,7 +108,7 @@ async function getGist() {
     return true;
   });
 
-  return { orders, users, processed };
+  return { orders, users, processed, settings };
 }
 
 async function updateGist(updates) {
@@ -109,6 +121,9 @@ async function updateGist(updates) {
   }
   if (updates.processed !== undefined) {
     files[FILES.processed] = { content: JSON.stringify(updates.processed) };
+  }
+  if (updates.settings !== undefined) {
+    files[FILES.settings] = { content: JSON.stringify(updates.settings, null, 2) };
   }
   if (Object.keys(files).length === 0) return true;
 

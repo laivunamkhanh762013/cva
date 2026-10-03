@@ -1625,6 +1625,48 @@
     renderFeedbacks();
     renderTopupHistory();
     setupEventListeners();
+    checkMaintenanceMode();
+  }
+
+  // Check Maintenance Mode
+  async function checkMaintenanceMode() {
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      if (data && data.success && data.maintenance) {
+        showMaintenanceScreen(data.maintenanceMsg);
+      }
+    } catch (e) {
+      // Safe failover
+    }
+  }
+
+  function showMaintenanceScreen(msg) {
+    if (document.getElementById('maintenanceOverlayScreen')) return;
+    const overlay = document.createElement('div');
+    overlay.id = 'maintenanceOverlayScreen';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(6,8,19,0.97);backdrop-filter:blur(24px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;font-family:"Inter",sans-serif;';
+    overlay.innerHTML = `
+      <div style="background:#0d1224;border:1px solid rgba(0,240,255,0.35);box-shadow:0 25px 60px rgba(0,0,0,0.85),0 0 35px rgba(0,240,255,0.15);border-radius:24px;padding:36px 28px;max-width:480px;width:100%;color:#f8fafc;">
+        <img src="assets/img/logo.jpg" alt="QuocvietAura" style="width:72px;height:72px;border-radius:18px;object-fit:cover;border:2px solid #00f0ff;box-shadow:0 0 20px rgba(0,240,255,0.4);margin-bottom:16px;">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#f87171;font-size:11.5px;font-weight:800;padding:4px 14px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;">
+          <i class="fas fa-triangle-exclamation"></i> HỆ THỐNG ĐANG BẢO TRÌ
+        </div>
+        <h2 style="font-size:22px;font-weight:900;color:#fff;margin-bottom:10px;">QUOCVIET AURA</h2>
+        <p style="font-size:13.5px;color:#94a3b8;line-height:1.6;margin-bottom:24px;">
+          ${escapeHtml(msg || 'Hệ thống QuocvietAura đang tiến hành nâng cấp & bảo trì định kỳ. Quý khách vui lòng quay lại sau ít phút hoặc liên hệ Admin Zalo.')}
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="https://zalo.me/0327519223" target="_blank" rel="noopener" style="padding:12px;background:linear-gradient(135deg,#00f0ff,#8b5cf6);color:#000;font-weight:800;border-radius:10px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;">
+            <i class="fas fa-headset"></i> LIÊN HỆ ADMIN ZALO
+          </a>
+          <a href="admin.html" style="padding:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#94a3b8;font-size:12px;font-weight:700;border-radius:8px;text-decoration:none;">
+            <i class="fas fa-shield-halved"></i> Cổng Đăng Nhập Quản Trị Viên (Admin)
+          </a>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
   }
 
   if (document.readyState === 'loading') {
