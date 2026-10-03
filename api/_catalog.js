@@ -109,35 +109,6 @@ const RAW_CATALOG = {
       "Key 30 Ngày (1 Tháng)": 450000
     }
   },
-  "ff-aim-v1": {
-    "name": "Aimlock Free Fire V1",
-    "soldOut": false,
-    "plans": {
-      "Gói 1 Ngày": 20000,
-      "Gói 7 Ngày": 60000,
-      "Gói 30 Ngày": 150000,
-      "Vĩnh Viễn": 300000,
-      "Bản chuẩn": 20000
-    }
-  },
-  "ff-aim-v2": {
-    "name": "Aimlock Free Fire V2 PRO",
-    "soldOut": false,
-    "plans": {
-      "Gói 1 Ngày": 50000,
-      "Gói 7 Ngày": 120000,
-      "Gói 30 Ngày": 250000,
-      "Bản chuẩn": 50000
-    }
-  },
-  "ff-dpi-max": {
-    "name": "Gói Tinh Chỉnh DPI 100% Cảm Ứng",
-    "soldOut": false,
-    "plans": {
-      "Bản Full Tinh Chỉnh": 200000,
-      "Bản chuẩn": 200000
-    }
-  },
   "pubg-recoil-master": {
     "name": "No Recoil PUBG Mobile Smart 90FPS",
     "soldOut": false,
@@ -199,6 +170,70 @@ const RAW_CATALOG = {
     "plans": {
       "Tải Xuống Trực Tiếp IPA": 0,
       "Bản chuẩn": 0
+    }
+  },
+  "ff-aimlock": {
+    "name": "Aimlock Free Fire (V1 - V5)",
+    "soldOut": false,
+    "plans": {
+      "Aimlock V1": 20000,
+      "Aimlock V2": 50000,
+      "Aimlock V3": 100000,
+      "Aimlock V4": 200000,
+      "Aimlock V5": 300000
+    }
+  },
+  "ff-dpi": {
+    "name": "DPI Cảm Ứng Free Fire (60% - 100%)",
+    "soldOut": false,
+    "plans": {
+      "DPI 60%": 20000,
+      "DPI 70%": 50000,
+      "DPI 80%": 100000,
+      "DPI 90%": 150000,
+      "DPI 100%": 200000
+    }
+  },
+  "ff-aimhead-filza": {
+    "name": "Aimlock Head Filza",
+    "soldOut": false,
+    "plans": {
+      "Bản chuẩn": 100000
+    }
+  },
+  "ff-aimbody-filza": {
+    "name": "Aimbody Filza",
+    "soldOut": false,
+    "plans": {
+      "Bản chuẩn": 100000
+    }
+  },
+  "ff-aimneck-3105": {
+    "name": "Aimneck 3105",
+    "soldOut": false,
+    "plans": {
+      "Bản chuẩn": 100000
+    }
+  },
+  "ff-aimlock-3105": {
+    "name": "Aimlock 3105",
+    "soldOut": false,
+    "plans": {
+      "Bản chuẩn": 100000
+    }
+  },
+  "ff-dinhvi": {
+    "name": "Định Vị Người",
+    "soldOut": false,
+    "plans": {
+      "Bản chuẩn": 100000
+    }
+  },
+  "ff-menu-filza-3105": {
+    "name": "Menu Filza-3105",
+    "soldOut": false,
+    "plans": {
+      "Bản chuẩn": 100000
     }
   },
   "wallet-topup": {
