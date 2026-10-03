@@ -226,7 +226,7 @@ module.exports = async function handler(req, res) {
           let memoCode = '';
           const pendingMemos = new Set(list.filter(o => o.status === 'pending').map(o => o.memo));
           for (let i = 0; i < ORDER_CONFIG.memoCollisionMaxRetries; i++) {
-            const candidate = 'DP' + crypto.randomInt(10000, 100000);
+            const candidate = 'NX' + crypto.randomInt(10000, 100000);
             if (!pendingMemos.has(candidate)) {
               memoCode = candidate;
               break;

@@ -108,6 +108,98 @@ const RAW_CATALOG = {
       "Key 7 Ngày (1 Tuần)": 215000,
       "Key 30 Ngày (1 Tháng)": 450000
     }
+  },
+  "ff-aim-v1": {
+    "name": "Aimlock Free Fire V1",
+    "soldOut": false,
+    "plans": {
+      "Gói 1 Ngày": 20000,
+      "Gói 7 Ngày": 60000,
+      "Gói 30 Ngày": 150000,
+      "Vĩnh Viễn": 300000,
+      "Bản chuẩn": 20000
+    }
+  },
+  "ff-aim-v2": {
+    "name": "Aimlock Free Fire V2 PRO",
+    "soldOut": false,
+    "plans": {
+      "Gói 1 Ngày": 50000,
+      "Gói 7 Ngày": 120000,
+      "Gói 30 Ngày": 250000,
+      "Bản chuẩn": 50000
+    }
+  },
+  "ff-dpi-max": {
+    "name": "Gói Tinh Chỉnh DPI 100% Cảm Ứng",
+    "soldOut": false,
+    "plans": {
+      "Bản Full Tinh Chỉnh": 200000,
+      "Bản chuẩn": 200000
+    }
+  },
+  "pubg-recoil-master": {
+    "name": "No Recoil PUBG Mobile Smart 90FPS",
+    "soldOut": false,
+    "plans": {
+      "1 Ngày": 50000,
+      "7 Ngày": 150000,
+      "30 Ngày": 350000,
+      "Bản chuẩn": 50000
+    }
+  },
+  "pubg-esp-radar": {
+    "name": "ESP Radar Vị Trí Kẻ Địch PUBG",
+    "soldOut": false,
+    "plans": {
+      "1 Ngày": 100000,
+      "7 Ngày": 280000,
+      "30 Ngày": 650000,
+      "Bản chuẩn": 100000
+    }
+  },
+  "pool-guideline-pro": {
+    "name": "Auto Guideline 8 Ball Pool 6 Line",
+    "soldOut": false,
+    "plans": {
+      "Gói 7 Ngày": 50000,
+      "Gói 1 Tháng": 120000,
+      "Gói Vĩnh Viễn": 250000,
+      "Bản chuẩn": 50000
+    }
+  },
+  "pool-cue-coins": {
+    "name": "Gói Xu & Mở Khóa Gậy Huyền Thoại",
+    "soldOut": false,
+    "plans": {
+      "Gói 500 Triệu Xu": 100000,
+      "Gói 1 Tỷ Xu VIP": 180000,
+      "Bản chuẩn": 100000
+    }
+  },
+  "cfg-fps-boost": {
+    "name": "Config Tối Ưu Máy Yếu 120FPS Extreme",
+    "soldOut": false,
+    "plans": {
+      "Tải Miễn Phí": 0,
+      "Bản chuẩn": 0
+    }
+  },
+  "cfg-acc-ff-master": {
+    "name": "Tài Khoản Free Fire Rank Thách Đấu Full Skin",
+    "soldOut": false,
+    "plans": {
+      "Nhận Full Thông Tin Đăng Nhập": 500000,
+      "Bản chuẩn": 500000
+    }
+  },
+  "dl-filza-manager": {
+    "name": "Filza Escaped IPA Không Cần Jailbreak",
+    "soldOut": false,
+    "plans": {
+      "Tải Xuống Trực Tiếp IPA": 0,
+      "Bản chuẩn": 0
+    }
   }
 };
 

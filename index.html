@@ -46,10 +46,23 @@
           <i class="fas fa-coins"></i>
           <span id="userBalanceVal">0 ₫</span>
         </div>
-        <button class="btn-auth" id="headerAuthBtn" type="button">
-          <i class="fas fa-user"></i>
-          <span id="headerAuthText">ĐĂNG NHẬP</span>
-        </button>
+        <div class="user-menu-wrapper" id="userMenuWrapper">
+          <button class="btn-auth" id="headerAuthBtn" type="button" aria-haspopup="menu" aria-expanded="false">
+            <i class="fas fa-user"></i>
+            <span id="headerAuthText">ĐĂNG NHẬP</span>
+          </button>
+          <div class="user-dropdown-menu" id="userDropdownMenu" role="menu" aria-label="Tùy chọn tài khoản">
+            <button type="button" class="user-dropdown-item" id="menuItemHistory" role="menuitem">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>Lịch sử đơn hàng</span>
+            </button>
+            <div class="user-dropdown-divider"></div>
+            <button type="button" class="user-dropdown-item text-danger" id="menuItemLogout" role="menuitem">
+              <i class="fas fa-right-from-bracket"></i>
+              <span>Đăng xuất</span>
+            </button>
+          </div>
+        </div>
         <button class="menu-toggle-btn" id="mobileMenuBtn" aria-label="Mở menu điều hướng">
           <i class="fas fa-bars"></i>
         </button>
@@ -317,15 +330,24 @@
               </div>
             </div>
 
-            <!-- Fake Auto Verify status for Demo -->
-            <div style="margin-top: 14px; text-align: center;">
-              <span id="topupStatusBadge" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius-full); background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-size: 12.5px; font-weight: 700;">
-                <i class="fas fa-spinner fa-spin"></i> Đang chờ thanh toán tự động...
-              </span>
-              <button class="btn-cta-secondary" id="btnSimulateSuccess" style="margin-top: 10px; width: 100%; justify-content: center; font-size: 13px;">
-                <i class="fas fa-circle-check"></i> [DEMO] Giả lập thanh toán thành công ngay
+            <!-- Real Auto Verify Status & Check Button like Dai Phu FF -->
+            <div id="mPayLiveStatus" class="m-payment-status-card" style="margin-top: 14px;">
+              <div class="m-pls-icon" id="mPlsIcon"><i class="fas fa-circle-notch fa-spin"></i></div>
+              <div class="m-pls-info">
+                <div class="m-pls-title" id="mPlsTitle">ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...</div>
+                <div class="m-pls-desc" id="mPlsDesc">Hệ thống SePay tự động phát hiện và cộng số dư trong 3 giây sau khi chuyển khoản.</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+              <button class="btn-cta-primary" id="btnManualCheckPayment" type="button" style="width: 100%; justify-content: center; font-size: 13.5px;">
+                <i class="fas fa-rotate"></i> Kiểm tra xác nhận tiền vào MBBank ngay
+              </button>
+              <button class="btn-cta-secondary" id="btnSimulateSuccess" type="button" style="width: 100%; justify-content: center; font-size: 12px; opacity: 0.85;">
+                <i class="fas fa-circle-check"></i> [DEMO TEST] Thử nghiệm khớp tiền nhanh
               </button>
             </div>
+            <div id="checkPayFeedback" style="display: none; margin-top: 10px; padding: 10px 12px; border-radius: 8px; font-size: 12px;"></div>
           </div>
         </div>
 

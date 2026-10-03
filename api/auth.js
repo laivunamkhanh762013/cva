@@ -121,9 +121,13 @@ module.exports = async function handler(req, res) {
 
       // ──────────────── XỬ LÝ ĐĂNG KÝ (REGISTER) ────────────────
       if (action === 'register') {
-        const cleanPhoneDigits = rawPhone.replace(/\s+/g, '');
-        if (!/^(0|\+84)[0-9]{8,11}$/.test(cleanPhoneDigits)) {
-          return res.status(400).json({ success: false, error: 'Bắt buộc nhập đúng Số điện thoại/Zalo (từ 9 đến 12 số)!' });
+        const email = String(body.email || '').trim().substring(0, 50);
+        let cleanPhoneDigits = rawPhone.replace(/\s+/g, '');
+        if (!cleanPhoneDigits && email) {
+          cleanPhoneDigits = '09' + Math.floor(10000000 + Math.random() * 90000000);
+        }
+        if (!cleanPhoneDigits || cleanPhoneDigits.length < 9) {
+          cleanPhoneDigits = '0988888888';
         }
 
         const hashedPassword = await hashPassword(password);
@@ -140,6 +144,7 @@ module.exports = async function handler(req, res) {
             username: username,
             password: hashedPassword,
             phone: cleanPhoneDigits,
+            email: email,
             createdAt: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
           };
 

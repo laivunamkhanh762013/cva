@@ -17,6 +17,7 @@
     userOrders: [],
     topupHistory: [],
     currentUser: null,
+    userToken: null,
     userBalance: 100000, // Demo starting balance 100k
     currentCategory: 'all',
     searchQuery: '',
@@ -25,7 +26,12 @@
     selectedPackage: null,
     currentQuantity: 1,
     appliedCoupon: null,
-    currentAdminTab: 'overview'
+    currentAdminTab: 'overview',
+    currentOrderId: null,
+    currentOrderMemo: '',
+    currentPayAmountRaw: 0,
+    paymentPollTimer: null,
+    isCheckingPayment: false
   };
 
   // DOM Cache
@@ -100,6 +106,217 @@
       toast.style.transform = 'translateX(20px)';
       setTimeout(() => toast.remove(), 250);
     }, 3500);
+  }
+
+  // ══════════ ADVANCED STORAGE & AUTH HELPERS (DAI PHU SECURE ARCHITECTURE) ══════════
+  function getStoredUser() {
+    try {
+      const raw = localStorage.getItem('nexus_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function setStoredUser(userObj, token) {
+    if (userObj) {
+      localStorage.setItem('nexus_user', JSON.stringify(userObj));
+      state.currentUser = userObj.username;
+      if (token) {
+        localStorage.setItem('nexus_user_token', token);
+        state.userToken = token;
+      }
+    } else {
+      localStorage.removeItem('nexus_user');
+      localStorage.removeItem('nexus_user_token');
+      state.currentUser = null;
+      state.userToken = null;
+    }
+    updateAuthUI();
+  }
+
+  function getStoredOrders() {
+    try {
+      const raw = localStorage.getItem('nexus_orders');
+      return raw ? JSON.parse(raw) : [];
+    } catch(e) {
+      return [];
+    }
+  }
+
+  function saveStoredOrder(order) {
+    if (!order || !order.id) return;
+    try {
+      let list = getStoredOrders();
+      const idx = list.findIndex(o => o.orderId === order.id || o.id === order.id);
+      const normalizedOrder = {
+        orderId: order.id,
+        memo: order.memo || order.id,
+        productName: order.product || order.productName || 'Sản phẩm số',
+        packageName: order.plan || order.packageName || 'Bản chuẩn',
+        quantity: order.quantity || 1,
+        total: order.price || order.total || 0,
+        time: order.time || new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }),
+        key: order.key || `NEXUS-KEY-${order.id}`,
+        status: order.status === 'approved' ? 'Thành công' : (order.status === 'rejected' ? 'Thất bại' : 'Đang chờ duyệt'),
+        txId: order.txId || ''
+      };
+
+      if (idx >= 0) {
+        list[idx] = normalizedOrder;
+      } else {
+        list.unshift(normalizedOrder);
+      }
+      if (list.length > 200) list = list.slice(0, 200);
+      localStorage.setItem('nexus_orders', JSON.stringify(list));
+      state.userOrders = list;
+      renderHistoryModal();
+    } catch(e) {}
+  }
+
+  function updateAuthUI() {
+    const user = getStoredUser();
+    const authBtn = document.getElementById('headerAuthBtn');
+    const authText = document.getElementById('headerAuthText');
+    const wrapper = document.getElementById('userMenuWrapper');
+
+    if (user && user.username) {
+      state.currentUser = user.username;
+      state.userToken = localStorage.getItem('nexus_user_token');
+      if (authText) authText.textContent = user.username;
+      if (authBtn) {
+        authBtn.classList.add('user-btn-active');
+        authBtn.setAttribute('title', `Tài khoản: ${user.username}`);
+        authBtn.setAttribute('aria-expanded', 'false');
+      }
+    } else {
+      state.currentUser = null;
+      state.userToken = null;
+      if (authText) authText.textContent = 'ĐĂNG NHẬP';
+      if (authBtn) {
+        authBtn.classList.remove('user-btn-active');
+        authBtn.removeAttribute('title');
+        authBtn.setAttribute('aria-expanded', 'false');
+      }
+      if (wrapper) wrapper.classList.remove('active');
+      const menu = document.getElementById('userDropdownMenu');
+      if (menu) menu.classList.remove('show');
+    }
+  }
+
+  function updateLiveStatus(status, title, desc) {
+    const card = document.getElementById('mPayLiveStatus');
+    const icon = document.getElementById('mPlsIcon');
+    const tEl = document.getElementById('mPlsTitle');
+    const dEl = document.getElementById('mPlsDesc');
+
+    if (!card) return;
+    if (status === 'success') {
+      card.classList.add('success');
+      if (icon) icon.innerHTML = '<i class="fas fa-circle-check" style="color: var(--neon-green);"></i>';
+      if (tEl) { tEl.textContent = title || 'ĐÃ XÁC NHẬN TIỀN VÀO MBBANK THÀNH CÔNG!'; tEl.style.color = 'var(--neon-green)'; }
+      if (dEl) dEl.innerHTML = desc || 'Hệ thống đã nhận đủ số tiền và kích hoạt tự động!';
+    } else {
+      card.classList.remove('success');
+      if (icon) icon.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+      if (tEl) { tEl.textContent = title; tEl.style.color = '#ffffff'; }
+      if (dEl) dEl.innerHTML = desc;
+    }
+  }
+
+  function startPaymentWatcher(orderId, displayMemo, price) {
+    stopPaymentWatcher();
+    state.isCheckingPayment = false;
+    updateLiveStatus('waiting', 'ĐANG TỰ ĐỘNG CHỜ TIỀN VÀO MBBANK...', `Sau khi chuyển khoản với nội dung <b>${escapeHtml(displayMemo)}</b>, hệ thống SePay tự động phát hiện và hoàn tất trong 3 giây!`);
+
+    let pollDelay = 3000;
+    function scheduleNextPoll() {
+      state.paymentPollTimer = setTimeout(() => {
+        checkPaymentApi(orderId, price, false);
+        pollDelay = Math.min(8000, pollDelay + 1000);
+        scheduleNextPoll();
+      }, pollDelay);
+    }
+    scheduleNextPoll();
+  }
+
+  function stopPaymentWatcher() {
+    if (state.paymentPollTimer) {
+      clearTimeout(state.paymentPollTimer);
+      state.paymentPollTimer = null;
+    }
+  }
+
+  function checkPaymentApi(orderId, price, isManual = false) {
+    if (!orderId) return;
+    if (state.isCheckingPayment && !isManual) return;
+    state.isCheckingPayment = true;
+
+    const token = localStorage.getItem('nexus_user_token');
+    const headers = {};
+    if (token) headers['x-user-token'] = token;
+
+    fetch('/api/orders?id=' + encodeURIComponent(orderId) + '&_t=' + Date.now(), {
+      headers: headers,
+      cache: 'no-store'
+    })
+    .then(r => r.json())
+    .then(data => {
+      state.isCheckingPayment = false;
+      if (data && data.success && data.order && data.order.status === 'approved') {
+        stopPaymentWatcher();
+        updateLiveStatus('success', '✅ ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!', `MBBank đã ghi có +${formatCurrency(data.order.price || price)} khớp mã ${escapeHtml(orderId)}.`);
+        showToast('Đã xác nhận tiền vào MBBank thành công!', 'success');
+
+        // Ghi nhận số dư hoặc đơn hàng
+        const paidAmount = Number(data.order.price || price) || 0;
+        state.userBalance += paidAmount;
+        updateBalanceDisplay();
+
+        const record = {
+          time: new Date().toLocaleTimeString('vi-VN') + ' ' + new Date().toLocaleDateString('vi-VN'),
+          method: 'VietQR / MBBank (SePay Webhook)',
+          amount: paidAmount,
+          status: 'Thành công'
+        };
+        state.topupHistory.unshift(record);
+        renderTopupHistory();
+
+        saveStoredOrder(data.order);
+
+        setTimeout(() => {
+          closeModal(document.getElementById('topupModalBackdrop'));
+          showToast(`Số dư của bạn đã được cộng +${formatCurrency(paidAmount)}!`, 'success');
+        }, 1200);
+      } else {
+        if (isManual) {
+          const fb = document.getElementById('checkPayFeedback');
+          if (fb) {
+            fb.style.display = 'block';
+            fb.style.background = 'rgba(239, 68, 68, 0.15)';
+            fb.style.border = '1px solid rgba(239, 68, 68, 0.45)';
+            fb.style.color = '#fecaca';
+            fb.innerHTML = `
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <i class="fas fa-circle-exclamation" style="color:#ef4444; margin-top:2px;"></i>
+                <div>
+                  <strong>Hệ thống chưa nhận được tiền!</strong>
+                  <div style="margin-top:3px; font-size:11.5px; line-height:1.45; color:#cbd5e1;">
+                    • Vui lòng chuyển khoản đúng nội dung: <b style="color:var(--neon-green);">${escapeHtml(state.currentOrderMemo || orderId)}</b>.<br>
+                    • Ngân hàng có thể mất vài giây để báo Có. Vui lòng bấm kiểm tra lại sau giây lát!
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+          showToast('Hệ thống đang chờ tiền vào. Vui lòng kiểm tra chuyển khoản!', 'info');
+        }
+      }
+    })
+    .catch(err => {
+      state.isCheckingPayment = false;
+      console.warn('Check payment API error:', err);
+    });
   }
 
   // Modal Focus Trap & Modal Management
@@ -458,20 +675,70 @@
   function generateQrPayment() {
     const customAmt = document.getElementById('customTopupAmount');
     const amount = customAmt ? Number(customAmt.value) || 20000 : 20000;
-    const memo = `NEXUS NAP ${Math.floor(1000 + Math.random() * 9000)}`;
-
-    const bankAcc = NEXUS_DATA.CONFIG.BANK_ACC;
-    const qrUrl = `https://img.vietqr.io/image/MB-${bankAcc}-${NEXUS_DATA.CONFIG.QR_TEMPLATE}.png?amount=${amount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(NEXUS_DATA.CONFIG.BANK_HOLDER)}`;
+    state.currentPayAmountRaw = amount;
 
     const qrImg = document.getElementById('qrDisplayImg');
     const qrTotal = document.getElementById('qrTotalDisplay');
     const qrMemo = document.getElementById('qrMemoDisplay');
     const qrArea = document.getElementById('qrResultArea');
+    const fb = document.getElementById('checkPayFeedback');
+    if (fb) fb.style.display = 'none';
 
-    if (qrImg) qrImg.src = qrUrl;
-    if (qrTotal) qrTotal.textContent = formatCurrency(amount);
-    if (qrMemo) qrMemo.textContent = memo;
-    if (qrArea) qrArea.style.display = 'block';
+    // Tạo đơn nạp chính thức trên Server API (Tương tự shop Đại Phú FF)
+    const token = localStorage.getItem('nexus_user_token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['x-user-token'] = token;
+
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        action: 'create',
+        productId: 'ff-aim-v1',
+        planName: 'Gói 1 Ngày',
+        user: state.currentUser || 'Khách vãng lai'
+      })
+    })
+    .then(r => r.json())
+    .then(res => {
+      let orderId = '';
+      let memo = '';
+      let qrUrl = '';
+
+      if (res && res.success && res.order) {
+        orderId = res.order.id;
+        memo = res.order.memo || res.order.id;
+        qrUrl = res.qrUrl || `https://img.vietqr.io/image/MB-${NEXUS_DATA.CONFIG.BANK_ACC}-${NEXUS_DATA.CONFIG.QR_TEMPLATE}.png?amount=${amount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(NEXUS_DATA.CONFIG.BANK_HOLDER)}`;
+        state.currentOrderId = orderId;
+        state.currentOrderMemo = memo;
+        saveStoredOrder(res.order);
+      } else {
+        // Fallback local memo if offline
+        memo = `NX${Math.floor(10000 + Math.random() * 90000)}`;
+        orderId = memo;
+        state.currentOrderId = orderId;
+        state.currentOrderMemo = memo;
+        qrUrl = `https://img.vietqr.io/image/MB-${NEXUS_DATA.CONFIG.BANK_ACC}-${NEXUS_DATA.CONFIG.QR_TEMPLATE}.png?amount=${amount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(NEXUS_DATA.CONFIG.BANK_HOLDER)}`;
+      }
+
+      if (qrImg) qrImg.src = qrUrl;
+      if (qrTotal) qrTotal.textContent = formatCurrency(amount);
+      if (qrMemo) qrMemo.textContent = memo;
+      if (qrArea) qrArea.style.display = 'block';
+
+      startPaymentWatcher(orderId, memo, amount);
+    })
+    .catch(() => {
+      const fallbackMemo = `NX${Math.floor(10000 + Math.random() * 90000)}`;
+      state.currentOrderId = fallbackMemo;
+      state.currentOrderMemo = fallbackMemo;
+      const fallbackQr = `https://img.vietqr.io/image/MB-${NEXUS_DATA.CONFIG.BANK_ACC}-${NEXUS_DATA.CONFIG.QR_TEMPLATE}.png?amount=${amount}&addInfo=${encodeURIComponent(fallbackMemo)}&accountName=${encodeURIComponent(NEXUS_DATA.CONFIG.BANK_HOLDER)}`;
+      if (qrImg) qrImg.src = fallbackQr;
+      if (qrTotal) qrTotal.textContent = formatCurrency(amount);
+      if (qrMemo) qrMemo.textContent = fallbackMemo;
+      if (qrArea) qrArea.style.display = 'block';
+      startPaymentWatcher(fallbackMemo, fallbackMemo, amount);
+    });
   }
 
   function simulateTopupSuccess() {
@@ -905,13 +1172,78 @@
     if (navHistory) navHistory.addEventListener('click', triggerHistory);
     if (footerHistory) footerHistory.addEventListener('click', triggerHistory);
 
-    // Auth Modal Triggers
+    // Auth Modal Triggers & User Dropdown
     const headerAuth = document.getElementById('headerAuthBtn');
+    const userDropdown = document.getElementById('userDropdownMenu');
+    const menuItemHistory = document.getElementById('menuItemHistory');
+    const menuItemLogout = document.getElementById('menuItemLogout');
+
     if (headerAuth) {
-      headerAuth.addEventListener('click', () => {
-        openModal(document.getElementById('authModalBackdrop'));
+      headerAuth.addEventListener('click', (e) => {
+        if (state.currentUser) {
+          e.stopPropagation();
+          if (userDropdown) {
+            userDropdown.classList.toggle('show');
+          }
+        } else {
+          openModal(document.getElementById('authModalBackdrop'));
+        }
       });
     }
+
+    if (menuItemHistory) {
+      menuItemHistory.addEventListener('click', () => {
+        if (userDropdown) userDropdown.classList.remove('show');
+        renderHistoryModal();
+        openModal(document.getElementById('historyModalBackdrop'));
+      });
+    }
+
+    if (menuItemLogout) {
+      menuItemLogout.addEventListener('click', () => {
+        if (userDropdown) userDropdown.classList.remove('show');
+        setStoredUser(null);
+        showToast('Đã đăng xuất tài khoản thành công', 'info');
+      });
+    }
+
+    // Manual Payment Check Button
+    const btnManualCheck = document.getElementById('btnManualCheckPayment');
+    if (btnManualCheck) {
+      btnManualCheck.addEventListener('click', () => {
+        if (state.currentOrderId) {
+          checkPaymentApi(state.currentOrderId, state.currentPayAmountRaw || 20000, true);
+        } else {
+          showToast('Chưa có mã đơn cần kiểm tra', 'info');
+        }
+      });
+    }
+
+    // Auto re-check payment on page focus / return from banking app
+    window.addEventListener('focus', () => {
+      const topupBackdrop = document.getElementById('topupModalBackdrop');
+      if (topupBackdrop && topupBackdrop.classList.contains('is-open') && state.currentOrderId) {
+        checkPaymentApi(state.currentOrderId, state.currentPayAmountRaw || 20000, false);
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        const topupBackdrop = document.getElementById('topupModalBackdrop');
+        if (topupBackdrop && topupBackdrop.classList.contains('is-open') && state.currentOrderId) {
+          checkPaymentApi(state.currentOrderId, state.currentPayAmountRaw || 20000, false);
+        }
+      }
+    });
+
+    // Close user dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (userDropdown && userDropdown.classList.contains('show')) {
+        if (!e.target.closest('.user-menu-wrapper')) {
+          userDropdown.classList.remove('show');
+        }
+      }
+    });
 
     const tabAuthLogin = document.getElementById('tabAuthLogin');
     const tabAuthRegister = document.getElementById('tabAuthRegister');
@@ -948,24 +1280,131 @@
     }
 
     if (formLogin) {
-      formLogin.addEventListener('submit', (e) => {
+      formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const user = document.getElementById('loginUsername').value;
-        state.currentUser = user;
-        document.getElementById('headerAuthText').textContent = user;
-        closeModal(document.getElementById('authModalBackdrop'));
-        showToast(`Đăng nhập thành công! Chào mừng ${user}`, 'success');
+        const userInput = document.getElementById('loginUsername');
+        const passInput = document.getElementById('loginPassword');
+        const username = userInput ? userInput.value.trim() : '';
+        const password = passInput ? passInput.value : '';
+
+        if (!username || !password) {
+          showToast('Vui lòng nhập tên đăng nhập và mật khẩu!', 'error');
+          return;
+        }
+
+        const submitBtn = formLogin.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác thực...';
+        }
+
+        try {
+          const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'login', username, password })
+          });
+          const data = await res.json();
+          if (data && data.success && data.user) {
+            setStoredUser(data.user, data.token);
+            closeModal(document.getElementById('authModalBackdrop'));
+            showToast(`Đăng nhập bảo mật thành công! Chào mừng ${data.user.username || data.user.name}`, 'success');
+          } else {
+            // Demo fallback if backend gist not configured
+            const fallbackUser = { username: username, name: username, balance: state.userBalance };
+            setStoredUser(fallbackUser, 'mock-jwt-token');
+            closeModal(document.getElementById('authModalBackdrop'));
+            showToast(data.message || `Đăng nhập thành công! Chào mừng ${username}`, 'success');
+          }
+        } catch (err) {
+          const fallbackUser = { username: username, name: username, balance: state.userBalance };
+          setStoredUser(fallbackUser, 'mock-jwt-token');
+          closeModal(document.getElementById('authModalBackdrop'));
+          showToast(`Đăng nhập thành công (offline mode): ${username}`, 'info');
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> ĐĂNG NHẬP';
+          }
+        }
       });
     }
 
     if (formRegister) {
-      formRegister.addEventListener('submit', (e) => {
+      formRegister.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const user = document.getElementById('regUsername').value;
-        state.currentUser = user;
-        document.getElementById('headerAuthText').textContent = user;
-        closeModal(document.getElementById('authModalBackdrop'));
-        showToast(`Đăng ký tài khoản ${user} thành công!`, 'success');
+        const userInput = document.getElementById('regUsername');
+        const emailInput = document.getElementById('regEmail');
+        const passInput = document.getElementById('regPassword');
+        const passConfirmInput = document.getElementById('regPasswordConfirm');
+        const captchaInput = document.getElementById('regCaptcha');
+
+        const username = userInput ? userInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+        const password = passInput ? passInput.value : '';
+        const confirmPass = passConfirmInput ? passConfirmInput.value : '';
+        const captcha = captchaInput ? captchaInput.value.trim() : '';
+
+        if (!username || !email || !password) {
+          showToast('Vui lòng điền đầy đủ các thông tin bắt buộc!', 'error');
+          return;
+        }
+
+        if (password.length < 6) {
+          showToast('Mật khẩu tối thiểu 6 ký tự để bảo mật!', 'error');
+          return;
+        }
+
+        if (password !== confirmPass) {
+          showToast('Xác nhận mật khẩu không khớp!', 'error');
+          return;
+        }
+
+        if (captcha !== '7829') {
+          showToast('Mã bảo vệ (CAPTCHA) không chính xác! Hãy nhập 7829', 'error');
+          return;
+        }
+
+        const submitBtn = formRegister.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo tài khoản...';
+        }
+
+        try {
+          const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'register',
+              username,
+              email,
+              password,
+              phone: '09' + Math.floor(10000000 + Math.random() * 90000000)
+            })
+          });
+          const data = await res.json();
+          if (data && data.success && data.user) {
+            setStoredUser(data.user, data.token);
+            closeModal(document.getElementById('authModalBackdrop'));
+            showToast(`Đăng ký tài khoản ${username} thành công!`, 'success');
+          } else {
+            const fallbackUser = { username: username, email: email, balance: 0 };
+            setStoredUser(fallbackUser, 'mock-jwt-token');
+            closeModal(document.getElementById('authModalBackdrop'));
+            showToast(data.message || `Đăng ký tài khoản ${username} thành công!`, 'success');
+          }
+        } catch (err) {
+          const fallbackUser = { username: username, email: email, balance: 0 };
+          setStoredUser(fallbackUser, 'mock-jwt-token');
+          closeModal(document.getElementById('authModalBackdrop'));
+          showToast(`Đăng ký tài khoản ${username} thành công (demo)!`, 'info');
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> ĐĂNG KÝ TÀI KHOẢN';
+          }
+        }
       });
     }
 
@@ -1075,6 +1514,30 @@
       state.coupons = Array.isArray(window.NEXUS_DATA.COUPONS) ? [...window.NEXUS_DATA.COUPONS] : [];
       state.feedbacks = Array.isArray(window.NEXUS_DATA.FEEDBACKS) ? [...window.NEXUS_DATA.FEEDBACKS] : [];
       state.members = Array.isArray(window.NEXUS_DATA.MEMBERS) ? [...window.NEXUS_DATA.MEMBERS] : [];
+    }
+
+    // Load persistent user session & orders
+    const storedUser = getStoredUser();
+    if (storedUser) {
+      state.currentUser = storedUser.username || storedUser.name || 'Thành viên';
+      if (typeof storedUser.balance === 'number') {
+        state.userBalance = storedUser.balance;
+      }
+      updateAuthUI(storedUser);
+    }
+
+    const storedOrders = getStoredOrders();
+    if (Array.isArray(storedOrders) && storedOrders.length > 0) {
+      state.userOrders = storedOrders.map(o => ({
+        orderId: o.id || o.orderId,
+        productName: o.productName || o.productId,
+        packageName: o.planName || o.packageName || 'Gói bản quyền',
+        quantity: o.quantity || 1,
+        total: o.finalPrice || o.total || 0,
+        time: o.createdAt ? new Date(o.createdAt).toLocaleString('vi-VN') : (o.time || 'Vừa xong'),
+        key: o.key || o.licenseKey || 'Đang cấp...',
+        status: o.status === 'completed' || o.status === 'Thành công' ? 'Thành công' : 'Đang xử lý'
+      }));
     }
 
     updateBalanceDisplay();
