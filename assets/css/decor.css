@@ -329,7 +329,7 @@ html, body { overflow-x: clip; }
   background: linear-gradient(135deg, #00f2fe, #3b82f6); border: 3px solid var(--bg-base);
 }
 .nexus-hero { padding-top: 64px; }
-.hero-title { font-size: clamp(32px, 6vw, 64px); }
+.hero-title { font-size: clamp(32px, 5.5vw, 56px); }
 .hero-title .title-accent { letter-spacing: 1px; }
 
 /* ---------- Hero on mobile ---------- */
@@ -540,38 +540,42 @@ html.nx-p3 .nx-intro-brand-group {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+/* Unified Brand Title: Intro & Hero are 100% IDENTICAL */
+.hero-title,
 .nx-intro-title {
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(32px, 6vw, 64px);
-  font-weight: 900;
-  line-height: 1.15;
-  letter-spacing: -1px;
-  color: #fff;
-  text-shadow: 0 0 40px rgba(0, 242, 254, 0.25);
-  margin: 0;
-  text-align: center;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: clamp(32px, 5.5vw, 56px) !important;
+  font-weight: 900 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -1px !important;
+  color: #fff !important;
+  text-shadow: 0 0 40px rgba(0, 242, 254, 0.25) !important;
+  margin: 0 0 14px 0 !important;
+  text-align: center !important;
 }
 
+.hero-title .title-accent,
 .nx-intro-title .title-accent {
-  background: linear-gradient(90deg, #00f2fe, #4facfe, #a855f7, #ec4899, #00f2fe);
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: nxShine 6s linear infinite;
-  letter-spacing: 1px;
-  display: inline-block;
+  background: linear-gradient(90deg, #00f2fe, #4facfe, #a855f7, #ec4899, #00f2fe) !important;
+  background-size: 300% auto !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: nxShine 6s linear infinite !important;
+  letter-spacing: 1px !important;
+  display: inline-block !important;
 }
 
+.hero-subtitle,
 .nx-intro-sub {
   margin-top: 14px;
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(12px, 2.2vw, 15px);
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--neon-cyan);
-  text-transform: uppercase;
-  text-align: center;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: clamp(12px, 2vw, 15px) !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  color: var(--neon-cyan) !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
   margin-bottom: 0;
 }
 

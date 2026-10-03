@@ -334,7 +334,8 @@ body {
 }
 
 .hero-title {
-  font-size: clamp(34px, 5.5vw, 56px);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: clamp(32px, 5.5vw, 56px);
   font-weight: 900;
   line-height: 1.15;
   letter-spacing: -1px;
@@ -343,10 +344,14 @@ body {
 }
 
 .hero-title .title-accent {
-  background: var(--grad-primary);
+  background: linear-gradient(90deg, #00f2fe, #4facfe, #a855f7, #ec4899, #00f2fe);
+  background-size: 300% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: nxShine 6s linear infinite;
+  letter-spacing: 1px;
+  display: inline-block;
 }
 
 .hero-subtitle {

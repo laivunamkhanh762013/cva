@@ -113,23 +113,23 @@
         // Step 0: Hero Logo Ring
         docEl.classList.add('nx-hero-step0');
 
-        // Step 1 (3.3s): "Hệ thống trực tuyến 24/7 • Cấp Key tự động"
+        // Step 1: "Hệ thống trực tuyến 24/7 • Cấp Key tự động"
         at(100, () => docEl.classList.add('nx-hero-step1'));
 
-        // Step 2 (3.8s): "WELCOME TO QUOCVIET AURA"
-        at(500, () => docEl.classList.add('nx-hero-step2'));
+        // Step 2: "WELCOME TO QUOCVIET AURA"
+        at(300, () => docEl.classList.add('nx-hero-step2'));
 
-        // Step 3 (4.3s): Slogan "UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN"
-        at(900, () => docEl.classList.add('nx-hero-step3'));
+        // Step 3: Slogan "UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN"
+        at(600, () => docEl.classList.add('nx-hero-step3'));
 
-        // Step 4 (4.8s): Description & Payment badges
-        at(1300, () => docEl.classList.add('nx-hero-step4'));
+        // Step 4: Description & Payment badges
+        at(900, () => docEl.classList.add('nx-hero-step4'));
 
-        // Step 5 (5.3s): 4 Feature Badges
-        at(1700, () => docEl.classList.add('nx-hero-step5'));
+        // Step 5: 4 Feature Badges
+        at(1200, () => docEl.classList.add('nx-hero-step5'));
 
-        // Step 6 (5.8s): 2 CTA Buttons
-        at(2100, () => {
+        // Step 6: 2 CTA Buttons
+        at(1500, () => {
           docEl.classList.add('nx-hero-step6');
           at(350, completeIntro);
         });
