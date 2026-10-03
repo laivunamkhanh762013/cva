@@ -22,6 +22,20 @@
   <link rel="stylesheet" href="assets/css/decor.css">
 </head>
 <body>
+  <!-- ══ GAMING SPLASH SCREEN INTRO (Smooth Logo Glide -> Burst Center) ══ -->
+  <div id="gamingIntro" class="dp-intro-overlay" onclick="skipIntro()" onkeydown="if(event.key==='Enter'||event.key==='Escape')skipIntro()" role="alertdialog" aria-modal="true" aria-label="Giới thiệu Quốc Việt Aura">
+    <div class="dp-intro-center" id="dpIntroCenter">
+      <div class="dp-intro-logo-box" id="dpIntroLogoBox">
+        <img src="assets/img/logo.jpg" alt="Logo Quốc Việt Aura" class="dp-intro-logo-img">
+      </div>
+      <div class="dp-intro-text-box" id="dpIntroTextBox">
+        <div class="dp-intro-title">QUỐC VIỆT AURA</div>
+        <div class="dp-intro-subline">GAMING STORE • MOD &amp; UTILITIES</div>
+      </div>
+    </div>
+    <button type="button" class="intro-skip-btn" onclick="skipIntro(event)" aria-label="Bỏ qua giới thiệu">Bỏ qua ✕</button>
+  </div>
+
   <div class="nx-bg" aria-hidden="true">
     <div class="nx-bg-grid"></div>
     <div class="nx-aurora a1"></div>
@@ -30,6 +44,11 @@
     <canvas id="nxParticles"></canvas>
   </div>
   <div class="nx-scroll-progress" id="nxScrollProgress"></div>
+
+  <!-- ══ TOP ANNOUNCEMENT BAR ══ -->
+  <div class="announcement-bar">
+    <i class="fa-solid fa-bullhorn"></i> Hoạt động 24/7 • Bàn giao key &amp; file trực tiếp siêu tốc • Duyệt nạp tự động qua VietQR MBBank • Uy tín 100%
+  </div>
 
   <!-- STICKY HEADER -->
   <header class="nexus-header" id="mainHeader">
@@ -114,6 +133,14 @@
         <p class="hero-description">
           Trung tâm phân phối bản quyền kỹ thuật số, công cụ tối ưu FPS và hỗ trợ game thủ chuyên nghiệp. Giao dịch tức thì, bảo mật cao cấp và chăm sóc khách hàng 24/7.
         </p>
+
+        <!-- Payment badges info -->
+        <div class="payment-badge-wrap">
+          <span class="payment-badge-title"><i class="fas fa-credit-card"></i> Phương thức thanh toán:</span>
+          <span class="payment-badge-qr"><i class="fas fa-qrcode"></i> Quét mã VietQR (MBBank)</span>
+          <span style="color:#64748b; font-weight: bold;">|</span>
+          <span class="payment-badge-card"><i class="fas fa-bolt"></i> Duyệt tự động 24/7</span>
+        </div>
 
         <!-- Feature Badges -->
         <div class="hero-badges-grid">

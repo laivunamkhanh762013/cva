@@ -2,6 +2,37 @@
   'use strict';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // ══ GAMING SPLASH SCREEN CONTROLLER ══
+  let introTimeoutId = null;
+  function skipIntro(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (introTimeoutId) {
+      clearTimeout(introTimeoutId);
+      introTimeoutId = null;
+    }
+    const intro = document.getElementById('gamingIntro');
+    if (intro && intro.parentNode) {
+      document.body.style.overflow = '';
+      intro.style.transition = 'opacity .35s ease';
+      intro.style.opacity = '0';
+      intro.style.pointerEvents = 'none';
+      setTimeout(() => {
+        if (intro.parentNode) intro.parentNode.removeChild(intro);
+      }, 350);
+    }
+  }
+  window.skipIntro = skipIntro;
+
+  const introEl = document.getElementById('gamingIntro');
+  if (introEl) {
+    if (reduced) {
+      skipIntro();
+    } else {
+      document.body.style.overflow = 'hidden';
+      introTimeoutId = setTimeout(skipIntro, 1850);
+    }
+  }
+
   // Particles (lightweight, paused when tab hidden)
   const cv = document.getElementById('nxParticles');
   if (cv && !reduced) {
