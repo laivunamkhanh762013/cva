@@ -2,37 +2,36 @@
   'use strict';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ══ NEXUS INTRO: 6 SCENES SEAMLESS CONTROLLER ══
+  // ══ CINEMATIC BRAND REVEAL INTRO CONTROLLER ══
   const docEl = document.documentElement;
   const introEl = document.getElementById('gamingIntro');
-  let introEnded = false;
+  let introDone = false;
   const timers = [];
-  const schedule = (ms, fn) => timers.push(setTimeout(fn, ms));
+  const at = (ms, fn) => timers.push(setTimeout(fn, ms));
 
-  function cleanIntro() {
+  function completeIntro() {
     timers.forEach(clearTimeout);
-    if (!introEl) return;
-    introEl.classList.add('nx-fading-out');
-    docEl.classList.remove('intro-active');
-    docEl.classList.add('intro-revealed');
+    docEl.classList.remove(
+      'nx-intro-active', 'nx-p1', 'nx-p2', 'nx-p3',
+      'nx-hero-step0', 'nx-hero-step1', 'nx-hero-step2',
+      'nx-hero-step3', 'nx-hero-step4', 'nx-hero-step5', 'nx-hero-step6'
+    );
+    docEl.classList.add('nx-intro-complete');
     document.body.style.overflow = '';
 
-    const heroLogo = document.querySelector('.hero-logo-wrap');
-    if (heroLogo) {
-      heroLogo.classList.add('arrived');
-      setTimeout(() => heroLogo.classList.remove('arrived'), 800);
+    if (introEl) {
+      introEl.classList.add('nx-intro-fading');
+      setTimeout(() => {
+        if (introEl.parentNode) introEl.remove();
+      }, 550);
     }
-
-    setTimeout(() => {
-      if (introEl.parentNode) introEl.remove();
-    }, 850);
   }
 
   function skipIntro() {
-    if (introEnded) return;
-    introEnded = true;
-    try { sessionStorage.setItem('nexus_intro_done', '1'); } catch (e) {}
-    cleanIntro();
+    if (introDone) return;
+    introDone = true;
+    try { sessionStorage.setItem('nx_brand_seen', '1'); } catch (e) {}
+    completeIntro();
   }
   window.skipIntro = skipIntro;
 
@@ -43,81 +42,101 @@
       document.body.style.overflow = 'hidden';
       window.scrollTo(0, 0);
 
-      const skipBtn = document.getElementById('nxIntroSkip');
+      const skipBtn = document.getElementById('nxSkipBtn');
       if (skipBtn) skipBtn.addEventListener('click', skipIntro);
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' || e.key === 'Enter') skipIntro();
       }, { once: true });
 
-      let visited = false;
-      try { visited = sessionStorage.getItem('nexus_intro_done') === '1'; } catch(e) {}
+      let seen = false;
+      try { seen = sessionStorage.getItem('nx_brand_seen') === '1'; } catch(e) {}
 
-      if (visited) {
-        // Fast-path for returning user in same session (1.8s)
-        introEl.classList.add('sc-2');
-        schedule(500, () => introEl.classList.add('sc-4'));
-        schedule(1400, () => {
-          introEl.classList.add('sc-morph');
-          cleanIntro();
-        });
+      if (seen) {
+        // Returning user in same session: fast 1.2s smooth unlock
+        docEl.classList.add('nx-p1', 'nx-p2');
+        at(400, () => morphToHeader());
       } else {
-        try { sessionStorage.setItem('nexus_intro_done', '1'); } catch(e) {}
+        try { sessionStorage.setItem('nx_brand_seen', '1'); } catch(e) {}
 
-        // SCENE 1: Dark screen with gentle ambient glow (0s - 0.5s)
-        // (default state of overlay)
+        // PHASE 1 (0 -> 1s): Shared Hero background with gentle neon glow at center. Bolt appears.
+        at(80, () => docEl.classList.add('nx-p1'));
 
-        // SCENE 2: Nexus bolt icon + scale & glow, then brand name (0.5s - 1.4s)
-        schedule(500, () => {
-          introEl.classList.add('sc-2');
-        });
+        // PHASE 2 (1.5 -> 2.2s): Brand name "NEXUS STORE" & "GAMING DIGITAL STORE"
+        at(1100, () => docEl.classList.add('nx-p2'));
 
-        // SCENE 3: System Status Console lines sequence (1.4s - 2.8s)
-        schedule(1400, () => {
-          introEl.classList.remove('sc-2');
-          introEl.classList.add('sc-3');
-          const lines = document.querySelectorAll('.nx-console-line');
-          lines.forEach((line, idx) => {
-            schedule(idx * 260, () => line.classList.add('shown'));
+        // PHASE 3 (2.5 -> 3.2s): Logo smoothly flies from center into HEADER position
+        at(2400, () => morphToHeader());
+      }
+
+      function morphToHeader() {
+        if (introDone) return;
+        const morphLogo = document.getElementById('nxMorphLogo');
+        const headerBrandIcon = document.querySelector('.brand-icon');
+
+        // Activate Phase 3 (Header reveals Navbar, Balance, Auth buttons)
+        docEl.classList.add('nx-p3');
+
+        if (morphLogo && headerBrandIcon && morphLogo.animate) {
+          const fromRect = morphLogo.getBoundingClientRect();
+          const toRect = headerBrandIcon.getBoundingClientRect();
+
+          const dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
+          const dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
+          const scale = toRect.width / (fromRect.width || 76);
+
+          const anim = morphLogo.animate([
+            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+            { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(' + scale + ')', opacity: 0.95 }
+          ], {
+            duration: 650,
+            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+            fill: 'forwards'
           });
-        });
 
-        // SCENE 4: SYSTEM ONLINE & AUTO DELIVERY 24/7 (2.8s - 3.7s)
-        schedule(2800, () => {
-          introEl.classList.remove('sc-3');
-          introEl.classList.add('sc-4');
-        });
+          anim.onfinish = () => {
+            headerBrandIcon.classList.add('nx-arrived');
+            setTimeout(() => headerBrandIcon.classList.remove('nx-arrived'), 750);
+            startHeroCascade();
+          };
+        } else {
+          startHeroCascade();
+        }
+      }
 
-        // SCENE 5 & 6: Morph and reveal Hero seamlessly (3.7s)
-        schedule(3700, () => {
-          introEl.classList.add('sc-morph');
-          
-          // Smooth flying transition of intro logo into Hero Logo position
-          const fromLogo = document.getElementById('nxIntroLogo');
-          const toLogo = document.querySelector('.hero-logo-wrap');
-          if (fromLogo && toLogo && fromLogo.animate) {
-            const a = fromLogo.getBoundingClientRect();
-            const b = toLogo.getBoundingClientRect();
-            const dx = (b.left + b.width / 2) - (a.left + a.width / 2);
-            const dy = (b.top + b.height / 2) - (a.top + a.height / 2);
-            const scale = b.width / (a.width || 90);
+      // PHASE 4 (3.2s -> 5.5s): Hero continues sequentially from the same animation
+      function startHeroCascade() {
+        if (introDone) return;
 
-            fromLogo.animate([
-              { transform: 'translate(0, 0) scale(1)' },
-              { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(' + scale + ')' }
-            ], {
-              duration: 650,
-              easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-              fill: 'forwards'
-            });
-          }
+        // Dismiss intro overlay softly as hero reveals
+        if (introEl) introEl.classList.add('nx-intro-fading');
 
-          cleanIntro();
+        // Step 0: Hero Logo Ring
+        docEl.classList.add('nx-hero-step0');
+
+        // Step 1 (3.3s): "Hệ thống trực tuyến 24/7 • Cấp Key tự động"
+        at(100, () => docEl.classList.add('nx-hero-step1'));
+
+        // Step 2 (3.8s): "WELCOME TO NEXUS GAMING STORE"
+        at(500, () => docEl.classList.add('nx-hero-step2'));
+
+        // Step 3 (4.3s): Slogan "UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN"
+        at(900, () => docEl.classList.add('nx-hero-step3'));
+
+        // Step 4 (4.8s): Description & Payment badges
+        at(1300, () => docEl.classList.add('nx-hero-step4'));
+
+        // Step 5 (5.3s): 4 Feature Badges
+        at(1700, () => docEl.classList.add('nx-hero-step5'));
+
+        // Step 6 (5.8s): 2 CTA Buttons
+        at(2100, () => {
+          docEl.classList.add('nx-hero-step6');
+          at(350, completeIntro);
         });
       }
     }
   } else {
-    docEl.classList.remove('intro-active');
-    docEl.classList.add('intro-revealed');
+    completeIntro();
   }
 
   // Particles (lightweight, paused when tab hidden)

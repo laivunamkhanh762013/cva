@@ -434,45 +434,59 @@ html, body { overflow-x: clip; }
 }
 
 /* ==========================================================================
-   NEXUS INTRO — SYSTEM BOOT TO HERO SEAMLESS BRIDGE
-   Flow: Scene 1 (Dark) -> Scene 2 (Bolt & Brand) -> Scene 3 (Console Status)
-         -> Scene 4 (System Online) -> Scene 5 & 6 (Morph directly to Hero)
-   GPU accelerated (transform, opacity only). Zero layout shifts.
+   CINEMATIC BRAND REVEAL INTRO
+   Shared Background, Zero Layout Shift, Zero Terminal Hacker Slop.
+   Intro -> Logo -> Header -> Hero -> Website
    ========================================================================== */
 
-.nx-intro-overlay {
+.nx-cinematic-intro {
   position: fixed;
   inset: 0;
   z-index: 999999;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-base);
-  background-image: radial-gradient(circle at 50% 50%, rgba(0, 242, 254, 0.08) 0%, rgba(6, 8, 19, 0.98) 75%);
+  background: transparent; /* Seamless: uses the EXACT website body background! */
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
-  font-family: 'Inter', system-ui, sans-serif;
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
   pointer-events: auto;
+  transition: opacity 0.5s ease;
 }
 
-.nx-intro-overlay.nx-fading-out {
+.nx-cinematic-intro.nx-intro-fading {
   opacity: 0;
-  visibility: hidden;
   pointer-events: none;
 }
 
-.nx-intro-ambient {
+/* Subtle neon glow at center */
+.nx-center-glow {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 45%, rgba(0, 242, 254, 0.12) 0%, transparent 65%);
+  top: 50%;
+  left: 50%;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.22) 0%, rgba(168, 85, 247, 0.12) 40%, transparent 70%);
+  transform: translate(-50%, -50%);
+  filter: blur(40px);
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0;
+  animation: nxGlowPulse 2.5s ease-in-out infinite alternate;
+  transition: opacity 0.8s ease;
 }
 
+html.nx-p1 .nx-center-glow,
+html.nx-p2 .nx-center-glow {
+  opacity: 1;
+}
+
+@keyframes nxGlowPulse {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.9; }
+}
+
+/* Central Anchor */
 .nx-intro-center {
   position: relative;
   display: flex;
@@ -480,266 +494,88 @@ html, body { overflow-x: clip; }
   align-items: center;
   justify-content: center;
   text-align: center;
-  max-width: 90vw;
-  width: 480px;
-  min-height: 280px;
   z-index: 2;
 }
 
-/* Scene 2: Lightning Bolt & Logo */
-.nx-intro-icon-wrap {
-  position: relative;
-  width: 90px;
-  height: 90px;
+/* Phase 1 & 2: Bolt icon */
+.nx-intro-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: rgba(11, 15, 31, 0.9);
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 24px rgba(0, 242, 254, 0.65), inset 0 0 16px rgba(0, 242, 254, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-}
-
-.nx-intro-lightning {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 46px;
-  color: #00f2fe;
-  filter: drop-shadow(0 0 20px rgba(0, 242, 254, 0.9));
+  font-size: 34px;
+  color: var(--neon-cyan);
   opacity: 0;
-  transform: scale(0.6);
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0.5);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, left, top;
 }
 
-.nx-intro-overlay.sc-2 .nx-intro-lightning {
+html.nx-p1 .nx-intro-icon {
   opacity: 1;
   transform: scale(1);
 }
 
-.nx-intro-overlay.sc-morph .nx-intro-lightning {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-.nx-intro-logo {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
-}
-
-.nx-intro-overlay.sc-morph .nx-intro-logo {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.nx-intro-logo-ring {
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, #00f2fe, #a855f7, #ec4899, #00f2fe);
-  animation: nxRingSpin 5s linear infinite;
-  filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.7));
-}
-
-.nx-intro-logo-ring::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: var(--bg-base);
-}
-
-.nx-intro-logo img {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-}
-
-/* Scene 2 Brand Title */
-.nx-intro-brand {
+/* Phase 2: Brand Name */
+.nx-intro-brand-group {
+  margin-top: 18px;
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.5s ease 0.2s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
-  margin-bottom: 20px;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.nx-intro-overlay.sc-2 .nx-intro-brand {
+html.nx-p2 .nx-intro-brand-group {
   opacity: 1;
   transform: translateY(0);
 }
 
-.nx-intro-overlay.sc-3 .nx-intro-brand,
-.nx-intro-overlay.sc-4 .nx-intro-brand,
-.nx-intro-overlay.sc-morph .nx-intro-brand {
+html.nx-p3 .nx-intro-brand-group {
   opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
-  display: none;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.nx-intro-brand-title {
-  font-size: clamp(24px, 5.5vw, 36px);
+.nx-intro-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(26px, 5.5vw, 38px);
   font-weight: 900;
-  letter-spacing: 2.5px;
+  letter-spacing: 2px;
   background: linear-gradient(90deg, #ffffff 0%, #00f2fe 50%, #a855f7 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.35));
+  filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.4));
+  margin: 0;
+  line-height: 1.2;
 }
 
-.nx-intro-brand-sub {
+.nx-intro-sub {
   margin-top: 6px;
   font-family: monospace, system-ui;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 4px;
+  letter-spacing: 3.5px;
   color: #38bdf8;
-}
-
-/* Scene 3: System Console */
-.nx-intro-console {
-  display: none;
-  flex-direction: column;
-  gap: 7px;
-  padding: 16px 20px;
-  min-width: min(380px, 86vw);
-  background: rgba(11, 15, 31, 0.75);
-  border: 1px solid rgba(0, 242, 254, 0.25);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 242, 254, 0.05);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  font-family: 'JetBrains Mono', monospace, system-ui;
-  font-size: 12px;
-  text-align: left;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.nx-intro-overlay.sc-3 .nx-intro-console {
-  display: flex;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.nx-intro-overlay.sc-4 .nx-intro-console,
-.nx-intro-overlay.sc-morph .nx-intro-console {
-  display: none;
-  opacity: 0;
-}
-
-.nx-console-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #94a3b8;
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.nx-console-line.shown {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.nx-line-prompt {
-  color: #00f2fe;
-  font-weight: 900;
-  margin-right: 6px;
-}
-
-.nx-line-badge {
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 10px;
-  letter-spacing: 0.5px;
-}
-
-.nx-line-badge.ok {
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-/* Scene 4: System Online Badges */
-.nx-intro-status-pills {
-  display: none;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.nx-intro-overlay.sc-4 .nx-intro-status-pills {
-  display: flex;
-  opacity: 1;
-  transform: scale(1);
-}
-
-.nx-intro-overlay.sc-morph .nx-intro-status-pills {
-  opacity: 0;
-  transform: scale(1.05);
-}
-
-.nx-status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(0, 242, 254, 0.45);
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  color: #f1f5f9;
-  box-shadow: 0 0 20px rgba(0, 242, 254, 0.25);
-}
-
-.nx-pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 10px #10b981;
-  animation: pulseDot 1.4s ease-in-out infinite;
-}
-
-.nx-pulse-dot.cyan {
-  background: #00f2fe;
-  box-shadow: 0 0 10px #00f2fe;
-}
-
-@keyframes pulseDot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.35); opacity: 0.6; }
+  opacity: 0.85;
 }
 
 /* Skip Button */
-.nx-intro-skip {
+.nx-skip-btn {
   position: absolute;
   top: 24px;
   right: 24px;
   z-index: 10;
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 23, 42, 0.65);
   color: #cbd5e1;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -749,103 +585,144 @@ html, body { overflow-x: clip; }
   transition: all 0.2s ease;
 }
 
-.nx-intro-skip:hover {
+.nx-skip-btn:hover {
   background: rgba(0, 242, 254, 0.15);
   border-color: rgba(0, 242, 254, 0.45);
   color: #fff;
-  box-shadow: 0 0 14px rgba(0, 242, 254, 0.3);
+  box-shadow: 0 0 14px rgba(0, 242, 254, 0.35);
 }
 
 /* ==========================================================================
-   HERO SEAMLESS STAGGER REVEAL (LINKED INTO SCENE 5 & 6)
-   - Header, Navbar, Marquee are fixed & never shift layout
-   - Hero elements reveal sequentially after system goes online
+   PHASE 3 & 4: LOGO BECOMES HEADER & HERO CASCADES FROM THE SAME ANIMATION
    ========================================================================== */
 
-/* Initially while intro is active, hold hero elements gracefully */
-html.intro-active .hero-content > * {
+/* While intro is active, hide Header & Hero gracefully */
+html.nx-intro-active .nexus-header {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+/* Header inner elements sequential reveal in Phase 3 */
+html.nx-intro-active .brand-logo {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+html.nx-intro-active .nav-menu {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+}
+
+html.nx-intro-active .header-right {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.5s ease 0.35s, transform 0.5s ease 0.35s;
+}
+
+html.nx-intro-active .announcement-bar {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* When Phase 3 activates (Logo moves to Header): */
+html.nx-p3 .nexus-header {
+  opacity: 1;
+}
+
+html.nx-p3 .brand-logo {
+  opacity: 1;
+}
+
+html.nx-p3 .nav-menu {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.nx-p3 .header-right {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.nx-p3 .announcement-bar {
+  opacity: 1;
+}
+
+/* Brand icon arrival burst in header */
+.brand-icon.nx-arrived {
+  animation: brandArrival 0.7s ease-out;
+}
+
+@keyframes brandArrival {
+  0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.85); transform: scale(1.15); }
+  100% { box-shadow: 0 0 0 25px rgba(0, 242, 254, 0); transform: scale(1); }
+}
+
+/* ==========================================================================
+   HERO SEQUENTIAL REVEAL (PHASE 4)
+   Flows continuously from Header unlock down through Hero items
+   ========================================================================== */
+
+html.nx-intro-active .hero-content > * {
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Header & background ambient stay stable */
-html.intro-active .nexus-header,
-html.intro-active .announcement-bar {
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-/* Revealing sequence */
-html.intro-revealed .nexus-header,
-html.intro-revealed .announcement-bar {
-  opacity: 1;
-}
-
-/* Stagger sequence as requested */
-/* Step 1: Hero Logo */
-html.intro-revealed .hero-content > .hero-logo-wrap {
+/* 0. Hero Logo Wrap */
+html.nx-hero-step0 .hero-content > .hero-logo-wrap {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 0.05s;
 }
 
-/* Step 2: System Online status pill */
-html.intro-revealed .hero-content > .hero-status-pill {
+/* 1. Hệ thống trực tuyến 24/7 • Cấp Key tự động */
+html.nx-hero-step1 .hero-content > .hero-status-pill {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 0.15s;
 }
 
-/* Step 3: WELCOME TO NEXUS STORE */
-html.intro-revealed .hero-content > .hero-title {
+/* 2 & 3. WELCOME TO NEXUS STORE */
+html.nx-hero-step2 .hero-content > .hero-title {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 0.28s;
 }
 
-/* Step 4: Slogan (UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN) */
-html.intro-revealed .hero-content > .hero-subtitle {
+/* 4. Slogan: UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN */
+html.nx-hero-step3 .hero-content > .hero-subtitle {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 0.42s;
 }
 
-/* Step 5: Description + Payment badges */
-html.intro-revealed .hero-content > .hero-description,
-html.intro-revealed .hero-content > .payment-badge-wrap {
+/* 5. Description & Payment badges */
+html.nx-hero-step4 .hero-content > .hero-description,
+html.nx-hero-step4 .hero-content > .payment-badge-wrap {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 0.55s;
 }
 
-/* Step 6: 4 feature badges */
-html.intro-revealed .hero-content > .hero-badges-grid {
+/* 6. 4 feature badges */
+html.nx-hero-step5 .hero-content > .hero-badges-grid {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 0.68s;
 }
 
-/* Step 7: 2 CTA buttons */
-html.intro-revealed .hero-content > .hero-cta-group {
+/* 7. 2 CTA buttons */
+html.nx-hero-step6 .hero-content > .hero-cta-group {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 0.8s;
 }
 
-/* Arriving glow pulse on hero logo */
-.hero-logo-wrap.arrived {
-  animation: heroLogoArrive 0.8s ease-out;
-}
-
-@keyframes heroLogoArrive {
-  0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.8); }
-  100% { box-shadow: 0 0 0 35px rgba(0, 242, 254, 0); }
+/* Ready state (Fully completed or skipped) */
+html.nx-intro-complete .nexus-header,
+html.nx-intro-complete .announcement-bar,
+html.nx-intro-complete .hero-content > * {
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nx-intro-overlay { display: none !important; }
-  html.intro-active .hero-content > * { opacity: 1 !important; transform: none !important; }
-  html.intro-active .nexus-header,
-  html.intro-active .announcement-bar { opacity: 1 !important; }
+  .nx-cinematic-intro { display: none !important; }
+  html.nx-intro-active .nexus-header,
+  html.nx-intro-active .announcement-bar,
+  html.nx-intro-active .hero-content > * { opacity: 1 !important; transform: none !important; }
 }
