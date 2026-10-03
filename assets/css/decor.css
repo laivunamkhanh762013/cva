@@ -434,99 +434,418 @@ html, body { overflow-x: clip; }
 }
 
 /* ==========================================================================
-   INTRO v4 — 5 scene: SYSTEM → BRAND → STATUS → WELCOME → ENTER (= Hero)
-   Chỉ animate opacity/transform để không lag.
+   NEXUS INTRO — SYSTEM BOOT TO HERO SEAMLESS BRIDGE
+   Flow: Scene 1 (Dark) -> Scene 2 (Bolt & Brand) -> Scene 3 (Console Status)
+         -> Scene 4 (System Online) -> Scene 5 & 6 (Morph directly to Hero)
+   GPU accelerated (transform, opacity only). Zero layout shifts.
    ========================================================================== */
-.qi { position: fixed; inset: 0; z-index: 999999; display: grid; place-items: center; overflow: hidden;
-  font-family: 'Inter', system-ui, sans-serif; color: #e2e8f0; user-select: none; -webkit-user-select: none;
-  background: radial-gradient(circle at 50% 45%, #0b1433 0%, #05070f 60%, #020309 100%);
-  transition: opacity .7s ease; animation: qiSafety .4s ease 9s forwards; }
-@keyframes qiSafety { to { opacity: 0; visibility: hidden; } }
-.qi.qi-leaving { animation: none; background: transparent; transition: background .7s ease; }
 
-.qi-stage { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px; padding: 0 16px; }
-.qi-slot { display: grid; place-items: center; }
-.qi-slot > * { grid-area: 1 / 1; }
-.qi-slot-low { min-height: 150px; align-items: start; }
+.nx-intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-base);
+  background-image: radial-gradient(circle at 50% 50%, rgba(0, 242, 254, 0.08) 0%, rgba(6, 8, 19, 0.98) 75%);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+  pointer-events: auto;
+}
 
-/* fade helper */
-.qi-sys, .qi-logo, .qi-brand, .qi-welcome, .qi-status li, .qi-enter {
-  opacity: 0; transition: opacity .5s ease, transform .6s cubic-bezier(.16,1,.3,1); }
+.nx-intro-overlay.nx-fading-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
 
-/* SCENE 1 */
-.qi-sys { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font: 700 13px/1 monospace;
-  letter-spacing: 8px; color: #38bdf8; }
-.qi.s1 .qi-sys { opacity: 1; letter-spacing: 6px; }
-.qi.s2 .qi-sys { opacity: 0; transform: translate(-50%, calc(-50% - 30px)); }
-.qi-scan { position: absolute; left: 0; right: 0; top: 50%; height: 2px; opacity: 0; transform: scaleX(0);
-  background: linear-gradient(90deg, transparent, #00f2fe, #a855f7, transparent); box-shadow: 0 0 14px rgba(0,242,254,.8); }
-.qi.s1 .qi-scan { animation: qiScan .9s cubic-bezier(.65,0,.35,1) forwards; }
-@keyframes qiScan { 0% { opacity: 0; transform: scaleX(0); } 40% { opacity: 1; transform: scaleX(1); } 100% { opacity: 0; transform: scaleX(1) translateY(-40px); } }
+.nx-intro-ambient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(0, 242, 254, 0.12) 0%, transparent 65%);
+  pointer-events: none;
+  opacity: 0.6;
+}
 
-/* SCENE 2 */
-.qi-logo { position: relative; width: 86px; height: 86px; border-radius: 50%; padding: 3px; transform: scale(.7);
-  background: linear-gradient(135deg, #00f2fe, #a855f7 55%, #ec4899); box-shadow: 0 0 30px rgba(0,242,254,.4); will-change: transform; }
-.qi-logo img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background: #020409; }
-.qi.s2 .qi-logo { opacity: 1; transform: none; }
-.qi-ring { position: absolute; inset: -10px; border-radius: 50%; border: 2px solid transparent; border-top-color: #00f2fe;
-  animation: qiSpin 1.2s linear infinite; transition: opacity .3s; }
-.qi-ring-2 { inset: -17px; border-top-color: transparent; border-bottom-color: #a855f7; animation-duration: 1.8s; animation-direction: reverse; }
-@keyframes qiSpin { to { transform: rotate(360deg); } }
-.qi-brand { transform: translateY(10px); }
-.qi.s2 .qi-brand { opacity: 1; transform: none; }
-.qi-name { font-size: clamp(24px, 5.5vw, 36px); font-weight: 900; letter-spacing: 2px;
-  background: linear-gradient(90deg, #00f2fe, #fff 45%, #a855f7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.qi-tag { margin-top: 6px; font: 700 11px/1 monospace; letter-spacing: 4px; color: #38bdf8; }
+.nx-intro-center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 90vw;
+  width: 480px;
+  min-height: 280px;
+  z-index: 2;
+}
 
-/* SCENE 3 */
-.qi-status { list-style: none; margin: 0; padding: 14px 18px; min-width: min(340px, 86vw); text-align: left;
-  font: 600 12px/1.9 monospace; color: #94a3b8; border-radius: 14px;
-  background: rgba(15,23,42,.55); border: 1px solid rgba(0,242,254,.18); opacity: 0; transition: opacity .4s; }
-.qi.s3 .qi-status { opacity: 1; }
-.qi-status li { display: flex; justify-content: space-between; gap: 16px; transform: translateX(-8px); }
-.qi-status b { color: #34d399; font-weight: 800; }
-.qi-status b.on { color: #00f2fe; }
-.qi.s3 .qi-status li { opacity: 1; transform: none; }
-.qi.s3 .qi-status li:nth-child(2) { transition-delay: .18s; }
-.qi.s3 .qi-status li:nth-child(3) { transition-delay: .36s; }
-.qi.s3 .qi-status li:nth-child(4) { transition-delay: .54s; }
-.qi.s3 .qi-status li:nth-child(5) { transition-delay: .72s; }
+/* Scene 2: Lightning Bolt & Logo */
+.nx-intro-icon-wrap {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
 
-/* SCENE 4 */
-.qi.s4 .qi-status, .qi.s4 .qi-status li { opacity: 0; transition-delay: 0s; }
-.qi.s4 .qi-brand { opacity: 0; transform: translateY(-12px); }
-.qi-welcome { margin: 0; transform: scale(.96); will-change: transform; }
-.qi.s4 .qi-welcome { opacity: 1; transform: none; transition-delay: .15s; }
-.qi-pulse { position: absolute; inset: 0; border-radius: 50%; border: 2px solid #00f2fe; opacity: 0; pointer-events: none; }
-.qi.s4 .qi-pulse { animation: qiPulse 1s cubic-bezier(.2,.8,.3,1) forwards; }
-@keyframes qiPulse { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(9); } }
+.nx-intro-lightning {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46px;
+  color: #00f2fe;
+  filter: drop-shadow(0 0 20px rgba(0, 242, 254, 0.9));
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
-/* SCENE 5 */
-.qi-enter { padding: 13px 30px; border-radius: 999px; border: 1px solid rgba(0,242,254,.5); cursor: pointer;
-  font: 800 13px/1 'Inter', sans-serif; letter-spacing: 3px; color: #fff; transform: translateY(10px); pointer-events: none;
-  background: linear-gradient(135deg, rgba(0,242,254,.18), rgba(168,85,247,.22)); box-shadow: 0 0 22px rgba(0,242,254,.25); }
-.qi.s5 .qi-enter { opacity: 1; transform: none; pointer-events: auto; }
-.qi-enter:hover { box-shadow: 0 0 30px rgba(0,242,254,.5); }
+.nx-intro-overlay.sc-2 .nx-intro-lightning {
+  opacity: 1;
+  transform: scale(1);
+}
 
-/* LEAVING: chỉ logo + WELCOME còn lại và bay vào vị trí Hero */
-.qi.qi-leaving .qi-ring, .qi.qi-leaving .qi-enter, .qi.qi-leaving .intro-skip-btn, .qi.qi-leaving .qi-sys { opacity: 0 !important; transition: opacity .25s; }
+.nx-intro-overlay.sc-morph .nx-intro-lightning {
+  opacity: 0;
+  transform: scale(0.8);
+}
 
-.intro-skip-btn { position: absolute; top: 20px; right: 20px; z-index: 3; padding: 6px 14px; border-radius: 999px; cursor: pointer;
-  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); color: #cbd5e1; font-size: 11px; font-weight: 700; }
-.intro-skip-btn:hover { background: rgba(255,255,255,.18); color: #fff; }
+.nx-intro-logo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
 
-/* ---- Trang chủ nối tiếp ---- */
-.intro-hold .hero-logo-wrap, .intro-hold .hero-title { opacity: 0; }
-.intro-playing .nexus-header, .intro-playing .announcement-bar, .intro-playing .hero-decor,
-.intro-playing .hero-content > *:not(.hero-logo-wrap):not(.hero-title) { opacity: 0; transform: translateY(18px); }
-.intro-playing .hero-decor { transform: none; }
-.intro-landed .nexus-header, .intro-landed .announcement-bar, .intro-landed .hero-decor { transition: opacity .6s ease, transform .6s ease; }
-.intro-landed .hero-content > * { transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1); }
-.intro-landed .hero-content > *:nth-child(n+4) { transition-delay: .25s; }
-.intro-landed .hero-content > *:nth-child(n+5) { transition-delay: .35s; }
-.intro-landed .hero-content > *:nth-child(n+6) { transition-delay: .45s; }
-.intro-landed .hero-content > *:nth-child(n+7) { transition-delay: .55s; }
-.hero-logo-wrap.qi-arrive { animation: qiArrive .7s ease-out; border-radius: 50%; }
-@keyframes qiArrive { from { box-shadow: 0 0 0 0 rgba(0,242,254,.7); } to { box-shadow: 0 0 0 28px rgba(0,242,254,0); } }
+.nx-intro-overlay.sc-morph .nx-intro-logo {
+  opacity: 1;
+  transform: scale(1);
+}
 
-@media (prefers-reduced-motion: reduce) { .qi { display: none !important; } }
+.nx-intro-logo-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #00f2fe, #a855f7, #ec4899, #00f2fe);
+  animation: nxRingSpin 5s linear infinite;
+  filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.7));
+}
+
+.nx-intro-logo-ring::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--bg-base);
+}
+
+.nx-intro-logo img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Scene 2 Brand Title */
+.nx-intro-brand {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease 0.2s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+  margin-bottom: 20px;
+}
+
+.nx-intro-overlay.sc-2 .nx-intro-brand {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nx-intro-overlay.sc-3 .nx-intro-brand,
+.nx-intro-overlay.sc-4 .nx-intro-brand,
+.nx-intro-overlay.sc-morph .nx-intro-brand {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  display: none;
+}
+
+.nx-intro-brand-title {
+  font-size: clamp(24px, 5.5vw, 36px);
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  background: linear-gradient(90deg, #ffffff 0%, #00f2fe 50%, #a855f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.35));
+}
+
+.nx-intro-brand-sub {
+  margin-top: 6px;
+  font-family: monospace, system-ui;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #38bdf8;
+}
+
+/* Scene 3: System Console */
+.nx-intro-console {
+  display: none;
+  flex-direction: column;
+  gap: 7px;
+  padding: 16px 20px;
+  min-width: min(380px, 86vw);
+  background: rgba(11, 15, 31, 0.75);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 242, 254, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: 'JetBrains Mono', monospace, system-ui;
+  font-size: 12px;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.nx-intro-overlay.sc-3 .nx-intro-console {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nx-intro-overlay.sc-4 .nx-intro-console,
+.nx-intro-overlay.sc-morph .nx-intro-console {
+  display: none;
+  opacity: 0;
+}
+
+.nx-console-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #94a3b8;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nx-console-line.shown {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.nx-line-prompt {
+  color: #00f2fe;
+  font-weight: 900;
+  margin-right: 6px;
+}
+
+.nx-line-badge {
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.nx-line-badge.ok {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Scene 4: System Online Badges */
+.nx-intro-status-pills {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nx-intro-overlay.sc-4 .nx-intro-status-pills {
+  display: flex;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.nx-intro-overlay.sc-morph .nx-intro-status-pills {
+  opacity: 0;
+  transform: scale(1.05);
+}
+
+.nx-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(0, 242, 254, 0.45);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #f1f5f9;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.25);
+}
+
+.nx-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulseDot 1.4s ease-in-out infinite;
+}
+
+.nx-pulse-dot.cyan {
+  background: #00f2fe;
+  box-shadow: 0 0 10px #00f2fe;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.6; }
+}
+
+/* Skip Button */
+.nx-intro-skip {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.nx-intro-skip:hover {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: rgba(0, 242, 254, 0.45);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(0, 242, 254, 0.3);
+}
+
+/* ==========================================================================
+   HERO SEAMLESS STAGGER REVEAL (LINKED INTO SCENE 5 & 6)
+   - Header, Navbar, Marquee are fixed & never shift layout
+   - Hero elements reveal sequentially after system goes online
+   ========================================================================== */
+
+/* Initially while intro is active, hold hero elements gracefully */
+html.intro-active .hero-content > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Header & background ambient stay stable */
+html.intro-active .nexus-header,
+html.intro-active .announcement-bar {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+/* Revealing sequence */
+html.intro-revealed .nexus-header,
+html.intro-revealed .announcement-bar {
+  opacity: 1;
+}
+
+/* Stagger sequence as requested */
+/* Step 1: Hero Logo */
+html.intro-revealed .hero-content > .hero-logo-wrap {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.05s;
+}
+
+/* Step 2: System Online status pill */
+html.intro-revealed .hero-content > .hero-status-pill {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.15s;
+}
+
+/* Step 3: WELCOME TO NEXUS STORE */
+html.intro-revealed .hero-content > .hero-title {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.28s;
+}
+
+/* Step 4: Slogan (UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN) */
+html.intro-revealed .hero-content > .hero-subtitle {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.42s;
+}
+
+/* Step 5: Description + Payment badges */
+html.intro-revealed .hero-content > .hero-description,
+html.intro-revealed .hero-content > .payment-badge-wrap {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.55s;
+}
+
+/* Step 6: 4 feature badges */
+html.intro-revealed .hero-content > .hero-badges-grid {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.68s;
+}
+
+/* Step 7: 2 CTA buttons */
+html.intro-revealed .hero-content > .hero-cta-group {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.8s;
+}
+
+/* Arriving glow pulse on hero logo */
+.hero-logo-wrap.arrived {
+  animation: heroLogoArrive 0.8s ease-out;
+}
+
+@keyframes heroLogoArrive {
+  0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.8); }
+  100% { box-shadow: 0 0 0 35px rgba(0, 242, 254, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-intro-overlay { display: none !important; }
+  html.intro-active .hero-content > * { opacity: 1 !important; transform: none !important; }
+  html.intro-active .nexus-header,
+  html.intro-active .announcement-bar { opacity: 1 !important; }
+}

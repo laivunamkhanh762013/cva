@@ -2,82 +2,122 @@
   'use strict';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ══ INTRO 5 scene → kết thúc đúng bằng Hero ══
+  // ══ NEXUS INTRO: 6 SCENES SEAMLESS CONTROLLER ══
   const docEl = document.documentElement;
-  const intro = document.getElementById('gamingIntro');
+  const introEl = document.getElementById('gamingIntro');
+  let introEnded = false;
   const timers = [];
-  let entered = false;
-  const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+  const schedule = (ms, fn) => timers.push(setTimeout(fn, ms));
 
-  function showPage() {
-    docEl.classList.add('intro-landed');
-    docEl.classList.remove('intro-playing');
-    document.body.style.overflow = '';
-  }
-  function fly(el, target) {
-    const a = el.getBoundingClientRect(), b = target.getBoundingClientRect();
-    if (!a.width || !b.width) return null;
-    const dx = (b.left + b.width / 2) - (a.left + a.width / 2);
-    const dy = (b.top + b.height / 2) - (a.top + a.height / 2);
-    return el.animate([{ transform: getComputedStyle(el).transform === 'none' ? 'none' : getComputedStyle(el).transform },
-      { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + (b.width / a.width) + ')' }],
-      { duration: 750, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'forwards' });
-  }
-  function enterStore(e) {
-    if (e && e.stopPropagation) e.stopPropagation();
-    if (entered) return;
-    entered = true;
+  function cleanIntro() {
     timers.forEach(clearTimeout);
-    try { sessionStorage.setItem('qvaIntroSeen', '1'); } catch (_) {}
-    if (!intro) { showPage(); docEl.classList.remove('intro-hold'); return; }
-    // đảm bảo logo + WELCOME đang hiện (trường hợp bấm Bỏ qua sớm)
-    intro.classList.add('s2', 's4');
-    intro.classList.remove('s1', 's3');
-    const logo = document.getElementById('qiLogo'), welcome = document.getElementById('qiWelcome');
-    const heroLogo = document.querySelector('.hero-logo-wrap'), heroTitle = document.querySelector('.hero-title:not(.qi-welcome)');
-    intro.classList.add('qi-leaving');
-    showPage();
-    const anims = [];
-    if (!reduced && logo.animate && heroLogo && heroTitle) {
-      requestAnimationFrame(() => {
-        [fly(logo, heroLogo), fly(welcome, heroTitle)].forEach(a => a && anims.push(a.finished));
-        Promise.all(anims).then(land, land);
-      });
-    } else { land(); }
-    function land() {
-      docEl.classList.remove('intro-hold');
-      if (heroLogo) {
-        heroLogo.classList.add('qi-arrive');
-        heroLogo.addEventListener('animationend', () => heroLogo.classList.remove('qi-arrive'), { once: true });
-      }
-      intro.style.opacity = '0';
-      setTimeout(() => intro.remove(), 250);
-    }
-  }
-  window.skipIntro = enterStore;
+    if (!introEl) return;
+    introEl.classList.add('nx-fading-out');
+    docEl.classList.remove('intro-active');
+    docEl.classList.add('intro-revealed');
+    document.body.style.overflow = '';
 
-  if (!intro) { showPage(); docEl.classList.remove('intro-hold'); }
-  else if (reduced) { enterStore(); }
-  else {
-    document.body.style.overflow = 'hidden';
-    scrollTo(0, 0);
-    document.getElementById('qiEnter').addEventListener('click', enterStore);
-    document.getElementById('qiSkip').addEventListener('click', enterStore);
-    addEventListener('keydown', ev => { if (ev.key === 'Escape' || ev.key === 'Enter') enterStore(); });
-    let seen = false;
-    try { seen = sessionStorage.getItem('qvaIntroSeen') === '1'; } catch (_) {}
-    const go = c => () => intro.classList.add(c);
-    if (seen) {
-      // đã xem trong phiên này: bản ngắn (logo → WELCOME → vào luôn)
-      at(30, go('s2')); at(350, go('s4')); at(1300, enterStore);
-    } else {
-      at(30, go('s1'));        // SYSTEM + scan
-      at(800, go('s2'));       // logo + brand
-      at(1500, go('s3'));      // status lines
-      at(2900, go('s4'));      // pulse + WELCOME TO
-      at(3500, go('s5'));      // ENTER STORE
-      at(5300, enterStore);    // tự vào
+    const heroLogo = document.querySelector('.hero-logo-wrap');
+    if (heroLogo) {
+      heroLogo.classList.add('arrived');
+      setTimeout(() => heroLogo.classList.remove('arrived'), 800);
     }
+
+    setTimeout(() => {
+      if (introEl.parentNode) introEl.remove();
+    }, 850);
+  }
+
+  function skipIntro() {
+    if (introEnded) return;
+    introEnded = true;
+    try { sessionStorage.setItem('nexus_intro_done', '1'); } catch (e) {}
+    cleanIntro();
+  }
+  window.skipIntro = skipIntro;
+
+  if (introEl) {
+    if (reduced) {
+      skipIntro();
+    } else {
+      document.body.style.overflow = 'hidden';
+      window.scrollTo(0, 0);
+
+      const skipBtn = document.getElementById('nxIntroSkip');
+      if (skipBtn) skipBtn.addEventListener('click', skipIntro);
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' || e.key === 'Enter') skipIntro();
+      }, { once: true });
+
+      let visited = false;
+      try { visited = sessionStorage.getItem('nexus_intro_done') === '1'; } catch(e) {}
+
+      if (visited) {
+        // Fast-path for returning user in same session (1.8s)
+        introEl.classList.add('sc-2');
+        schedule(500, () => introEl.classList.add('sc-4'));
+        schedule(1400, () => {
+          introEl.classList.add('sc-morph');
+          cleanIntro();
+        });
+      } else {
+        try { sessionStorage.setItem('nexus_intro_done', '1'); } catch(e) {}
+
+        // SCENE 1: Dark screen with gentle ambient glow (0s - 0.5s)
+        // (default state of overlay)
+
+        // SCENE 2: Nexus bolt icon + scale & glow, then brand name (0.5s - 1.4s)
+        schedule(500, () => {
+          introEl.classList.add('sc-2');
+        });
+
+        // SCENE 3: System Status Console lines sequence (1.4s - 2.8s)
+        schedule(1400, () => {
+          introEl.classList.remove('sc-2');
+          introEl.classList.add('sc-3');
+          const lines = document.querySelectorAll('.nx-console-line');
+          lines.forEach((line, idx) => {
+            schedule(idx * 260, () => line.classList.add('shown'));
+          });
+        });
+
+        // SCENE 4: SYSTEM ONLINE & AUTO DELIVERY 24/7 (2.8s - 3.7s)
+        schedule(2800, () => {
+          introEl.classList.remove('sc-3');
+          introEl.classList.add('sc-4');
+        });
+
+        // SCENE 5 & 6: Morph and reveal Hero seamlessly (3.7s)
+        schedule(3700, () => {
+          introEl.classList.add('sc-morph');
+          
+          // Smooth flying transition of intro logo into Hero Logo position
+          const fromLogo = document.getElementById('nxIntroLogo');
+          const toLogo = document.querySelector('.hero-logo-wrap');
+          if (fromLogo && toLogo && fromLogo.animate) {
+            const a = fromLogo.getBoundingClientRect();
+            const b = toLogo.getBoundingClientRect();
+            const dx = (b.left + b.width / 2) - (a.left + a.width / 2);
+            const dy = (b.top + b.height / 2) - (a.top + a.height / 2);
+            const scale = b.width / (a.width || 90);
+
+            fromLogo.animate([
+              { transform: 'translate(0, 0) scale(1)' },
+              { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(' + scale + ')' }
+            ], {
+              duration: 650,
+              easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+              fill: 'forwards'
+            });
+          }
+
+          cleanIntro();
+        });
+      }
+    }
+  } else {
+    docEl.classList.remove('intro-active');
+    docEl.classList.add('intro-revealed');
   }
 
   // Particles (lightweight, paused when tab hidden)
@@ -96,7 +136,7 @@
       }));
     }
     function draw() {
-      if (!document.hidden && !docEl.classList.contains('intro-playing')) {
+      if (!document.hidden && !docEl.classList.contains('intro-active')) {
         ctx.clearRect(0, 0, w, h);
         for (let i = 0; i < pts.length; i++) {
           const p = pts[i];

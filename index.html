@@ -22,38 +22,47 @@
   <link rel="stylesheet" href="assets/css/decor.css">
 </head>
 <body>
-  <!-- ══ INTRO: hệ thống khởi động → kết thúc đúng bằng Hero ══ -->
-  <div id="gamingIntro" class="qi" role="dialog" aria-modal="true" aria-label="QuocvietAura đang khởi động">
-    <div class="qi-scan" aria-hidden="true"></div>
-    <div class="qi-sys" aria-hidden="true">QUOCVIET&nbsp;SYSTEM</div>
-    <div class="qi-stage">
-      <div class="qi-logo" id="qiLogo">
-        <span class="qi-ring qi-ring-1" aria-hidden="true"></span>
-        <span class="qi-ring qi-ring-2" aria-hidden="true"></span>
-        <span class="qi-pulse" aria-hidden="true"></span>
-        <img src="assets/img/logo.jpg" alt="">
-      </div>
-      <div class="qi-slot">
-        <div class="qi-brand">
-          <div class="qi-name">QUOCVIET AURA</div>
-          <div class="qi-tag">GAMING DIGITAL STORE</div>
+  <!-- ══ INTRO: NEXUS SYSTEM INITIALIZATION & HERO BRIDGE ══ -->
+  <div id="gamingIntro" class="nx-intro-overlay" role="dialog" aria-modal="true" aria-label="NEXUS STORE đang khởi động">
+    <div class="nx-intro-ambient" aria-hidden="true"></div>
+    
+    <div class="nx-intro-center">
+      <!-- Scene 2: Thunderbolt Icon & Brand -->
+      <div class="nx-intro-icon-wrap" id="nxIntroIconWrap">
+        <div class="nx-intro-lightning" id="nxIntroLightning">
+          <i class="fas fa-bolt"></i>
         </div>
-        <h2 class="hero-title qi-welcome" id="qiWelcome">WELCOME TO <br><span class="title-accent">QUOCVIET AURA</span></h2>
+        <div class="nx-intro-logo" id="nxIntroLogo">
+          <div class="nx-intro-logo-ring"></div>
+          <img src="assets/img/logo.jpg" alt="Logo">
+        </div>
       </div>
-      <div class="qi-slot qi-slot-low">
-        <ul class="qi-status" aria-live="polite">
-          <li>CONNECTING TO QUOCVIET SERVER... <b>OK</b></li>
-          <li>VERIFYING SYSTEM... <b>OK</b></li>
-          <li>STORE <b class="on">● ONLINE</b></li>
-          <li>AUTO DELIVERY: <b>READY</b></li>
-          <li>SUPPORT: <b>24/7</b></li>
-        </ul>
-        <button type="button" class="qi-enter" id="qiEnter"><i class="fas fa-bolt"></i> ENTER STORE</button>
+
+      <div class="nx-intro-brand" id="nxIntroBrand">
+        <div class="nx-intro-brand-title">NEXUS STORE</div>
+        <div class="nx-intro-brand-sub">GAMING DIGITAL STORE</div>
+      </div>
+
+      <!-- Scene 3: System Status Lines -->
+      <div class="nx-intro-console" id="nxIntroConsole">
+        <div class="nx-console-line" data-line="1"><span class="nx-line-prompt">></span> INITIALIZING NEXUS SYSTEM... <span class="nx-line-badge ok">OK</span></div>
+        <div class="nx-console-line" data-line="2"><span class="nx-line-prompt">></span> SECURE CONNECTION... <span class="nx-line-badge ok">OK</span></div>
+        <div class="nx-console-line" data-line="3"><span class="nx-line-prompt">></span> STORE DATABASE READY... <span class="nx-line-badge ok">READY</span></div>
+        <div class="nx-console-line" data-line="4"><span class="nx-line-prompt">></span> AUTO DELIVERY READY... <span class="nx-line-badge ok">READY</span></div>
+        <div class="nx-console-line" data-line="5"><span class="nx-line-prompt">></span> SUPPORT 24/7 READY... <span class="nx-line-badge ok">ONLINE</span></div>
+      </div>
+
+      <!-- Scene 4: System Online Badges -->
+      <div class="nx-intro-status-pills" id="nxIntroPills">
+        <span class="nx-status-pill"><span class="nx-pulse-dot"></span> SYSTEM ONLINE</span>
+        <span class="nx-status-pill"><span class="nx-pulse-dot cyan"></span> AUTO DELIVERY 24/7</span>
       </div>
     </div>
-    <button type="button" class="intro-skip-btn" id="qiSkip" aria-label="Bỏ qua giới thiệu">Bỏ qua ✕</button>
+
+    <!-- Skip Button in top right -->
+    <button type="button" class="nx-intro-skip" id="nxIntroSkip" aria-label="Bỏ qua phần khởi động">BỎ QUA ✕</button>
   </div>
-  <script>document.documentElement.classList.add('intro-playing','intro-hold');</script>
+  <script>document.documentElement.classList.add('intro-active');</script>
 
   <div class="nx-bg" aria-hidden="true">
     <div class="nx-bg-grid"></div>
