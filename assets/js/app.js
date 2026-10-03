@@ -83,6 +83,26 @@
     }
   }
 
+  function refreshCaptcha() {
+    state.captchaCode = String(Math.floor(1000 + Math.random() * 9000));
+    const el = document.getElementById('captchaVal');
+    if (el) el.textContent = state.captchaCode;
+  }
+
+  // Returns { ok, discount, reason } for a coupon against a subtotal
+  function evaluateCoupon(coupon, subtotal) {
+    if (!coupon || coupon.status !== 'active') return { ok: false, discount: 0, reason: 'Mã giảm giá không hợp lệ!' };
+    if (coupon.expiry) {
+      const exp = new Date(coupon.expiry + 'T23:59:59');
+      if (!isNaN(exp) && Date.now() > exp.getTime()) return { ok: false, discount: 0, reason: 'Mã giảm giá đã hết hạn!' };
+    }
+    if (typeof coupon.usageLeft === 'number' && coupon.usageLeft <= 0) return { ok: false, discount: 0, reason: 'Mã giảm giá đã hết lượt sử dụng!' };
+    if (coupon.minOrder && subtotal < coupon.minOrder) return { ok: false, discount: 0, reason: `Đơn tối thiểu ${formatCurrency(coupon.minOrder)} để dùng mã này!` };
+    let d = coupon.type === 'percent' ? (subtotal * coupon.discount) / 100 : coupon.discount;
+    d = Math.max(0, Math.min(Math.floor(d), subtotal));
+    return { ok: true, discount: d };
+  }
+
   function showToast(message, type = 'info') {
     const container = DOM.toastContainer || document.getElementById('toastContainer');
     if (!container) return;
@@ -580,23 +600,23 @@
     openModal(document.getElementById('productModalBackdrop'));
   }
 
+  function computeCartTotals() {
+    const unitPrice = Number(state.selectedPackage ? state.selectedPackage.price : state.selectedProduct.price) || 0;
+    const qty = Math.max(1, Math.min(50, Number(state.currentQuantity) || 1));
+    const subtotal = unitPrice * qty;
+    let discount = 0;
+    if (state.appliedCoupon) {
+      const r = evaluateCoupon(state.appliedCoupon, subtotal);
+      if (r.ok) discount = r.discount;
+      else state.appliedCoupon = null; // invalid after qty/package change
+    }
+    return { unitPrice, subtotal, discount, finalTotal: subtotal - discount };
+  }
+
   // Update Calculation in Modal
   function updateModalCalculation() {
     if (!state.selectedProduct) return;
-    const unitPrice = state.selectedPackage ? state.selectedPackage.price : state.selectedProduct.price;
-    const subtotal = unitPrice * state.currentQuantity;
-    let discount = 0;
-
-    if (state.appliedCoupon) {
-      if (state.appliedCoupon.type === 'percent') {
-        discount = (subtotal * state.appliedCoupon.discount) / 100;
-      } else {
-        discount = state.appliedCoupon.discount;
-      }
-      if (discount > subtotal) discount = subtotal;
-    }
-
-    const finalTotal = subtotal - discount;
+    const { unitPrice, discount, finalTotal } = computeCartTotals();
 
     const unitPriceEl = document.getElementById('summaryUnitPrice');
     const discountRowEl = document.getElementById('summaryDiscountRow');
@@ -620,15 +640,7 @@
   // Handle Checkout Purchase
   function handlePurchase() {
     if (!state.selectedProduct) return;
-    const unitPrice = state.selectedPackage ? state.selectedPackage.price : state.selectedProduct.price;
-    const subtotal = unitPrice * state.currentQuantity;
-    let discount = 0;
-    if (state.appliedCoupon) {
-      discount = state.appliedCoupon.type === 'percent'
-        ? (subtotal * state.appliedCoupon.discount) / 100
-        : state.appliedCoupon.discount;
-    }
-    const finalTotal = Math.max(0, subtotal - discount);
+    const { finalTotal } = computeCartTotals();
 
     if (state.userBalance < finalTotal) {
       showToast(`Số dư không đủ (${formatCurrency(state.userBalance)}). Vui lòng nạp thêm tiền!`, 'error');
@@ -640,6 +652,10 @@
     // Deduct Balance
     state.userBalance -= finalTotal;
     updateBalanceDisplay();
+    if (state.appliedCoupon && typeof state.appliedCoupon.usageLeft === 'number') {
+      state.appliedCoupon.usageLeft -= 1;
+    }
+    state.appliedCoupon = null;
 
     // Generate Game Key
     const orderId = 'ORD-' + Date.now().toString(36).toUpperCase().slice(-6);
@@ -1076,13 +1092,15 @@
         if (e.target.closest('#btnApplyCoupon')) {
           const input = document.getElementById('couponInput');
           const code = input ? input.value.trim().toUpperCase() : '';
-          const coupon = state.coupons.find(c => c.code === code && c.status === 'active');
-          if (coupon) {
+          const coupon = state.coupons.find(c => c.code === code);
+          state.appliedCoupon = null;
+          const { subtotal } = computeCartTotals();
+          const r = evaluateCoupon(coupon, subtotal);
+          if (r.ok) {
             state.appliedCoupon = coupon;
-            showToast(`Áp dụng mã ${coupon.code} thành công (-${coupon.discount}${coupon.type === 'percent' ? '%' : 'đ'})!`, 'success');
+            showToast(`Áp dụng mã ${coupon.code} thành công (-${formatCurrency(r.discount)})!`, 'success');
           } else {
-            state.appliedCoupon = null;
-            showToast('Mã giảm giá không hợp lệ hoặc đã hết hạn!', 'error');
+            showToast(r.reason, 'error');
           }
           updateModalCalculation();
           return;
@@ -1323,17 +1341,10 @@
             closeModal(document.getElementById('authModalBackdrop'));
             showToast(`Đăng nhập bảo mật thành công! Chào mừng ${data.user.username || data.user.name}`, 'success');
           } else {
-            // Demo fallback if backend gist not configured
-            const fallbackUser = { username: username, name: username, balance: state.userBalance };
-            setStoredUser(fallbackUser, 'mock-jwt-token');
-            closeModal(document.getElementById('authModalBackdrop'));
-            showToast(data.message || `Đăng nhập thành công! Chào mừng ${username}`, 'success');
+            showToast((data && (data.error || data.message)) || 'Sai tên đăng nhập hoặc mật khẩu!', 'error');
           }
         } catch (err) {
-          const fallbackUser = { username: username, name: username, balance: state.userBalance };
-          setStoredUser(fallbackUser, 'mock-jwt-token');
-          closeModal(document.getElementById('authModalBackdrop'));
-          showToast(`Đăng nhập thành công (offline mode): ${username}`, 'info');
+          showToast('Không kết nối được máy chủ, vui lòng thử lại sau!', 'error');
         } finally {
           if (submitBtn) {
             submitBtn.disabled = false;
@@ -1349,8 +1360,8 @@
         const userInput = document.getElementById('regUsername');
         const emailInput = document.getElementById('regEmail');
         const passInput = document.getElementById('regPassword');
-        const passConfirmInput = document.getElementById('regPasswordConfirm');
-        const captchaInput = document.getElementById('regCaptcha');
+        const passConfirmInput = document.getElementById('regConfirmPassword');
+        const captchaInput = document.getElementById('regCaptchaInput');
 
         const username = userInput ? userInput.value.trim() : '';
         const email = emailInput ? emailInput.value.trim() : '';
@@ -1360,6 +1371,11 @@
 
         if (!username || !email || !password) {
           showToast('Vui lòng điền đầy đủ các thông tin bắt buộc!', 'error');
+          return;
+        }
+
+        if (!/^[a-zA-Z0-9_.@-]{3,30}$/.test(username)) {
+          showToast('Username 3-30 ký tự, chỉ gồm chữ, số hoặc . _ @ -', 'error');
           return;
         }
 
@@ -1373,10 +1389,13 @@
           return;
         }
 
-        if (captcha !== '7829') {
-          showToast('Mã bảo vệ (CAPTCHA) không chính xác! Hãy nhập 7829', 'error');
+        if (captcha !== state.captchaCode) {
+          showToast('Mã bảo vệ (CAPTCHA) không chính xác!', 'error');
+          refreshCaptcha();
+          if (captchaInput) captchaInput.value = '';
           return;
         }
+        refreshCaptcha();
 
         const submitBtn = formRegister.querySelector('button[type="submit"]');
         if (submitBtn) {
@@ -1402,16 +1421,10 @@
             closeModal(document.getElementById('authModalBackdrop'));
             showToast(`Đăng ký tài khoản ${username} thành công!`, 'success');
           } else {
-            const fallbackUser = { username: username, email: email, balance: 0 };
-            setStoredUser(fallbackUser, 'mock-jwt-token');
-            closeModal(document.getElementById('authModalBackdrop'));
-            showToast(data.message || `Đăng ký tài khoản ${username} thành công!`, 'success');
+            showToast((data && (data.error || data.message)) || 'Đăng ký thất bại, vui lòng thử lại!', 'error');
           }
         } catch (err) {
-          const fallbackUser = { username: username, email: email, balance: 0 };
-          setStoredUser(fallbackUser, 'mock-jwt-token');
-          closeModal(document.getElementById('authModalBackdrop'));
-          showToast(`Đăng ký tài khoản ${username} thành công (demo)!`, 'info');
+          showToast('Không kết nối được máy chủ, vui lòng thử lại sau!', 'error');
         } finally {
           if (submitBtn) {
             submitBtn.disabled = false;
@@ -1542,6 +1555,7 @@
   // Application Entry Point
   function initApp() {
     initDOMCache();
+    refreshCaptcha();
 
     if (window.NEXUS_DATA && typeof window.NEXUS_DATA === 'object') {
       state.products = Array.isArray(window.NEXUS_DATA.PRODUCTS) ? [...window.NEXUS_DATA.PRODUCTS] : [];
