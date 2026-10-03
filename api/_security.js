@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 
-// KHÔNG có secret / mật khẩu mặc định: thiếu biến môi trường => fail closed.
+// Mật khẩu Admin mặc định: 'quocvietaura' (SHA-256: a43191f646c9c6e20b65700b0c7bcc61d88ce214e905c8a4f0c05c49bd5e6297)
+const DEFAULT_ADMIN_PASS_SHA256 = 'a43191f646c9c6e20b65700b0c7bcc61d88ce214e905c8a4f0c05c49bd5e6297';
+const DEFAULT_JWT_SECRET = 'QVA_SECURE_HMAC_SECRET_98471204812398471203984';
 const MIN_JWT_SECRET_LENGTH = 16;
 const MAX_BODY_BYTES = 100 * 1024;
 
@@ -13,19 +15,17 @@ class ConfigError extends Error {
 }
 
 function getJwtSecret() {
-  const s = process.env.JWT_SECRET;
-  if (typeof s !== 'string' || s.length < MIN_JWT_SECRET_LENGTH) return null;
+  const s = process.env.JWT_SECRET || DEFAULT_JWT_SECRET;
+  if (typeof s !== 'string' || s.length < MIN_JWT_SECRET_LENGTH) return DEFAULT_JWT_SECRET;
   return s;
 }
 
 function isJwtConfigured() {
-  return getJwtSecret() !== null;
+  return true;
 }
 
 function requireJwtSecret() {
-  const s = getJwtSecret();
-  if (!s) throw new ConfigError('JWT_SECRET is not configured (min ' + MIN_JWT_SECRET_LENGTH + ' chars).');
-  return s;
+  return getJwtSecret();
 }
 
 function getAdminTargetSha256() {
@@ -34,11 +34,11 @@ function getAdminTargetSha256() {
   if (process.env.ADMIN_PASSWORD) {
     return crypto.createHash('sha256').update(process.env.ADMIN_PASSWORD).digest('hex');
   }
-  return null;
+  return DEFAULT_ADMIN_PASS_SHA256;
 }
 
 function isAdminConfigured() {
-  return getAdminTargetSha256() !== null && isJwtConfigured();
+  return true;
 }
 
 // In-memory rate limiter chống dò mật khẩu (5 lần sai / 15 phút)

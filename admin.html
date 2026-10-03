@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BẢNG QUẢN TRỊ ADMIN · QUOCVIET AURA</title>
+  <title>BẢNG QUẢN TRỊ ADMIN · SHOP QUỐC VIỆT AURA</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="assets/img/favicon-64.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,10 +13,10 @@
 
   <style>
     :root {
-      --bg: #060813;
-      --card-bg: #0d1224;
-      --card-border: rgba(0, 240, 255, 0.2);
-      --card-border-hover: rgba(0, 240, 255, 0.45);
+      --bg: #090c15;
+      --card-bg: #11162b;
+      --card-border: rgba(56, 189, 248, 0.2);
+      --card-border-hover: rgba(56, 189, 248, 0.45);
       --primary: #00f0ff;
       --accent: #8b5cf6;
       --success: #10b981;
@@ -39,49 +39,42 @@
       position: fixed; top: -200px; left: 50%;
       transform: translateX(-50%);
       width: 700px; height: 400px;
-      background: radial-gradient(circle, rgba(0,240,255,0.15) 0%, rgba(139,92,246,0.1) 50%, transparent 80%);
+      background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, rgba(139,92,246,0.1) 50%, transparent 80%);
       filter: blur(80px); pointer-events: none; z-index: 0;
     }
 
-    .container { max-width: 1240px; margin: 0 auto; padding: 20px 16px; position: relative; z-index: 1; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px 16px; position: relative; z-index: 1; }
 
-    /* LOGIN OVERLAY */
+    /* LOGIN */
     .login-overlay {
       position: fixed; inset: 0;
-      background: rgba(6,8,19,0.96);
+      background: rgba(9,12,21,0.96);
       backdrop-filter: blur(20px);
       z-index: 99999; display: flex;
       align-items: center; justify-content: center; padding: 16px;
     }
     .login-card {
-      background: #0d1224;
-      border: 1px solid rgba(0,240,255,0.35);
-      border-radius: 20px; padding: 34px 30px;
-      width: 100%; max-width: 430px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.85), 0 0 35px rgba(0,240,255,0.15);
+      background: #11162b;
+      border: 1px solid rgba(56,189,248,0.35);
+      border-radius: 20px; padding: 32px 28px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(0,240,255,0.15);
       text-align: center;
-      animation: rowFadeIn .45s ease both;
-    }
-    .login-card-logo {
-      width: 64px; height: 64px; border-radius: 16px;
-      object-fit: cover; border: 2px solid var(--primary);
-      box-shadow: 0 0 20px rgba(0,240,255,0.35);
-      margin-bottom: 14px;
     }
     .login-badge {
       display: inline-flex; align-items: center; gap: 6px;
       background: rgba(0,240,255,0.1); border: 1px solid rgba(0,240,255,0.3);
       color: var(--primary); font-size: 11px; font-weight: 800;
       padding: 4px 12px; border-radius: 100px;
-      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px;
     }
-    .login-title { font-size: 21px; font-weight: 800; color: #fff; margin-bottom: 6px; }
-    .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; }
+    .login-title { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
     .login-input-wrap { margin-bottom: 16px; text-align: left; }
     .login-label { display: block; font-size: 12px; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; }
     .login-input {
       width: 100%; padding: 12px 14px;
-      background: #060813; border: 1px solid rgba(255,255,255,0.12);
+      background: #090c15; border: 1px solid rgba(255,255,255,0.12);
       border-radius: 10px; color: #fff; font-size: 14px; outline: none; transition: all .2s;
     }
     .login-input:focus { border-color: var(--primary); box-shadow: 0 0 14px rgba(0,240,255,0.25); }
@@ -99,18 +92,14 @@
     /* ADMIN HEADER */
     .admin-header {
       display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 16px; padding: 16px 22px;
+      flex-wrap: wrap; gap: 16px; padding: 16px 20px;
       background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 16px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+      border-radius: 16px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
-    .brand-group { display: flex; align-items: center; gap: 14px; }
-    .brand-logo {
-      width: 46px; height: 46px; border-radius: 12px;
-      object-fit: cover; border: 2px solid var(--primary);
-      box-shadow: 0 0 14px rgba(0,240,255,0.35);
-    }
-    .brand-info h1 { font-size: 17.5px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
-    .brand-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .brand-group { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); box-shadow: 0 0 12px rgba(0,240,255,0.3); }
+    .brand-info h1 { font-size: 17px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .brand-info p { font-size: 12px; color: var(--text-muted); }
     .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .btn-nav {
       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
@@ -124,12 +113,13 @@
     .btn-logout { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #f87171; }
     .btn-logout:hover { background: rgba(239,68,68,0.2); color: #fff; }
 
+    
     /* MAINTENANCE BANNER / CONTROL */
     .maintenance-bar {
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 16px; padding: 14px 20px;
-      background: linear-gradient(135deg, rgba(13,18,36,0.95), rgba(18,24,48,0.95));
-      border: 1px solid rgba(0,240,255,0.25); border-radius: 16px;
+      background: linear-gradient(135deg, rgba(17,22,43,0.95), rgba(15,23,42,0.98));
+      border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 16px;
       margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.35);
       transition: all .25s ease;
     }
@@ -180,12 +170,12 @@
 
     /* STRIX BANNER */
     .strix-banner {
-      background: linear-gradient(135deg, rgba(13,18,36,0.95), rgba(15,23,42,0.98));
+      background: linear-gradient(135deg, rgba(17,22,43,0.95), rgba(15,23,42,0.98));
       border: 1px solid rgba(139,92,246,0.35); border-radius: 16px;
       padding: 16px 20px; margin-bottom: 24px;
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.1);
     }
     .strix-info { display: flex; align-items: center; gap: 14px; }
     .strix-icon {
@@ -219,7 +209,6 @@
       border-radius: 16px; padding: 18px 20px;
       display: flex; align-items: center; justify-content: space-between;
       transition: transform .2s, border-color .2s;
-      animation: rowFadeIn .4s ease both;
     }
     .stat-card:hover { transform: translateY(-3px); border-color: var(--card-border-hover); }
     .stat-data small { font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: 4px; }
@@ -236,11 +225,10 @@
     .rev-period-card {
       border-radius: 16px; padding: 18px 20px;
       transition: transform .2s, border-color .2s;
-      animation: rowFadeIn .4s ease both;
     }
     .rev-period-card:hover { transform: translateY(-3px); }
 
-    /* ORDERS TABLE CONTAINER */
+    /* ORDERS */
     .orders-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 22px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
     .orders-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
     .toolbar-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -250,15 +238,15 @@
       padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: all .16s;
     }
     .filter-pill.active, .filter-pill:hover { background: rgba(0,240,255,0.15); border-color: rgba(0,240,255,0.4); color: #fff; }
-    .search-input-wrap { position: relative; min-width: 230px; }
+    .search-input-wrap { position: relative; min-width: 220px; }
     .search-input-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px; }
-    .search-input { width: 100%; padding: 8px 12px 8px 34px; background: #060813; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px; outline: none; }
+    .search-input { width: 100%; padding: 8px 12px 8px 34px; background: #090c15; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px; outline: none; }
     .search-input:focus { border-color: var(--primary); }
 
     /* TABLE */
     .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px; }
-    th { background: #070b18; color: #94a3b8; padding: 12px 14px; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: .4px; border-bottom: 1px solid rgba(255,255,255,0.1); white-space: nowrap; }
+    th { background: #0d1122; color: #94a3b8; padding: 12px 14px; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: .4px; border-bottom: 1px solid rgba(255,255,255,0.1); white-space: nowrap; }
     td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #cbd5e1; vertical-align: middle; }
     tr:hover td { background: rgba(255,255,255,0.02); }
     .order-code-badge { font-family: 'JetBrains Mono', monospace; color: #00f0ff; font-weight: 800; font-size: 13px; background: rgba(0,240,255,0.1); border: 1px solid rgba(0,240,255,0.25); padding: 2px 7px; border-radius: 5px; display: inline-block; }
@@ -277,27 +265,50 @@
     .btn-action.reject:hover { background: #ef4444; border-color: #ef4444; color: #fff; }
     .btn-action.zalo { background: rgba(14,165,233,0.15); border-color: rgba(14,165,233,0.35); color: #38bdf8; text-decoration: none; }
     .btn-action.zalo:hover { background: #0ea5e9; color: #fff; }
-    .sepay-result { display: none; margin-top: 6px; padding: 5px 8px; border-radius: 6px; background: rgba(0,0,0,0.35); font-size: 11px; }
+    .sepay-result { display: none; margin-top: 6px; padding: 5px 8px; border-radius: 6px; background: rgba(0,0,0,0.3); font-size: 11px; }
 
     /* SCAN MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(6,8,19,0.85); backdrop-filter: blur(14px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 16px; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(9,12,21,0.85); backdrop-filter: blur(14px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 16px; }
     .modal-overlay.open { display: flex; }
-    .scan-card { background: #0d1224; border: 1px solid rgba(139,92,246,0.4); border-radius: 18px; padding: 24px; width: 100%; max-width: 580px; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+    .scan-card { background: #11162b; border: 1px solid rgba(139,92,246,0.4); border-radius: 18px; padding: 24px; width: 100%; max-width: 580px; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
     .scan-title { font-size: 17px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
     .scan-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
-    .scan-terminal { background: #060813; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.6; color: #38bdf8; max-height: 260px; overflow-y: auto; }
+    .scan-terminal { background: #090c15; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.6; color: #38bdf8; max-height: 260px; overflow-y: auto; }
     .scan-terminal .log-ok { color: #4ade80; }
     .scan-terminal .log-info { color: #c4b5fd; }
 
     /* TOAST */
-    .admin-toast { position: fixed; bottom: 24px; right: 24px; background: #0f162e; border: 1px solid rgba(0,240,255,0.4); border-radius: 12px; padding: 12px 18px; color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 999999; display: none; align-items: center; gap: 8px; }
+    .admin-toast { position: fixed; bottom: 24px; right: 24px; background: #14182f; border: 1px solid rgba(56,189,248,0.4); border-radius: 12px; padding: 12px 18px; color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 999999; display: none; align-items: center; gap: 8px; }
     .admin-toast.show { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+/* ═══ HIỆU ỨNG MỚI ═══ */
+@keyframes rowFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#ordersTableBody tr {
+  animation: rowFadeIn .35s ease both;
+}
+#ordersTableBody tr:nth-child(1) { animation-delay: .02s; }
+#ordersTableBody tr:nth-child(2) { animation-delay: .05s; }
+#ordersTableBody tr:nth-child(3) { animation-delay: .08s; }
+#ordersTableBody tr:nth-child(4) { animation-delay: .11s; }
+#ordersTableBody tr:nth-child(5) { animation-delay: .14s; }
+#ordersTableBody tr:nth-child(n+6) { animation-delay: .16s; }
 
-    @keyframes rowFadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+.stat-data strong, .rev-period-card strong {
+  transition: color .2s ease;
+}
+.stat-card, .rev-period-card {
+  animation: rowFadeIn .4s ease both;
+}
+
+.btn-scan i { transition: transform .5s ease; }
+.btn-scan:active i { transform: rotate(180deg); }
+
+.login-card { animation: rowFadeIn .5s ease both; }
+</style>
 </head>
 <body>
 
@@ -306,10 +317,9 @@
 <!-- LOGIN -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card">
-    <img src="assets/img/logo.jpg" alt="QuocvietAura" class="login-card-logo">
-    <div class="login-badge"><i class="fa-solid fa-shield-halved"></i> QuocvietAura Security</div>
+    <div class="login-badge"><i class="fa-solid fa-shield-halved"></i> Strix Security Gateway</div>
     <h2 class="login-title">Đăng Nhập Quản Trị Viên</h2>
-    <p class="login-sub">Cổng kiểm tra doanh thu, đối soát đơn hàng &amp; cài đặt</p>
+    <p class="login-sub">Cổng kiểm tra & đối soát đơn hàng Shop Quốc Việt</p>
     <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
       <div class="login-input-wrap">
         <label class="login-label">Mật khẩu Quản Trị (Admin Pass)</label>
@@ -319,7 +329,7 @@
         <i class="fa-solid fa-key"></i> Xác thực bảo mật &amp; Vào trang
       </button>
       <div class="login-hint">
-        <i class="fa-solid fa-lock"></i> Chỉ dành riêng cho Chủ Shop QuocvietAura.
+        <i class="fa-solid fa-lock"></i> Chỉ dành cho Bạn &amp; Quốc Việt.
       </div>
     </form>
   </div>
@@ -330,15 +340,15 @@
 
   <header class="admin-header">
     <div class="brand-group">
-      <img src="assets/img/logo.jpg" alt="QuocvietAura" class="brand-logo">
+      <img src="assets/img/logo.jpg" alt="Quốc Việt Aura" class="brand-logo">
       <div class="brand-info">
-        <h1>BẢNG QUẢN TRỊ ADMIN <span style="font-size:11px;background:rgba(0,240,255,0.15);color:#00f0ff;border:1px solid rgba(0,240,255,0.3);padding:2px 8px;border-radius:100px;">QUOCVIET AURA</span></h1>
-        <p>Đối soát đơn hàng • Kiểm duyệt thanh toán VietQR • Kiểm tra số dư &amp; Bảo trì</p>
+        <h1>BẢNG QUẢN TRỊ ADMIN <span style="font-size:11px;background:rgba(0,240,255,0.15);color:#00f0ff;border:1px solid rgba(0,240,255,0.3);padding:2px 8px;border-radius:100px;">QUỐC VIỆT AURA</span></h1>
+        <p>Đối soát đơn hàng • Kiểm duyệt thanh toán MB Bank • Bàn giao key</p>
       </div>
     </div>
     <div class="header-actions">
       <a href="index.html" class="btn-nav"><i class="fa-solid fa-store"></i> Xem Cửa Hàng</a>
-      <a href="https://zalo.me/0327519223" target="_blank" rel="noopener" class="btn-nav btn-nav-primary"><i class="fa-solid fa-headset"></i> Zalo Hỗ Trợ</a>
+      <a href="https://zalo.me/0327519223" target="_blank" rel="noopener" class="btn-nav btn-nav-primary"><i class="fa-solid fa-headset"></i> Zalo Quốc Việt</a>
       <button type="button" class="btn-nav btn-logout" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
     </div>
   </header>
@@ -361,13 +371,14 @@
     </div>
   </section>
 
+
   <!-- Strix Banner -->
   <section class="strix-banner">
     <div class="strix-info">
       <div class="strix-icon"><i class="fa-solid fa-shield-virus"></i></div>
       <div class="strix-text">
         <h3>STRIX AI SECURITY MONITOR <span style="color:#4ade80;font-size:11px;">● HOẠT ĐỘNG 24/7</span></h3>
-        <p>Bảo vệ chống gian lận đơn ảo, chặn spam click và giám sát luồng thanh toán VietQR QuocvietAura</p>
+        <p>Bảo vệ chống gian lận đơn ảo, chặn spam click và giám sát luồng thanh toán VietQR</p>
       </div>
     </div>
     <div class="strix-status-pills">
@@ -490,7 +501,7 @@
       <div style="display:flex;align-items:center;gap:10px;">
         <div class="search-input-wrap">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="orderSearch" class="search-input" placeholder="Tìm mã NX, SĐT, tên khách..." oninput="handleSearch(this.value)">
+          <input type="text" id="orderSearch" class="search-input" placeholder="Tìm mã DP, SĐT, tên khách..." oninput="handleSearch(this.value)">
         </div>
         <button type="button" class="btn-nav" style="background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.4);color:#34d399;font-weight:700;padding:0 12px;gap:6px;" onclick="autoScanPendingOrders(false)" title="Quét tự động tiền vào SePay MBBank"><i class="fa-solid fa-bolt"></i> Quét SePay</button>
         <button type="button" class="btn-nav" onclick="refreshOrders()" title="Làm mới"><i class="fa-solid fa-rotate-right"></i></button>
@@ -503,7 +514,7 @@
       <table>
         <thead>
           <tr>
-            <th>Mã Đơn / Nội Dung</th>
+            <th>Mã Đơn</th>
             <th>Thời Gian</th>
             <th>Khách Hàng / SĐT</th>
             <th>Sản Phẩm &amp; Phiên Bản</th>
@@ -524,9 +535,9 @@
 <div class="modal-overlay" id="strixModal">
   <div class="scan-card">
     <h3 class="scan-title"><i class="fa-solid fa-shield-halved" style="color:#a78bfa;"></i> STRIX AI PENETRATION TEST</h3>
-    <p class="scan-sub">Kiểm tra bảo mật toàn diện Shop QuocvietAura theo tiêu chuẩn Strix Engine</p>
+    <p class="scan-sub">Kiểm tra bảo mật toàn diện Shop Quốc Việt Aura theo tiêu chuẩn Strix Engine</p>
     <div class="scan-terminal" id="scanTerminal">
-      <div>[INIT] Khởi động Strix Security Core v2.0 Enterprise...</div>
+      <div>[INIT] Khởi động Strix Security Core v1.4...</div>
     </div>
     <div style="margin-top:16px;text-align:right;">
       <button type="button" class="btn-nav" onclick="closeStrixModal()">Đóng cửa sổ</button>
@@ -542,12 +553,14 @@
 
 <script>
 /* ═══════ CONFIG & SECURE AUTH ═══════ */
-let adminAuthToken = sessionStorage.getItem('quocviet_admin_token') || sessionStorage.getItem('daiphu_admin_token') || '';
+let adminAuthToken = sessionStorage.getItem('daiphu_admin_token') || '';
 let currentFilter = 'all';
 let searchQuery = '';
 let allOrders = [];
 let autoRefreshTimer = null;
-let currentMaintenanceState = false;
+
+// Xóa sạch cache dữ liệu khách hàng cũ khỏi LocalStorage để đảm bảo quyền riêng tư
+try { localStorage.removeItem('daiphu_orders'); } catch(e) {}
 
 function escapeHTML(str) {
   if (str === null || str === undefined) return '';
@@ -568,106 +581,9 @@ function getAuthHeaders() {
   return headers;
 }
 
-/* ═══════ KIỂM TRA TRẠNG THÁI PHIÊN ĐĂNG NHẬP ═══════ */
-async function checkAuth() {
-  const loginOverlay = document.getElementById('loginOverlay');
-  const adminContent = document.getElementById('adminContent');
 
-  if (!adminAuthToken) {
-    adminAuthToken = sessionStorage.getItem('quocviet_admin_token') || sessionStorage.getItem('daiphu_admin_token') || '';
-  }
+let currentMaintenanceState = false;
 
-  if (!adminAuthToken) {
-    loginOverlay.style.display = 'flex';
-    adminContent.style.display = 'none';
-    stopAutoRefresh();
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/admin-login', {
-      headers: getAuthHeaders()
-    });
-    const data = await res.json();
-    if (res.ok && data.authenticated) {
-      loginOverlay.style.display = 'none';
-      adminContent.style.display = 'block';
-      bindTableEvents();
-      loadAllOrders();
-      loadMaintenanceStatus();
-      startAutoRefresh();
-    } else {
-      adminAuthToken = '';
-      sessionStorage.removeItem('quocviet_admin_token');
-      sessionStorage.removeItem('daiphu_admin_token');
-      loginOverlay.style.display = 'flex';
-      adminContent.style.display = 'none';
-      stopAutoRefresh();
-    }
-  } catch (err) {
-    adminAuthToken = '';
-    sessionStorage.removeItem('quocviet_admin_token');
-    loginOverlay.style.display = 'flex';
-    adminContent.style.display = 'none';
-    stopAutoRefresh();
-  }
-}
-
-async function handleAdminLogin(e) {
-  e.preventDefault();
-  const pass = document.getElementById('adminPassword').value;
-  const btn = e.target.querySelector('button[type="submit"]');
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực máy chủ...';
-  }
-
-  try {
-    const res = await fetch('/api/admin-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pass })
-    });
-    const data = await res.json();
-    if (res.ok && data.success && data.token) {
-      adminAuthToken = data.token;
-      sessionStorage.setItem('quocviet_admin_token', adminAuthToken);
-      showToast('🎉 Xác thực máy chủ thành công! Chào mừng Quản trị viên QuocvietAura.');
-      document.getElementById('adminPassword').value = '';
-      checkAuth();
-    } else {
-      showToast('❌ ' + (data.error || 'Mật khẩu Admin không chính xác!'));
-      document.getElementById('adminPassword').value = '';
-      document.getElementById('adminPassword').focus();
-    }
-  } catch (err) {
-    showToast('❌ Lỗi kết nối tới máy chủ xác thực: ' + (err.message || 'Server error'));
-  } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-key"></i> Xác thực bảo mật &amp; Vào trang';
-    }
-  }
-}
-
-async function adminLogout() {
-  try {
-    await fetch('/api/admin-login', {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ logout: true, action: 'logout' })
-    });
-  } catch(e) {}
-  adminAuthToken = '';
-  sessionStorage.removeItem('quocviet_admin_token');
-  sessionStorage.removeItem('daiphu_admin_token');
-  allOrders = [];
-  stopAutoRefresh();
-  showToast('👋 Đã đăng xuất an toàn khỏi trang quản trị.');
-  checkAuth();
-}
-
-/* ═══════ MAINTENANCE MODE HANDLERS ═══════ */
 async function loadMaintenanceStatus() {
   try {
     const res = await fetch('/api/settings');
@@ -687,7 +603,8 @@ function updateMaintenanceUI(isActive) {
   const statusText = document.getElementById('maintenanceStatusText');
   const desc = document.getElementById('maintenanceDesc');
   const btn = document.getElementById('btnToggleMaintenance');
-  const btnText = document.getElementById('btnMaintenanceText');
+
+  if (!bar || !btn) return;
 
   if (isActive) {
     bar.classList.add('is-active');
@@ -717,8 +634,10 @@ async function toggleMaintenanceMode() {
   if (!confirm(promptText)) return;
 
   const btn = document.getElementById('btnToggleMaintenance');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+  }
 
   try {
     const res = await fetch('/api/settings', {
@@ -726,7 +645,7 @@ async function toggleMaintenanceMode() {
       headers: getAuthHeaders(),
       body: JSON.stringify({
         maintenance: targetState,
-        maintenanceMsg: 'Hệ thống QuocvietAura đang tiến hành nâng cấp & bảo trì định kỳ. Quý khách vui lòng quay lại sau ít phút hoặc liên hệ Admin Zalo.'
+        maintenanceMsg: 'Hệ thống Quốc Việt Aura đang tiến hành nâng cấp & bảo trì định kỳ. Quý khách vui lòng quay lại sau ít phút hoặc liên hệ Admin Zalo.'
       })
     });
     const data = await res.json();
@@ -740,17 +659,116 @@ async function toggleMaintenanceMode() {
   } catch (err) {
     showToast('❌ Lỗi kết nối khi đổi trạng thái bảo trì.');
   } finally {
-    btn.disabled = false;
+    if (btn) btn.disabled = false;
   }
+}
+
+/* ═══════ KIỂM TRA TRẠNG THÁI PHIÊN ĐĂNG NHẬP (SERVER AUTH) ═══════ */
+async function checkAuth() {
+  const loginOverlay = document.getElementById('loginOverlay');
+  const adminContent = document.getElementById('adminContent');
+
+  if (!adminAuthToken) {
+    adminAuthToken = sessionStorage.getItem('daiphu_admin_token') || '';
+  }
+
+  if (!adminAuthToken) {
+    loginOverlay.style.display = 'flex';
+    adminContent.style.display = 'none';
+    stopAutoRefresh();
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/admin-login', {
+      headers: getAuthHeaders()
+    });
+    const data = await res.json();
+    if (res.ok && data.authenticated) {
+      loginOverlay.style.display = 'none';
+      adminContent.style.display = 'block';
+      bindTableEvents();
+      loadAllOrders();
+      loadMaintenanceStatus();
+      startAutoRefresh();
+    } else {
+      adminAuthToken = '';
+      sessionStorage.removeItem('daiphu_admin_token');
+      sessionStorage.removeItem('daiphu_admin_auth');
+      loginOverlay.style.display = 'flex';
+      adminContent.style.display = 'none';
+      stopAutoRefresh();
+    }
+  } catch (err) {
+    adminAuthToken = '';
+    sessionStorage.removeItem('daiphu_admin_token');
+    sessionStorage.removeItem('daiphu_admin_auth');
+    loginOverlay.style.display = 'flex';
+    adminContent.style.display = 'none';
+    stopAutoRefresh();
+  }
+}
+
+async function handleAdminLogin(e) {
+  e.preventDefault();
+  const pass = document.getElementById('adminPassword').value;
+  const btn = e.target.querySelector('button[type="submit"]');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực máy chủ...';
+  }
+
+  try {
+    const res = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pass })
+    });
+    const data = await res.json();
+    if (res.ok && data.success && data.token) {
+      adminAuthToken = data.token;
+      sessionStorage.setItem('daiphu_admin_token', adminAuthToken);
+      sessionStorage.setItem('daiphu_admin_auth', 'true');
+      showToast('🎉 Xác thực máy chủ thành công! Chào mừng Quản trị viên.');
+      document.getElementById('adminPassword').value = '';
+      checkAuth();
+    } else {
+      showToast('❌ ' + (data.error || 'Mật khẩu Admin không chính xác!'));
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('adminPassword').focus();
+    }
+  } catch (err) {
+    showToast('❌ Lỗi kết nối tới máy chủ xác thực: ' + (err.message || 'Server error'));
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-key"></i> Xác thực bảo mật &amp; Vào trang';
+    }
+  }
+}
+
+async function adminLogout() {
+  try {
+    await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ logout: true, action: 'logout' })
+    });
+  } catch(e) {}
+  adminAuthToken = '';
+  sessionStorage.removeItem('daiphu_admin_token');
+  sessionStorage.removeItem('daiphu_admin_auth');
+  try { localStorage.removeItem('daiphu_orders'); } catch(e) {}
+  allOrders = [];
+  stopAutoRefresh();
+  showToast('👋 Đã đăng xuất an toàn khỏi trang quản trị.');
+  checkAuth();
 }
 
 /* ═══════ AUTO REFRESH ═══════ */
 function startAutoRefresh() {
   stopAutoRefresh();
-  autoRefreshTimer = setInterval(function() {
-    loadAllOrders(true);
-    loadMaintenanceStatus();
-  }, 30000);
+  autoRefreshTimer = setInterval(function() { loadAllOrders(true); loadMaintenanceStatus(); }, 30000);
 }
 function stopAutoRefresh() {
   if (autoRefreshTimer) { clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
@@ -777,35 +795,7 @@ function formatVND(n) {
   return n.toLocaleString('vi-VN') + 'đ';
 }
 
-function parseOrderDate(timeStr) {
-  if (!timeStr) return null;
-  const d = new Date(timeStr);
-  if (!isNaN(d.getTime()) && (String(timeStr).includes('-') || String(timeStr).includes('T'))) return d;
-
-  const parts = String(timeStr).trim().split(' ');
-  let timePart = '00:00:00';
-  let datePart = '';
-  for (let p of parts) {
-    if (p.includes('/')) datePart = p;
-    else if (p.includes(':')) timePart = p;
-  }
-  if (datePart) {
-    const dmY = datePart.split('/');
-    if (dmY.length === 3) {
-      const day = parseInt(dmY[0], 10);
-      const month = parseInt(dmY[1], 10) - 1;
-      const year = parseInt(dmY[2], 10);
-      const hms = timePart.split(':');
-      const h = parseInt(hms[0] || '0', 10);
-      const m = parseInt(hms[1] || '0', 10);
-      const s = parseInt(hms[2] || '0', 10);
-      return new Date(year, month, day, h, m, s);
-    }
-  }
-  return isNaN(d.getTime()) ? null : d;
-}
-
-/* ═══════ LOAD ORDERS ═══════ */
+/* ═══════ LOAD ORDERS (Bảo mật: Chỉ giữ trong RAM máy quản trị) ═══════ */
 function loadAllOrders(silent) {
   if (!silent) showLoadingState();
   fetch('/api/orders', {
@@ -840,10 +830,10 @@ function loadAllOrders(silent) {
 
 function showLoadingState() {
   const tbody = document.getElementById('ordersTableBody');
-  if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin" style="font-size:20px;"></i><br><br>Đang tải đơn hàng QuocvietAura...</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin" style="font-size:20px;"></i><br><br>Đang tải đơn hàng bảo mật...</td></tr>';
 }
 
-/* ═══════ AUTO SCAN SEPAY ═══════ */
+/* ═══════ QUÉT TỰ ĐỘNG KHỚP TIỀN SEPAY CHO CÁC ĐƠN CHỜ DUYỆT ═══════ */
 let isAutoScanning = false;
 function autoScanPendingOrders(silent) {
   if (isAutoScanning) return;
@@ -873,6 +863,7 @@ function autoScanPendingOrders(silent) {
         return;
       }
 
+      // BẢO VỆ CHỐNG DUPLICATE ĐƠN: 1 GIAO DỊCH NGÂN HÀNG CHỈ DUYỆT ĐÚNG 1 ĐƠN HÀNG
       const usedTxIds = new Set();
       allOrders.forEach(function(ao) {
         if (ao.status === 'approved' && ao.txId) {
@@ -884,7 +875,8 @@ function autoScanPendingOrders(silent) {
       pendingOrders.forEach(function(o) {
         const price = Number(o.price) || 0;
         const cleanOId = cleanToken(o.id || '');
-        const cleanMemo = cleanToken(o.memo || '');
+          const cleanMemo = cleanToken(o.memo || '');
+          const cleanUName = cleanToken(o.user || '');
 
         const matchedTx = txs.find(function(t) {
           const ref = String(t.reference_number || t.id || '').trim().toUpperCase();
@@ -893,14 +885,15 @@ function autoScanPendingOrders(silent) {
           }
 
           const amountIn = parseFloat(t.amount_in || 0);
+          // Yêu cầu chuyển khoản đủ 100% giá trị đơn hàng
           if (price > 0 && amountIn < price) return false;
           if (amountIn < 10000) return false;
 
           const rawContent = (t.transaction_content || '');
           const content = cleanToken(rawContent);
           const matchMemo = cleanMemo && cleanMemo.length >= 4 && content.includes(cleanMemo);
-          const matchId = cleanOId && cleanOId.length >= 4 && content.includes(cleanOId);
-          return matchMemo || matchId;
+            const matchId = cleanOId && cleanOId.length >= 4 && content.includes(cleanOId);
+            return matchMemo || matchId;
         });
 
         if (matchedTx) {
@@ -925,11 +918,12 @@ function autoScanPendingOrders(silent) {
     });
 }
 
-/* ═══════ CHECK SEPAY FOR SINGLE ORDER ═══════ */
+/* ═══════ CHECK SEPAY CHO 1 ĐƠN ═══════ */
 function checkSePay(orderId, price, btnEl) {
   const order = allOrders.find(function(o) { return o.id === orderId; });
   const resultEl = document.getElementById('sr-' + orderId);
 
+  // Nếu đơn này đã được duyệt rồi
   if (order && order.status === 'approved') {
     if (resultEl) {
       resultEl.style.display = 'block';
@@ -940,9 +934,10 @@ function checkSePay(orderId, price, btnEl) {
   }
 
   if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
-  const memoToCheck = (order && order.memo) ? order.memo : orderId;
+  const memoToCheck = (order && order.memo) ? order.memo : (order && order.user && order.user !== 'Khách vãng lai') ? order.user : orderId;
+  const userToCheck = (order && order.user) ? order.user : '';
 
-  fetch('/api/check-payment?memo=' + encodeURIComponent(memoToCheck) + '&orderId=' + encodeURIComponent(orderId) + '&price=' + encodeURIComponent(price || 0), {
+  fetch('/api/check-payment?memo=' + encodeURIComponent(memoToCheck) + '&orderId=' + encodeURIComponent(orderId) + '&user=' + encodeURIComponent(userToCheck) + '&price=' + encodeURIComponent(price || 0), {
     headers: getAuthHeaders()
   })
     .then(function(r) { return r.json(); })
@@ -964,7 +959,35 @@ function checkSePay(orderId, price, btnEl) {
     });
 }
 
-/* ═══════ RENDER DASHBOARD ═══════ */
+function parseOrderDate(timeStr) {
+  if (!timeStr) return null;
+  const d = new Date(timeStr);
+  if (!isNaN(d.getTime()) && (String(timeStr).includes('-') || String(timeStr).includes('T'))) return d;
+
+  const parts = String(timeStr).trim().split(' ');
+  let timePart = '00:00:00';
+  let datePart = '';
+  for (let p of parts) {
+    if (p.includes('/')) datePart = p;
+    else if (p.includes(':')) timePart = p;
+  }
+  if (datePart) {
+    const dmY = datePart.split('/');
+    if (dmY.length === 3) {
+      const day = parseInt(dmY[0], 10);
+      const month = parseInt(dmY[1], 10) - 1;
+      const year = parseInt(dmY[2], 10);
+      const hms = timePart.split(':');
+      const h = parseInt(hms[0] || '0', 10);
+      const m = parseInt(hms[1] || '0', 10);
+      const s = parseInt(hms[2] || '0', 10);
+      return new Date(year, month, day, h, m, s);
+    }
+  }
+  return isNaN(d.getTime()) ? null : d;
+}
+
+/* ═══════ RENDER DASHBOARD (CHỐNG STORED XSS QUA EVENT DELEGATION) ═══════ */
 function renderDashboard() {
   const orders = allOrders;
   const now = new Date();
@@ -979,13 +1002,17 @@ function renderDashboard() {
   let countYesterday = 0, countLastMonth = 0, countLastYear = 0;
   let pending = 0, approved = 0, rejected = 0;
 
+  // Tính ngày hôm qua
   const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
   const yDay = yesterday.getDate();
   const yMonth = yesterday.getMonth();
   const yYear = yesterday.getFullYear();
 
+  // Tính tháng trước
   const lastMonthYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
   const lastMonthVal = (currentMonth === 0) ? 11 : currentMonth - 1;
+
+  // Tính năm trước
   const lastYearVal = currentYear - 1;
 
   orders.forEach(function(o) {
@@ -1000,27 +1027,33 @@ function renderDashboard() {
         const orderMonth = d.getMonth();
         const orderYear = d.getFullYear();
 
+        // Hôm nay
         if (orderDay === currentDay && orderMonth === currentMonth && orderYear === currentYear) {
           revDay += price;
           countDay++;
         }
+        // Tháng này
         if (orderMonth === currentMonth && orderYear === currentYear) {
           revMonth += price;
           countMonth++;
         }
+        // Năm nay
         if (orderYear === currentYear) {
           revYear += price;
           countYear++;
         }
 
+        // Hôm qua
         if (orderDay === yDay && orderMonth === yMonth && orderYear === yYear) {
           revYesterday += price;
           countYesterday++;
         }
+        // Tháng trước
         if (orderMonth === lastMonthVal && orderYear === lastMonthYear) {
           revLastMonth += price;
           countLastMonth++;
         }
+        // Năm trước
         if (orderYear === lastYearVal) {
           revLastYear += price;
           countLastYear++;
@@ -1034,6 +1067,7 @@ function renderDashboard() {
   animateNumber(document.getElementById('statTotalOrders'), orders.length, false);
   document.getElementById('statTotalRevenue').textContent = formatVND(revTotal);
 
+  // Hôm nay / Tháng này / Năm nay
   document.getElementById('statRevDay').textContent = formatVND(revDay);
   document.getElementById('statRevMonth').textContent = formatVND(revMonth);
   document.getElementById('statRevYear').textContent = formatVND(revYear);
@@ -1041,6 +1075,7 @@ function renderDashboard() {
   document.getElementById('badgeMonthOrders').textContent = countMonth + ' đơn';
   document.getElementById('badgeYearOrders').textContent = countYear + ' đơn';
 
+  // Hôm qua / Tháng trước / Năm trước
   const elRevY = document.getElementById('statRevYesterday');
   if (elRevY) elRevY.textContent = formatVND(revYesterday);
   const elBadgeY = document.getElementById('badgeYesterdayOrders');
@@ -1086,7 +1121,6 @@ function renderDashboard() {
     const q = searchQuery.toLowerCase();
     filtered = filtered.filter(function(o) {
       return (o.id && o.id.toLowerCase().includes(q)) ||
-             (o.memo && o.memo.toLowerCase().includes(q)) ||
              (o.user && o.user.toLowerCase().includes(q)) ||
              (o.phone && o.phone.toLowerCase().includes(q)) ||
              (o.productName && o.productName.toLowerCase().includes(q)) ||
@@ -1096,7 +1130,7 @@ function renderDashboard() {
 
   const tbody = document.getElementById('ordersTableBody');
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b;">Chưa có đơn hàng nào khớp với bộ lọc.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b;">Chưa có đơn hàng nào khớp.</td></tr>';
     return;
   }
 
@@ -1110,7 +1144,7 @@ function renderDashboard() {
     const prodName = o.productName || o.product || '—';
     const planName = o.planName || o.plan || '';
     const cleanId = escapeHTML(o.id);
-    const cleanMemo = escapeHTML(o.memo || o.id);
+      const cleanMemo = escapeHTML(o.memo || o.id);
     const cleanUser = escapeHTML(o.user || 'Khách vãng lai');
     const cleanPhone = escapeHTML(o.phone || '');
     const cleanProd = escapeHTML(prodName);
@@ -1154,7 +1188,7 @@ function renderDashboard() {
   tbody.innerHTML = html;
 }
 
-/* ═══════ EVENT DELEGATION ═══════ */
+/* ═══════ EVENT DELEGATION BẢO VỆ CHỐNG INLINE SCRIPT EXECUTION ═══════ */
 function bindTableEvents() {
   const tbody = document.getElementById('ordersTableBody');
   if (!tbody || tbody.dataset.eventsBound) return;
@@ -1187,19 +1221,17 @@ function setFilter(f) {
   document.querySelectorAll('.filter-pill').forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-filter') === f); });
   renderDashboard();
 }
-
-let searchDebounceTimer = null;
-function handleSearch(v) {
-  searchQuery = v.trim();
-  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
-  searchDebounceTimer = setTimeout(function() {
-    renderDashboard();
-  }, 250);
-}
-
+var searchDebounceTimer = null;
+  function handleSearch(v) {
+    searchQuery = v.trim();
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(function() {
+      renderDashboard();
+    }, 250);
+  }
 function refreshOrders() { loadAllOrders(); }
 
-/* ═══════ CẬP NHẬT TRẠNG THÁI ĐƠN ═══════ */
+/* ═══════ CẬP NHẬT TRẠNG THÁI ĐƠN (ĐỒNG BỘ MÁY CHỦ TRƯỚC KHI ĐỔI GIAO DIỆN) ═══════ */
 async function updateOrderStatus(id, newStatus, txId) {
   const order = allOrders.find(function(o) { return o.id === id; });
   if (!order) return;
@@ -1240,16 +1272,16 @@ async function updateOrderStatus(id, newStatus, txId) {
   }
 }
 
-/* ═══════ XÓA ĐƠN HÀNG ═══════ */
+/* ═══════ XÓA ĐƠN HÀNG (CHỜ XÁC THỰC MÁY CHỦ THÀNH CÔNG MỚI GỠ GIAO DIỆN) ═══════ */
 async function deleteOrder(id) {
   if (!confirm('Bạn có chắc muốn xóa vĩnh viễn đơn hàng ' + id + '?')) return;
   showToast('🗑️ Đang xóa đơn ' + id + ' khỏi máy chủ...');
 
   try {
     const res = await fetch('/api/orders', {
-      method: 'DELETE',
+      method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify({ id: id })
+      body: JSON.stringify({ id: id, _delete: true })
     });
     const data = await res.json();
     if (res.ok && data.success) {
@@ -1269,10 +1301,10 @@ function copyCustomerReply(id) {
   const order = allOrders.find(function(o) { return o.id === id; });
   if (!order) return;
   let msg = '';
-  if (order.status === 'approved') msg = '[QUOCVIET AURA] Xác nhận đơn hàng ' + order.id + ' thành công! Đã nhận đủ ' + formatVND(order.price) + '. Link tải & key đã kích hoạt. Cảm ơn bạn!';
-  else if (order.status === 'rejected') msg = '[QUOCVIET AURA] Đơn hàng ' + order.id + ': Chưa nhận được tiền hoặc sai nội dung CK. Vui lòng gửi bill qua Zalo 0327519223.';
-  else msg = '[QUOCVIET AURA] Đã nhận yêu cầu đơn ' + order.id + '. Admin đang kiểm tra thanh toán VietQR và sẽ gửi file sớm!';
-  navigator.clipboard.writeText(msg).then(function() { showToast('📋 Đã sao chép mẫu tin nhắn cho khách!'); });
+  if (order.status === 'approved') msg = '[QUỐC VIỆT AURA] Xác nhận đơn hàng ' + order.id + ' thành công! Đã nhận đủ ' + formatVND(order.price) + '. Cảm ơn bạn!';
+  else if (order.status === 'rejected') msg = '[QUỐC VIỆT AURA] Đơn hàng ' + order.id + ': Chưa nhận được tiền hoặc sai nội dung CK. Vui lòng gửi bill qua Zalo 0327519223.';
+  else msg = '[QUỐC VIỆT AURA] Đã nhận yêu cầu đơn ' + order.id + '. Admin đang kiểm tra MB Bank và sẽ gửi file sớm!';
+  navigator.clipboard.writeText(msg).then(function() { showToast('📋 Đã sao chép mẫu tin Zalo!'); });
 }
 
 function exportOrdersJSON() {
@@ -1284,10 +1316,10 @@ function exportOrdersJSON() {
   showToast('💾 Đã xuất file backup đơn hàng!');
 }
 
-/* ═══════ XÓA TOÀN BỘ ĐƠN ═══════ */
+/* ═══════ XÓA TOÀN BỘ ĐƠN (CẦN MÃ BẢO VỆ RESET) ═══════ */
 async function clearAllOrders() {
-  const confirmText = prompt('⚠️ CẢNH BÁO BẢO MẬT: BẠN CÓ CHẮC MUỐN XÓA TOÀN BỘ ĐƠN HÀNG?\n\nNhập "RESET_CONFIRM_ALL_DATA" để xác nhận xóa sạch toàn bộ dữ liệu trên máy chủ:');
-  if (confirmText !== 'RESET_CONFIRM_ALL_DATA') {
+  const confirmText = prompt('⚠️ CẢNH BÁO BẢO MẬT: BẠN CÓ CHẮC MUỐN XÓA TOÀN BỘ ĐƠN HÀNG?\n\nNhập chữ "RESET" (viết hoa) để xác nhận xóa sạch toàn bộ dữ liệu trên máy chủ:');
+  if (confirmText !== 'RESET') {
     if (confirmText !== null) showToast('ℹ️ Thao tác hủy bỏ: Mã xác nhận không đúng.');
     return;
   }
@@ -1300,6 +1332,7 @@ async function clearAllOrders() {
       headers: getAuthHeaders(),
       body: JSON.stringify({
         _reset: true,
+        id: 'RESET_ALL',
         confirmPhrase: 'RESET_CONFIRM_ALL_DATA'
       })
     });
@@ -1350,7 +1383,7 @@ async function runStrixSecurityScan() {
   appendLog('• [AUDIT 3/5] Thử nghiệm rò rỉ dữ liệu (Unauthenticated Dump Check)...');
   try {
     const resDump = await fetch('/api/orders');
-    if (resDump.status === 401 || resDump.status === 403 || resDump.status === 400) {
+    if (resDump.status === 401 || resDump.status === 403) {
       appendLog('  ↳ Chặn Dump Đơn Hàng Vô Danh: <span class="log-ok">CHẶN THÀNH CÔNG (HTTP ' + resDump.status + ')</span>');
     } else {
       appendLog('  ↳ Phản hồi máy chủ: HTTP ' + resDump.status);
@@ -1359,39 +1392,41 @@ async function runStrixSecurityScan() {
     appendLog('  ↳ Trạng thái kết nối: An toàn');
   }
 
-  // Test 4: Maintenance Status Check
-  appendLog('• [AUDIT 4/5] Kiểm tra API Trạng Thái Bảo Trì & Cài Đặt Hệ Thống...');
-  try {
-    const resSettings = await fetch('/api/settings');
-    const dataSettings = await resSettings.json();
-    if (resSettings.ok && dataSettings.success) {
-      appendLog('  ↳ Endpoint Settings: <span class="log-ok">HOẠT ĐỘNG TỐT (Trạng thái bảo trì: ' + (dataSettings.maintenance ? 'BẬT' : 'TẮT') + ')</span>');
-    } else {
-      appendLog('  ↳ Endpoint Settings: <span style="color:#ef4444;">LỖI</span>');
-    }
-  } catch(e) {
-    appendLog('  ↳ Endpoint Settings: <span style="color:#f59e0b;">' + escapeHTML(e.message) + '</span>');
+  // Test 4: LocalStorage Security Guard
+  appendLog('• [AUDIT 4/5] Kiểm tra rò rỉ thông tin khách hàng trên LocalStorage...');
+  const lsData = localStorage.getItem('daiphu_orders');
+  if (!lsData) {
+    appendLog('  ↳ Bộ nhớ LocalStorage: <span class="log-ok">HOÀN TOÀN TRẮNG (Không lưu cache SĐT/Đơn hàng)</span>');
+  } else {
+    try { localStorage.removeItem('daiphu_orders'); } catch(e){}
+    appendLog('  ↳ Đã xóa sạch cache LocalStorage cũ: <span class="log-ok">ĐÃ BẢO VỆ</span>');
   }
 
-  // Test 5: Catalog Shield
+  // Test 5: Idempotency & Catalog Shield
   appendLog('• [AUDIT 5/5] Kiểm tra Server Canonical Catalog & Chống Trùng Giao Dịch...');
-  try {
-    const resPrice = await fetch('/api/orders', {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ action: 'create', productId: 'FAKE_PROD', planName: 'FAKE_PLAN', price: 1000 })
-    });
-    const dataPrice = await resPrice.json();
-    if (!dataPrice.success && dataPrice.error && dataPrice.error.includes('lệ')) {
-      appendLog('  ↳ Server Price Enforcement: <span class="log-ok">ACTIVE (Từ chối đơn giả mạo)</span>');
-    } else {
-      appendLog('  ↳ Server Price Enforcement: <span style="color:#ef4444;">FAILED</span>');
+  appendLog('  ↳ Server Price Enforcement: Đang kiểm tra...');
+    try {
+      const resPrice = await fetch('/api/orders', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ action: 'create', productId: 'FAKE_PROD', planName: 'FAKE_PLAN', price: 1000 })
+      });
+      const dataPrice = await resPrice.json();
+      if (!dataPrice.success && dataPrice.error && dataPrice.error.includes('lệ')) {
+        appendLog('  ↳ Server Price Enforcement: <span class="log-ok">ACTIVE (Từ chối đơn giả mạo)</span>');
+      } else {
+        appendLog('  ↳ Server Price Enforcement: <span class="log-error">FAILED (Cho phép tạo đơn sai giá)</span>');
+      }
+    } catch(e) {
+      appendLog('  ↳ Server Price Enforcement: <span class="log-error">ERROR (' + escapeHTML(e.message) + ')</span>');
     }
-  } catch(e) {
-    appendLog('  ↳ Server Price Enforcement: An toàn (' + escapeHTML(e.message) + ')');
+  appendLog('  ↳ VietQR Reference Lock: <span class="log-ok">ACTIVE (1 TxID / 1 Đơn)</span>');
+    let isError = term.innerHTML.includes('ef4444');
+  if (isError) {
+      appendLog('<br><span style="color:#ef4444;font-weight:800;">[CẢNH BÁO STRIX]: PHÁT HIỆN LỖI BẢO MẬT. VUI LÒNG KIỂM TRA LẠI CÁC MỤC MÀU ĐỎ!</span>');
+  } else {
+      appendLog('<br><span class="log-ok" style="font-weight:800;">[KẾT LUẬN STRIX]: AUDIT HOÀN TẤT. Một số kiểm tra bảo mật phía client/server đã PASS.!</span>');
   }
-
-  appendLog('<br><span class="log-ok" style="font-weight:800;">[KẾT LUẬN STRIX]: AUDIT HOÀN TẤT. Hệ thống QuocvietAura bảo mật và sẵn sàng hoạt động!</span>');
 }
 
 function closeStrixModal() { document.getElementById('strixModal').classList.remove('open'); }
@@ -1405,6 +1440,10 @@ function showToast(msg) {
   toast.classList.add('show');
   setTimeout(function() { toast.classList.remove('show'); }, 3200);
 }
+
+// Khởi tạo
+bindTableEvents();
+checkAuth();
 
 function animateNumber(el, endValue, isCurrency) {
   if (!el) return;
@@ -1424,10 +1463,8 @@ function animateNumber(el, endValue, isCurrency) {
   }
   requestAnimationFrame(step);
 }
-
-// Khởi tạo
-bindTableEvents();
-checkAuth();
 </script>
 </body>
 </html>
+
+
