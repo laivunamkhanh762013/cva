@@ -266,13 +266,31 @@ html, body { overflow-x: clip; }
 :root { --aura-grad: linear-gradient(90deg, #00f2fe, #a855f7 55%, #ec4899); }
 
 /* ---------- Brand ---------- */
-.brand-logo { gap: 12px; min-width: 0; flex-shrink: 0; }
-.brand-icon-img { width: 44px; height: 44px; padding: 2px; border-radius: 50%; background: var(--aura-grad); overflow: hidden; }
-.brand-icon-img img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; border: 2px solid var(--bg-base); filter: grayscale(1) contrast(1.1); }
-.brand-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; }
-.brand-text h1 { font-size: 18px; letter-spacing: 1px; background: none; -webkit-text-fill-color: #f8fafc; color: #f8fafc; }
-.brand-text h1 b { font-weight: 900; margin-left: 2px; background: var(--aura-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.brand-text span { font-size: 10px; letter-spacing: 2.5px; margin-top: 3px; }
+.brand-logo { gap: 12px; min-width: 0; flex-shrink: 0; display: inline-flex; align-items: center; text-decoration: none; position: relative; z-index: 100002; }
+.brand-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(11, 15, 31, 0.9); border: 1.5px solid var(--neon-cyan);
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.4), inset 0 0 10px rgba(0, 242, 254, 0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: var(--neon-cyan); flex-shrink: 0;
+  transition: box-shadow 0.3s ease;
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; white-space: nowrap; }
+.brand-text h1 {
+  font-family: 'Inter', sans-serif; font-size: 19px; font-weight: 800; letter-spacing: 1.5px;
+  color: #ffffff; margin: 0; line-height: 1.15; text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+}
+.brand-text h1 b {
+  font-weight: 900; margin-left: 3px;
+  background: linear-gradient(90deg, #00f2fe, #a855f7);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.brand-text span {
+  font-family: 'Inter', monospace, system-ui; font-size: 9.5px; font-weight: 700;
+  letter-spacing: 2.8px; color: #38bdf8; margin-top: 3px; text-transform: uppercase;
+}
 
 /* ---------- Header: no wrapping, compact ---------- */
 .header-inner { gap: 16px; }
@@ -486,47 +504,36 @@ html.nx-p2 .nx-center-glow {
   100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.9; }
 }
 
-/* Central Anchor */
-.nx-intro-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-/* Intro Brand Cluster - EXACT 1:1 CLONE OF HEADER #brandLogo */
-.nx-intro-brand-cluster {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 14px !important;
-  transform: scale(2);
-  transform-origin: center center;
-  opacity: 0;
-  will-change: transform, opacity;
-  transition: opacity 0.6s ease, filter 0.6s ease;
-  filter: drop-shadow(0 0 28px rgba(0, 242, 254, 0.45));
-}
-
-@media (max-width: 768px) {
-  .nx-intro-brand-cluster {
-    transform: scale(1.4);
-    gap: 10px !important;
-  }
-}
-
-html.nx-p1 .nx-intro-brand-cluster,
-html.nx-p2 .nx-intro-brand-cluster {
-  opacity: 1;
-}
-
-/* Header brandLogo stays hidden during intro until the morph cluster lands on it */
+/* While intro is active, brandLogo has top z-index, initial opacity 0 (revealed in Phase 1) */
 html.nx-intro-active .brand-logo#brandLogo {
+  position: relative;
+  z-index: 1000000;
+  pointer-events: none;
   opacity: 0;
+  will-change: transform, opacity, filter;
+}
+
+html.nx-intro-active .nexus-header {
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+html.nx-intro-active .announcement-bar,
+html.nx-intro-active .nav-menu,
+html.nx-intro-active .header-right {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+}
+
+html.nx-p3 .announcement-bar,
+html.nx-p3 .nav-menu,
+html.nx-p3 .header-right {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 /* Unified Brand Title: Intro & Hero are 100% IDENTICAL */
@@ -600,66 +607,15 @@ html.nx-intro-active .brand-logo#brandLogo {
    PHASE 3 & 4: LOGO BECOMES HEADER & HERO CASCADES FROM THE SAME ANIMATION
    ========================================================================== */
 
-/* While intro is active, hide Header & Hero gracefully */
-html.nx-intro-active .nexus-header {
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-/* Header inner elements sequential reveal in Phase 3 */
-html.nx-intro-active .brand-logo {
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-html.nx-intro-active .nav-menu {
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
-}
-
-html.nx-intro-active .header-right {
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.5s ease 0.35s, transform 0.5s ease 0.35s;
-}
-
-html.nx-intro-active .announcement-bar {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-/* When Phase 3 activates (Logo moves to Header): */
-html.nx-p3 .nexus-header {
-  opacity: 1;
-}
-
-html.nx-p3 .brand-logo#brandLogo {
-  opacity: 0;
-}
-
-html.nx-p3 .nav-menu {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-html.nx-p3 .header-right {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-html.nx-p3 .announcement-bar {
-  opacity: 1;
-}
-
-/* Brand icon arrival burst in header */
+/* Header arrival burst */
+.brand-logo.nx-arrived,
 .brand-icon.nx-arrived {
-  animation: brandArrival 0.7s ease-out;
+  animation: brandArrival 0.75s ease-out;
 }
 
 @keyframes brandArrival {
-  0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.85); transform: scale(1.15); }
-  100% { box-shadow: 0 0 0 25px rgba(0, 242, 254, 0); transform: scale(1); }
+  0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.9); filter: drop-shadow(0 0 20px rgba(0, 242, 254, 0.9)); }
+  100% { box-shadow: 0 0 0 25px rgba(0, 242, 254, 0); filter: drop-shadow(0 0 0px transparent); }
 }
 
 /* ==========================================================================

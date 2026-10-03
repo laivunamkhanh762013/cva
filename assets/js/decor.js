@@ -20,7 +20,12 @@
     document.body.style.overflow = '';
 
     const headerBrandLogo = document.getElementById('brandLogo');
-    if (headerBrandLogo) headerBrandLogo.style.opacity = '1';
+    if (headerBrandLogo) {
+      headerBrandLogo.style.transform = '';
+      headerBrandLogo.style.filter = '';
+      headerBrandLogo.style.transition = '';
+      headerBrandLogo.style.opacity = '1';
+    }
 
     if (introEl) {
       introEl.classList.add('nx-intro-fading');
@@ -45,6 +50,28 @@
       document.body.style.overflow = 'hidden';
       window.scrollTo(0, 0);
 
+      const brandLogo = document.getElementById('brandLogo');
+      let startDx = 0, startDy = 0, startScale = 2.2;
+
+      function calculateCenter() {
+        if (!brandLogo) return;
+        const rect = brandLogo.getBoundingClientRect();
+        const natCenterX = rect.left + rect.width / 2;
+        const natCenterY = rect.top + rect.height / 2;
+        const screenCenterX = window.innerWidth / 2;
+        const screenCenterY = window.innerHeight / 2;
+        startDx = screenCenterX - natCenterX;
+        startDy = screenCenterY - natCenterY;
+        startScale = window.innerWidth <= 768 ? 1.5 : 2.2;
+
+        brandLogo.style.transformOrigin = 'center center';
+        brandLogo.style.transform = 'translate(' + startDx + 'px, ' + startDy + 'px) scale(' + startScale + ')';
+        brandLogo.style.opacity = '0';
+        brandLogo.style.filter = 'drop-shadow(0 0 32px rgba(0, 242, 254, 0.65))';
+      }
+
+      calculateCenter();
+
       const skipBtn = document.getElementById('nxSkipBtn');
       if (skipBtn) skipBtn.addEventListener('click', skipIntro);
       window.addEventListener('keydown', (e) => {
@@ -55,72 +82,64 @@
       try { seen = sessionStorage.getItem('nx_brand_seen') === '1'; } catch(e) {}
 
       if (seen) {
-        // Returning user in same session: fast 1.2s smooth unlock
+        // Returning user in same session: fast smooth unlock
+        if (brandLogo) brandLogo.style.opacity = '1';
         docEl.classList.add('nx-p1', 'nx-p2');
         at(300, () => morphToHeader());
       } else {
         try { sessionStorage.setItem('nx_brand_seen', '1'); } catch(e) {}
 
-        // PHASE 1 (0 -> 1s): Shared Hero background with gentle neon glow at center
-        at(80, () => docEl.classList.add('nx-p1'));
+        // PHASE 1 (0 -> 1s): Center glowing aura emerges, brandLogo fades in at center
+        at(80, () => {
+          docEl.classList.add('nx-p1');
+          if (brandLogo) {
+            brandLogo.style.transition = 'opacity 0.7s ease, filter 0.7s ease';
+            brandLogo.style.opacity = '1';
+          }
+        });
 
-        // PHASE 2 (1.0 -> 2.2s): Brand Cluster revealed at center
+        // PHASE 2 (1.0 -> 2.2s): Brand Logo pulses at center
         at(900, () => docEl.classList.add('nx-p2'));
 
-        // PHASE 3 (2.4s): Brand Cluster morphs continuously directly into HEADER position
+        // PHASE 3 (2.4s): Brand Logo glides directly from center into Header!
         at(2200, () => morphToHeader());
       }
 
       function morphToHeader() {
         if (introDone) return;
-        const morphCluster = document.getElementById('nxMorphCluster');
-        const headerBrandLogo = document.getElementById('brandLogo');
-
-        // Reveal Header elements, but keep header brandLogo hidden until morph cluster arrives
-        docEl.classList.add('nx-p3');
-        if (headerBrandLogo) headerBrandLogo.style.opacity = '0';
-
-        if (morphCluster && headerBrandLogo && morphCluster.animate) {
-          // Mirror innerHTML to guarantee 100% exact text, tags, font-weight and image equality
-          morphCluster.innerHTML = headerBrandLogo.innerHTML;
-
-          const isMobile = window.innerWidth <= 768;
-          const initialScale = isMobile ? 1.4 : 2.0;
-
-          // Compute exact centers for continuous interpolation
-          const fromRect = morphCluster.getBoundingClientRect();
-          const toRect = headerBrandLogo.getBoundingClientRect();
-
-          const fromCenterX = fromRect.left + fromRect.width / 2;
-          const fromCenterY = fromRect.top + fromRect.height / 2;
-          const toCenterX = toRect.left + toRect.width / 2;
-          const toCenterY = toRect.top + toRect.height / 2;
-
-          const dx = toCenterX - fromCenterX;
-          const dy = toCenterY - fromCenterY;
-
-          // Smooth continuous morph: translate + scale from center straight into header
-          const anim = morphCluster.animate([
-            { transform: 'scale(' + initialScale + ')', opacity: 1 },
-            { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(1)', opacity: 1 }
-          ], {
-            duration: 750,
-            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-            fill: 'forwards'
-          });
-
-          anim.onfinish = () => {
-            // Seamless handover to header logo
-            headerBrandLogo.style.opacity = '1';
-            headerBrandLogo.classList.add('nx-arrived');
-            setTimeout(() => headerBrandLogo.classList.remove('nx-arrived'), 750);
-            morphCluster.style.opacity = '0';
-            startHeroCascade();
-          };
-        } else {
-          if (headerBrandLogo) headerBrandLogo.style.opacity = '1';
+        if (!brandLogo) {
           startHeroCascade();
+          return;
         }
+
+        // Header background, navbar and actions fade in around moving logo
+        docEl.classList.add('nx-p3');
+
+        // Continuous morph: translate + scale from center straight into header
+        const anim = brandLogo.animate([
+          {
+            transform: 'translate(' + startDx + 'px, ' + startDy + 'px) scale(' + startScale + ')',
+            filter: 'drop-shadow(0 0 32px rgba(0, 242, 254, 0.65))'
+          },
+          {
+            transform: 'translate(0px, 0px) scale(1)',
+            filter: 'drop-shadow(0 0 0px transparent)'
+          }
+        ], {
+          duration: 800,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+          fill: 'forwards'
+        });
+
+        anim.onfinish = () => {
+          brandLogo.style.transform = '';
+          brandLogo.style.filter = '';
+          brandLogo.style.transition = '';
+          brandLogo.style.opacity = '1';
+          brandLogo.classList.add('nx-arrived');
+          setTimeout(() => brandLogo.classList.remove('nx-arrived'), 750);
+          startHeroCascade();
+        };
       }
 
       // PHASE 4 (3.2s -> 5.5s): Hero continues sequentially from the same animation
@@ -136,7 +155,7 @@
         // Step 1: "Hệ thống trực tuyến 24/7 • Cấp Key tự động"
         at(100, () => docEl.classList.add('nx-hero-step1'));
 
-        // Step 2: "WELCOME TO QUOCVIET AURA"
+        // Step 2: "WELCOME TO NEXUS GAMING STORE"
         at(300, () => docEl.classList.add('nx-hero-step2'));
 
         // Step 3: Slogan "UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN"
