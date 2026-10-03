@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const { promisify } = require('util');
 const { getGist, updateGist } = require('./db');
-const { signUserToken, checkApiDdos, verifyAdminToken } = require('./_security');
+const { signUserToken, verifyUserToken, checkApiDdos, verifyAdminToken } = require('./_security');
 const { Mutex } = require('./_mutex');
 
 const scryptAsync = promisify(crypto.scrypt);
@@ -71,20 +71,48 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // ════════ GET: LẤY DANH SÁCH USER (CHỈ DÀNH CHO ADMIN) ════════
+    // ════════ GET: THÔNG TIN TÀI KHOẢN HOẶC ADMIN XEM DANH SÁCH ════════
     if (req.method === 'GET') {
-      if (!verifyAdminToken(req)) {
-        return res.status(401).json({ success: false, error: 'Quyền hạn bị từ chối: Chỉ Quản trị viên mới được xem danh sách thành viên.' });
+      const userPayload = verifyUserToken(req);
+      const query = req.query || {};
+
+      // 1. Người dùng lấy thông tin cá nhân và số dư thực tế
+      if (query.action === 'me' || query.view === 'profile' || (!verifyAdminToken(req) && userPayload)) {
+        if (!userPayload) {
+          return res.status(401).json({ success: false, error: 'Chưa đăng nhập hoặc phiên đã hết hạn.' });
+        }
+        const { users } = await getGist();
+        const userList = Array.isArray(users) ? users : [];
+        const found = userList.find(u => u && u.username && u.username.toLowerCase() === userPayload.user.toLowerCase());
+        if (!found) {
+          return res.status(404).json({ success: false, error: 'Không tìm thấy thông tin tài khoản.' });
+        }
+        return res.status(200).json({
+          success: true,
+          user: {
+            username: found.username,
+            phone: maskPhone(found.phone),
+            email: found.email || '',
+            balance: Number(found.balance) || 0,
+            createdAt: found.createdAt || ''
+          }
+        });
       }
 
-      const { users } = await getGist();
-      const userList = Array.isArray(users) ? users : [];
-      const safeUsers = userList.map(u => ({
-        username: String(u.username || '').substring(0, 30),
-        phone: maskPhone(u.phone),
-        createdAt: u.createdAt || ''
-      }));
-      return res.status(200).json({ success: true, users: safeUsers });
+      // 2. Admin: Xem danh sách toàn bộ thành viên
+      if (verifyAdminToken(req)) {
+        const { users } = await getGist();
+        const userList = Array.isArray(users) ? users : [];
+        const safeUsers = userList.map(u => ({
+          username: String(u.username || '').substring(0, 30),
+          phone: maskPhone(u.phone),
+          balance: Number(u.balance) || 0,
+          createdAt: u.createdAt || ''
+        }));
+        return res.status(200).json({ success: true, users: safeUsers });
+      }
+
+      return res.status(401).json({ success: false, error: 'Quyền hạn bị từ chối: Cần đăng nhập để xem thông tin.' });
     }
 
     // ════════ POST: ĐĂNG KÝ / ĐĂNG NHẬP ════════
@@ -162,7 +190,7 @@ module.exports = async function handler(req, res) {
           success: true,
           message: 'Đăng ký tài khoản thành công!',
           token: token,
-          user: { username: registerResult.user.username, phone: maskPhone(registerResult.user.phone) }
+          user: { username: registerResult.user.username, phone: maskPhone(registerResult.user.phone), balance: 0 }
         });
       }
 
@@ -201,7 +229,7 @@ module.exports = async function handler(req, res) {
           success: true,
           message: 'Đăng nhập thành công!',
           token: token,
-          user: { username: user.username, phone: maskPhone(user.phone) }
+          user: { username: user.username, phone: maskPhone(user.phone), balance: Number(user.balance) || 0 }
         });
       }
     }

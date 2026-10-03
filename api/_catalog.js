@@ -200,6 +200,20 @@ const RAW_CATALOG = {
       "Tải Xuống Trực Tiếp IPA": 0,
       "Bản chuẩn": 0
     }
+  },
+  "wallet-topup": {
+    "name": "Nạp Tiền Vào Số Dư Tài Khoản",
+    "soldOut": false,
+    "plans": {
+      "Nạp 10.000đ": 10000,
+      "Nạp 20.000đ": 20000,
+      "Nạp 50.000đ": 50000,
+      "Nạp 100.000đ": 100000,
+      "Nạp 200.000đ": 200000,
+      "Nạp 500.000đ": 500000,
+      "Nạp 1.000.000đ": 1000000,
+      "Tùy chọn": 20000
+    }
   }
 };
 

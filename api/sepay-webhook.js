@@ -6,7 +6,7 @@ const { Mutex } = require('./_mutex');
 const webhookMutex = new Mutex();
 
 const SEPAY_CONFIG = Object.freeze({
-  apiKey: process.env.SEPAY_API_KEY,
+  apiKey: process.env.SEPAY_API_KEY || 'YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV',
   minTransferAmount: 10000,
   minTokenMatchLength: 4,
   maxContentLength: 500
@@ -116,8 +116,20 @@ module.exports = async function handler(req, res) {
         matchedOrder.txId = refCode;
         matchedOrder.paidAmount = amount; // Lưu số tiền thực nhận riêng biệt, không mutate giá gốc của gói
 
-        // Lưu giữ orders an toàn mà không làm mất các trường khác trong Gist
-        await updateGist({ ...gistData, orders: existingOrders });
+        // Nếu là đơn nạp số dư hoặc đơn của user có tài khoản, tự động cộng balance trong users.json
+        const userList = Array.isArray(gistData.users) ? gistData.users : [];
+        const isTopup = (matchedOrder.product && matchedOrder.product.toLowerCase().includes('nạp')) ||
+                        (matchedOrder.plan && matchedOrder.plan.toLowerCase().includes('nạp'));
+
+        if (isTopup && matchedOrder.user && matchedOrder.user !== 'Khách vãng lai') {
+          const userIdx = userList.findIndex(u => u && u.username && u.username.toLowerCase() === matchedOrder.user.toLowerCase());
+          if (userIdx >= 0) {
+            userList[userIdx].balance = (Number(userList[userIdx].balance) || 0) + amount;
+          }
+        }
+
+        // Lưu giữ orders và users an toàn mà không làm mất các trường khác trong Gist
+        await updateGist({ ...gistData, orders: existingOrders, users: userList });
         return { success: true, action: 'order_approved', orderId: matchedOrder.id };
       }
 

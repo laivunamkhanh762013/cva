@@ -201,19 +201,33 @@ module.exports = async function handler(req, res) {
         }
 
         const prodKey = sanitizeText(body.productId || body.product, 60);
-        const planName = sanitizeText(body.planName || body.plan, 40);
+        const isTopup = prodKey === 'wallet-topup' || prodKey === 'topup';
+        let canonicalPrice = 0;
+        let realProductName = '';
+        let finalPlanName = planName;
 
-        const prodObj = getProductInfo(prodKey);
-        if (prodObj && prodObj.soldOut) {
-          return res.status(400).json({ success: false, error: 'Sản phẩm này hiện đang CHÁY HÀNG! Vui lòng liên hệ Admin.' });
+        if (isTopup) {
+          const reqAmount = Number(body.amount) || Number(body.price) || 0;
+          if (!Number.isFinite(reqAmount) || reqAmount < 10000 || reqAmount > 50000000) {
+            return res.status(400).json({ success: false, error: 'Số tiền nạp tối thiểu là 10.000đ và tối đa là 50.000.000đ!' });
+          }
+          canonicalPrice = Math.floor(reqAmount);
+          realProductName = 'Nạp Số Dư Tài Khoản';
+          finalPlanName = `Nạp ${canonicalPrice.toLocaleString('vi-VN')}đ`;
+        } else {
+          const prodObj = getProductInfo(prodKey);
+          if (prodObj && prodObj.soldOut) {
+            return res.status(400).json({ success: false, error: 'Sản phẩm này hiện đang CHÁY HÀNG! Vui lòng liên hệ Admin.' });
+          }
+
+          canonicalPrice = getCanonicalPrice(prodKey, planName);
+          if (!canonicalPrice || canonicalPrice <= 0) {
+            return res.status(400).json({ success: false, error: 'Gói sản phẩm bạn chọn không hợp lệ trong hệ thống!' });
+          }
+
+          realProductName = (prodObj && prodObj.name) || prodKey;
         }
 
-        const canonicalPrice = getCanonicalPrice(prodKey, planName);
-        if (!canonicalPrice || canonicalPrice <= 0) {
-          return res.status(400).json({ success: false, error: 'Gói sản phẩm bạn chọn không hợp lệ trong hệ thống!' });
-        }
-
-        const realProductName = (prodObj && prodObj.name) || prodKey;
         const newId = generateSecureOrderId();
         const username = userPayload ? userPayload.user : (sanitizeText(body.user, 40) || 'Khách vãng lai');
         const phone = sanitizeText(body.phone, 15);
@@ -242,7 +256,7 @@ module.exports = async function handler(req, res) {
             id: newId,
             memo: memoCode,
             product: realProductName,
-            plan: planName,
+            plan: finalPlanName,
             price: canonicalPrice,
             user: username,
             phone: phone,

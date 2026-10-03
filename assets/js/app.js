@@ -694,8 +694,9 @@
       headers: headers,
       body: JSON.stringify({
         action: 'create',
-        productId: 'ff-aim-v1',
-        planName: 'Gói 1 Ngày',
+        productId: 'wallet-topup',
+        amount: amount,
+        planName: `Nạp ${amount.toLocaleString('vi-VN')}đ`,
         user: state.currentUser || 'Khách vãng lai'
       })
     })
@@ -1518,12 +1519,30 @@
 
     // Load persistent user session & orders
     const storedUser = getStoredUser();
+    const token = localStorage.getItem('nexus_user_token');
     if (storedUser) {
       state.currentUser = storedUser.username || storedUser.name || 'Thành viên';
       if (typeof storedUser.balance === 'number') {
         state.userBalance = storedUser.balance;
       }
       updateAuthUI(storedUser);
+
+      // Đồng bộ số dư mới nhất từ máy chủ
+      if (token) {
+        fetch('/api/auth?action=me', {
+          headers: { 'x-user-token': token }
+        })
+        .then(r => r.json())
+        .then(res => {
+          if (res && res.success && res.user) {
+            state.userBalance = Number(res.user.balance) || 0;
+            storedUser.balance = state.userBalance;
+            localStorage.setItem('nexus_user', JSON.stringify(storedUser));
+            updateBalanceDisplay();
+          }
+        })
+        .catch(() => {});
+      }
     }
 
     const storedOrders = getStoredOrders();
