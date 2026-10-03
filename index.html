@@ -543,6 +543,19 @@
     </div>
   </div>
 
+  <!-- 6. FEEDBACK IMAGE LIGHTBOX MODAL -->
+  <div class="nexus-modal-backdrop" id="imageLightboxBackdrop">
+    <div class="nexus-modal-card" style="max-width: 650px; background: rgba(10, 15, 29, 0.95); padding: 12px; text-align: center;">
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+        <button class="modal-close-btn" type="button" aria-label="Đóng"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div style="border-radius: var(--radius-md); overflow: hidden; max-height: 80vh; display: flex; align-items: center; justify-content: center; background: #000;">
+        <img id="lightboxImg" src="" alt="Feedback image full" style="max-width: 100%; max-height: 75vh; object-fit: contain; display: block; border-radius: 8px;">
+      </div>
+      <div id="lightboxCaption" style="margin-top: 10px; font-size: 13.5px; color: var(--text-secondary); font-weight: 600;"></div>
+    </div>
+  </div>
+
   <!-- TOAST CONTAINER -->
   <div class="nexus-toast-container" id="toastContainer" aria-live="polite"></div>
 

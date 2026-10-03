@@ -819,24 +819,36 @@
     const grid = document.getElementById('feedbackGrid');
     if (!grid) return;
 
-    grid.innerHTML = state.feedbacks.map(fb => `
-      <div class="feedback-glass-card">
-        <div class="feedback-user-row">
-          <div class="user-avatar-badge">${escapeHtml(fb.avatar)}</div>
-          <div class="feedback-user-info">
-            <strong>${escapeHtml(fb.author)}</strong>
-            <span>${escapeHtml(fb.date)}</span>
+    grid.innerHTML = state.feedbacks.map(fb => {
+      const imgHtml = fb.image ? `
+        <div class="feedback-image-box" data-zoom-img="${escapeHtml(fb.image)}" data-caption="${escapeHtml(fb.author)} - ${escapeHtml(fb.product || '')}">
+          <img src="${escapeHtml(fb.image)}" alt="Feedback từ ${escapeHtml(fb.author)}" loading="lazy">
+          <div class="feedback-image-overlay">
+            <i class="fas fa-magnifying-glass-plus"></i> Xem ảnh lớn
           </div>
         </div>
-        <div class="feedback-stars-row">
-          ${'★'.repeat(fb.rating)}${'☆'.repeat(5 - fb.rating)}
+      ` : '';
+
+      return `
+        <div class="feedback-glass-card">
+          <div class="feedback-user-row">
+            <div class="user-avatar-badge">${escapeHtml(fb.avatar)}</div>
+            <div class="feedback-user-info">
+              <strong>${escapeHtml(fb.author)}</strong>
+              <span>${escapeHtml(fb.date)}</span>
+            </div>
+          </div>
+          <div class="feedback-stars-row">
+            ${'★'.repeat(fb.rating)}${'☆'.repeat(5 - fb.rating)}
+          </div>
+          <p class="feedback-content-text">${escapeHtml(fb.content)}</p>
+          <div class="feedback-product-tag">
+            <i class="fas fa-gamepad"></i> <span>${escapeHtml(fb.product)}</span>
+          </div>
+          ${imgHtml}
         </div>
-        <p class="feedback-content-text">${escapeHtml(fb.content)}</p>
-        <div class="feedback-product-tag">
-          <i class="fas fa-gamepad"></i> <span>${escapeHtml(fb.product)}</span>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   // Render Admin Dashboard
@@ -1449,6 +1461,27 @@
         renderFeedbacks();
         closeModal(document.getElementById('feedbackModalBackdrop'));
         showToast('Cảm ơn bạn đã gửi đánh giá cho Nexus Store!', 'success');
+      });
+    }
+
+    // Feedback Image Zoom / Lightbox
+    const feedbackGrid = document.getElementById('feedbackGrid');
+    const lightboxModal = document.getElementById('imageLightboxBackdrop');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCap = document.getElementById('lightboxCaption');
+
+    if (feedbackGrid && lightboxModal && lightboxImg) {
+      feedbackGrid.addEventListener('click', (e) => {
+        const box = e.target.closest('.feedback-image-box');
+        if (box) {
+          const imgSrc = box.dataset.zoomImg;
+          const caption = box.dataset.caption || '';
+          if (imgSrc) {
+            lightboxImg.src = imgSrc;
+            if (lightboxCap) lightboxCap.textContent = caption;
+            openModal(lightboxModal);
+          }
+        }
       });
     }
 

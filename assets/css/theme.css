@@ -908,6 +908,49 @@ body {
   color: var(--neon-cyan);
 }
 
+.feedback-image-box {
+  margin-top: 14px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-glass);
+  background: rgba(0, 0, 0, 0.4);
+  position: relative;
+  cursor: pointer;
+  max-height: 200px;
+}
+
+.feedback-image-box img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform var(--transition-normal);
+}
+
+.feedback-image-box:hover img {
+  transform: scale(1.05);
+}
+
+.feedback-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.feedback-image-box:hover .feedback-image-overlay {
+  opacity: 1;
+}
+
 /* ==========================================================================
    FOOTER
    ========================================================================== */
