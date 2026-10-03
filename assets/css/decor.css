@@ -542,26 +542,37 @@ html.nx-p3 .nx-intro-brand-group {
 
 .nx-intro-title {
   font-family: 'Inter', sans-serif;
-  font-size: clamp(26px, 5.5vw, 38px);
+  font-size: clamp(32px, 6vw, 64px);
   font-weight: 900;
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, #ffffff 0%, #00f2fe 50%, #a855f7 100%);
+  line-height: 1.15;
+  letter-spacing: -1px;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(0, 242, 254, 0.25);
+  margin: 0;
+  text-align: center;
+}
+
+.nx-intro-title .title-accent {
+  background: linear-gradient(90deg, #00f2fe, #4facfe, #a855f7, #ec4899, #00f2fe);
+  background-size: 300% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.4));
-  margin: 0;
-  line-height: 1.2;
+  animation: nxShine 6s linear infinite;
+  letter-spacing: 1px;
+  display: inline-block;
 }
 
 .nx-intro-sub {
-  margin-top: 6px;
-  font-family: monospace, system-ui;
-  font-size: 11px;
+  margin-top: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(12px, 2.2vw, 15px);
   font-weight: 700;
-  letter-spacing: 3.5px;
-  color: #38bdf8;
-  opacity: 0.85;
+  letter-spacing: 2px;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 0;
 }
 
 /* Skip Button */
@@ -681,7 +692,7 @@ html.nx-hero-step1 .hero-content > .hero-status-pill {
   transform: translateY(0);
 }
 
-/* 2 & 3. WELCOME TO NEXUS STORE */
+/* 2 & 3. WELCOME TO QUOCVIET AURA */
 html.nx-hero-step2 .hero-content > .hero-title {
   opacity: 1;
   transform: translateY(0);

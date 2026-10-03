@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   'use strict';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -61,7 +61,7 @@
         // PHASE 1 (0 -> 1s): Shared Hero background with gentle neon glow at center. Bolt appears.
         at(80, () => docEl.classList.add('nx-p1'));
 
-        // PHASE 2 (1.5 -> 2.2s): Brand name "NEXUS STORE" & "GAMING DIGITAL STORE"
+        // PHASE 2 (1.1 -> 2.2s): Brand reveal "WELCOME TO QUOCVIET AURA"
         at(1100, () => docEl.classList.add('nx-p2'));
 
         // PHASE 3 (2.5 -> 3.2s): Logo smoothly flies from center into HEADER position
@@ -116,7 +116,7 @@
         // Step 1 (3.3s): "Hệ thống trực tuyến 24/7 • Cấp Key tự động"
         at(100, () => docEl.classList.add('nx-hero-step1'));
 
-        // Step 2 (3.8s): "WELCOME TO NEXUS GAMING STORE"
+        // Step 2 (3.8s): "WELCOME TO QUOCVIET AURA"
         at(500, () => docEl.classList.add('nx-hero-step2'));
 
         // Step 3 (4.3s): Slogan "UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN"
