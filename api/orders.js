@@ -201,6 +201,7 @@ module.exports = async function handler(req, res) {
         }
 
         const prodKey = sanitizeText(body.productId || body.product, 60);
+        const planName = sanitizeText(body.planName || body.plan, 40);
         const isTopup = prodKey === 'wallet-topup' || prodKey === 'topup';
         let canonicalPrice = 0;
         let realProductName = '';
