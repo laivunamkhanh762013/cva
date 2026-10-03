@@ -837,8 +837,8 @@
 
     grid.innerHTML = state.feedbacks.map(fb => {
       const imgHtml = fb.image ? `
-        <div class="feedback-image-box" data-zoom-img="${escapeHtml(fb.image)}" data-caption="${escapeHtml(fb.author)} - ${escapeHtml(fb.product || '')}">
-          <img src="${escapeHtml(fb.image)}" alt="Feedback từ ${escapeHtml(fb.author)}" loading="lazy">
+        <div class="feedback-image-box" data-zoom-img="${escapeHtml(fb.image)}" data-caption="Đánh giá từ khách hàng • Giao dịch xác thực">
+          <img src="${escapeHtml(fb.image)}" alt="Feedback từ khách hàng" loading="lazy">
           <div class="feedback-image-overlay">
             <i class="fas fa-magnifying-glass-plus"></i> Xem ảnh lớn
           </div>
