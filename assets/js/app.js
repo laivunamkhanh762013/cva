@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * NEXUS GAMING STORE - CLIENT CONTROLLER & BUSINESS LOGIC
+ * QUOCVIET AURA - CLIENT CONTROLLER & BUSINESS LOGIC
  * Built with IIFE, DocumentFragment, Zero AI Slop, WCAG Focus Trap, XSS Protection
  * ==========================================================================
  */
@@ -177,7 +177,7 @@
         quantity: order.quantity || 1,
         total: order.price || order.total || 0,
         time: order.time || new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }),
-        key: order.key || `NEXUS-KEY-${order.id}`,
+        key: order.key || `QVA-KEY-${order.id}`,
         status: order.status === 'approved' ? 'Thành công' : (order.status === 'rejected' ? 'Thất bại' : 'Đang chờ duyệt'),
         txId: order.txId || ''
       };
@@ -392,35 +392,49 @@
     }
   }
 
-  // SVG Cyber Banner Generator (Fallback & Visuals)
-  function getBannerSvg(title, category) {
-    let color1 = '#00f2fe';
-    let color2 = '#4facfe';
-    let iconName = '🎮';
+  // Product banner art — palette + headline derived from product id/name
+  const BANNER_THEMES = {
+    'ff-aimlock':         { c1: '#00f2fe', c2: '#7c3aed', head: 'AIMLOCK', tag: 'V1 → V5' },
+    'ff-dpi':             { c1: '#22d3ee', c2: '#10b981', head: 'DPI', tag: '60% → 100%' },
+    'ff-aimhead-filza':   { c1: '#f43f5e', c2: '#f59e0b', head: 'HEAD', tag: 'FILZA iOS' },
+    'ff-aimbody-filza':   { c1: '#a855f7', c2: '#ec4899', head: 'BODY', tag: 'FILZA iOS' },
+    'ff-aimneck-3105':    { c1: '#3b82f6', c2: '#06b6d4', head: 'NECK', tag: 'BẢN 3105' },
+    'ff-aimlock-3105':    { c1: '#6366f1', c2: '#00f2fe', head: 'LOCK', tag: 'BẢN 3105' },
+    'ff-dinhvi':          { c1: '#10b981', c2: '#84cc16', head: 'RADAR', tag: 'ĐỊNH VỊ' },
+    'ff-menu-filza-3105': { c1: '#f59e0b', c2: '#ef4444', head: 'MENU', tag: 'FILZA 3105' }
+  };
 
-    if (category === 'freefire') { color1 = '#f59e0b'; color2 = '#ef4444'; iconName = '🔥'; }
-    if (category === 'pubg') { color1 = '#10b981'; color2 = '#047857'; iconName = '🎯'; }
-    if (category === 'pool') { color1 = '#8b5cf6'; color2 = '#6366f1'; iconName = '🎱'; }
-    if (category === 'config') { color1 = '#ec4899'; color2 = '#be185d'; iconName = '⚡'; }
-
+  function getBannerSvg(product) {
+    const p = product || {};
+    const t = BANNER_THEMES[p.id] || { c1: '#00f2fe', c2: '#a855f7', head: String(p.name || 'AURA').split(' ')[0].toUpperCase().slice(0, 8), tag: (p.categoryName || '').toUpperCase() };
+    const uid = String(p.id || 'x').replace(/[^a-z0-9]/gi, '');
     const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" width="100%" height="100%">
         <defs>
-          <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#0b0f1f"/>
-            <stop offset="100%" stop-color="#111827"/>
+          <linearGradient id="bg${uid}" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#070a18"/><stop offset="1" stop-color="#10142b"/>
           </linearGradient>
-          <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="${color1}"/>
-            <stop offset="100%" stop-color="${color2}"/>
+          <linearGradient id="ac${uid}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="${t.c1}"/><stop offset="1" stop-color="${t.c2}"/>
           </linearGradient>
+          <radialGradient id="gl${uid}" cx="0.75" cy="0.35" r="0.6">
+            <stop offset="0" stop-color="${t.c1}" stop-opacity="0.45"/><stop offset="1" stop-color="${t.c1}" stop-opacity="0"/>
+          </radialGradient>
+          <pattern id="gr${uid}" width="24" height="24" patternUnits="userSpaceOnUse">
+            <path d="M24 0H0V24" fill="none" stroke="#ffffff" stroke-opacity="0.05"/>
+          </pattern>
         </defs>
-        <rect width="480" height="270" fill="url(#bg)"/>
-        <circle cx="240" cy="135" r="90" fill="${color1}" opacity="0.12"/>
-        <rect x="20" y="20" width="440" height="230" rx="16" fill="none" stroke="url(#accent)" stroke-width="1.5" stroke-dasharray="10 6" opacity="0.6"/>
-        <text x="240" y="115" text-anchor="middle" font-size="44" fill="#ffffff">${iconName}</text>
-        <text x="240" y="170" text-anchor="middle" font-family="system-ui, sans-serif" font-size="19" font-weight="bold" fill="url(#accent)">${escapeHtml(title.slice(0, 24))}</text>
-        <text x="240" y="196" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8" letter-spacing="2">NEXUS STORE DIGITAL 24/7</text>
+        <rect width="480" height="270" fill="url(#bg${uid})"/>
+        <rect width="480" height="270" fill="url(#gr${uid})"/>
+        <rect width="480" height="270" fill="url(#gl${uid})"/>
+        <g transform="translate(360 120)" fill="none" stroke="url(#ac${uid})" stroke-width="3" opacity="0.9">
+          <circle r="62"/><circle r="38" stroke-opacity="0.6"/><circle r="6" fill="${t.c1}"/>
+          <path d="M0 -84V-48M0 48V84M-84 0H-48M48 0H84" stroke-linecap="round"/>
+        </g>
+        <text x="32" y="138" font-family="Inter, system-ui, sans-serif" font-size="64" font-weight="900" fill="url(#ac${uid})" letter-spacing="-1">${escapeHtml(t.head)}</text>
+        <rect x="32" y="160" rx="6" width="${Math.max(90, t.tag.length * 11 + 24)}" height="28" fill="${t.c1}" fill-opacity="0.15" stroke="${t.c1}" stroke-opacity="0.5"/>
+        <text x="44" y="179" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="800" fill="#e2e8f0" letter-spacing="1">${escapeHtml(t.tag)}</text>
+        <text x="32" y="240" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700" fill="#94a3b8" letter-spacing="3">QUOCVIET AURA • FREE FIRE</text>
       </svg>
     `;
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
@@ -466,7 +480,7 @@
       card.className = 'product-glass-card';
       card.dataset.id = p.id;
 
-      const bannerSrc = getBannerSvg(p.name, p.category);
+      const bannerSrc = getBannerSvg(p);
       const isFree = p.price === 0;
       const priceText = isFree ? 'MIỄN PHÍ' : formatCurrency(p.price);
 
@@ -527,7 +541,7 @@
     const modalBody = document.getElementById('productModalBody');
     if (!modalBody) return;
 
-    const bannerSrc = getBannerSvg(product.name, product.category);
+    const bannerSrc = getBannerSvg(product);
     const packagesHtml = (product.packages || []).map((pkg, idx) => `
       <button class="quick-amt-btn pkg-select-btn ${idx === 0 ? 'active' : ''}" data-pkg-id="${escapeHtml(pkg.id)}" type="button">
         ${escapeHtml(pkg.name)} · ${formatCurrency(pkg.price)}
@@ -570,7 +584,7 @@
         <div style="flex: 1;">
           <label style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; display: block;">Mã giảm giá (Coupon):</label>
           <div style="display: flex; gap: 8px;">
-            <input type="text" id="couponInput" placeholder="Ví dụ: NEXUS10" style="padding: 8px 12px; text-transform: uppercase;">
+            <input type="text" id="couponInput" placeholder="Ví dụ: AURA10" style="padding: 8px 12px; text-transform: uppercase;">
             <button type="button" class="btn-cta-secondary" id="btnApplyCoupon" style="padding: 8px 14px; font-size: 12.5px;">Áp dụng</button>
           </div>
         </div>
@@ -659,7 +673,7 @@
 
     // Generate Game Key
     const orderId = 'ORD-' + Date.now().toString(36).toUpperCase().slice(-6);
-    const generatedKey = `NEXUS-${state.selectedProduct.category.toUpperCase()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const generatedKey = `QVA-${state.selectedProduct.category.toUpperCase()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
     const newOrder = {
       orderId: orderId,
@@ -1473,7 +1487,7 @@
         state.feedbacks.unshift(newFb);
         renderFeedbacks();
         closeModal(document.getElementById('feedbackModalBackdrop'));
-        showToast('Cảm ơn bạn đã gửi đánh giá cho Nexus Store!', 'success');
+        showToast('Cảm ơn bạn đã gửi đánh giá cho QuocvietAura!', 'success');
       });
     }
 

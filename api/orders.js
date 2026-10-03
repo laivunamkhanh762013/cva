@@ -2,9 +2,8 @@ const crypto = require('crypto');
 const { getGist, updateGist } = require('./db');
 const { verifyAdminToken, verifyUserToken, generateSecureOrderId, parseBody, checkApiDdos, validateOrderId, getClientIp } = require('./_security');
 const { getProductInfo, getCanonicalPrice } = require('./_catalog');
-const { Mutex } = require('./_mutex');
-
-const orderMutex = new Mutex();
+const { storeMutex: orderMutex } = require('./_mutex');
+const { creditTopupIfNeeded, GUEST_USER } = require('./_payments');
 
 const BANK_CONFIG = Object.freeze({
   bankId: process.env.VIETQR_BANK_ID || 'MB',
@@ -13,7 +12,7 @@ const BANK_CONFIG = Object.freeze({
 });
 
 const ORDER_CONFIG = Object.freeze({
-  maxOrdersLimit: 300,
+  maxOrdersLimit: 1000,
   createRateLimitCount: 5,
   createRateLimitWindowMs: 60000,
   maxIpLimitCache: 1000,
@@ -195,19 +194,25 @@ module.exports = async function handler(req, res) {
 
       // 2. Tạo đơn hàng mới (Chỉ sinh pending, kiểm tra catalog)
       if (body._action === 'create' || body.action === 'create') {
-        const ip = getClientIp ? getClientIp(req) : (req.headers['x-forwarded-for'] || '127.0.0.1');
+        const ip = getClientIp(req);
         if (isCreationRateLimited(ip)) {
           return res.status(429).json({ success: false, error: 'Bạn tạo đơn quá nhanh. Vui lòng chờ 1 phút.' });
         }
 
-        const prodKey = sanitizeText(body.productId || body.product, 60);
-        const planName = sanitizeText(body.planName || body.plan, 40);
+        const rawProd = body.productId || body.product;
+        const rawPlan = body.planName || body.plan;
+        const prodKey = typeof rawProd === 'string' ? rawProd.trim().substring(0, 150) : '';
+        // Không sanitize tên gói trước khi tra catalog (catalog dùng Map, chỉ khớp chính xác key có sẵn)
+        const planName = typeof rawPlan === 'string' ? rawPlan.trim().substring(0, 150) : '';
         const isTopup = prodKey === 'wallet-topup' || prodKey === 'topup';
         let canonicalPrice = 0;
         let realProductName = '';
         let finalPlanName = planName;
 
         if (isTopup) {
+          if (!userPayload) {
+            return res.status(401).json({ success: false, error: 'Bạn cần đăng nhập để nạp số dư vào tài khoản.' });
+          }
           const reqAmount = Number(body.amount) || Number(body.price) || 0;
           if (!Number.isFinite(reqAmount) || reqAmount < 10000 || reqAmount > 50000000) {
             return res.status(400).json({ success: false, error: 'Số tiền nạp tối thiểu là 10.000đ và tối đa là 50.000.000đ!' });
@@ -222,15 +227,15 @@ module.exports = async function handler(req, res) {
           }
 
           canonicalPrice = getCanonicalPrice(prodKey, planName);
-          if (!canonicalPrice || canonicalPrice <= 0) {
+          if (!prodObj || !canonicalPrice || canonicalPrice <= 0) {
             return res.status(400).json({ success: false, error: 'Gói sản phẩm bạn chọn không hợp lệ trong hệ thống!' });
           }
 
-          realProductName = (prodObj && prodObj.name) || prodKey;
+          realProductName = prodObj.name;
         }
 
         const newId = generateSecureOrderId();
-        const username = userPayload ? userPayload.user : (sanitizeText(body.user, 40) || 'Khách vãng lai');
+        const username = userPayload ? userPayload.user : (sanitizeText(body.user, 40) || GUEST_USER);
         const phone = sanitizeText(body.phone, 15);
 
         let creationError = null;
@@ -256,6 +261,7 @@ module.exports = async function handler(req, res) {
           const orderItem = {
             id: newId,
             memo: memoCode,
+            type: isTopup ? 'topup' : 'product',
             product: realProductName,
             plan: finalPlanName,
             price: canonicalPrice,
@@ -301,8 +307,8 @@ module.exports = async function handler(req, res) {
       const cleanTxId = sanitizeText(body.txId, 40);
 
       const updateResult = await orderMutex.run(async () => {
-        const { orders } = await getGist();
-        const list = Array.isArray(orders) ? orders : [];
+        const data = await getGist();
+        const list = Array.isArray(data.orders) ? data.orders : [];
         const existingIdx = list.findIndex(o => o.id === rawId);
 
         if (existingIdx === -1) {
@@ -316,10 +322,19 @@ module.exports = async function handler(req, res) {
           }
         }
 
+        const prevStatus = list[existingIdx].status;
         list[existingIdx].status = statusToSet;
         if (cleanTxId) list[existingIdx].txId = cleanTxId;
 
-        await updateGist({ orders: list.slice(0, ORDER_CONFIG.maxOrdersLimit) });
+        // Duyệt tay đơn nạp: cộng số dư đúng 1 lần (cờ credited chống cộng trùng).
+        // Đơn đã có paidAmount = đã đi qua webhook (bản cũ đã cộng tiền) -> không cộng lại.
+        const credited = statusToSet === 'approved' && prevStatus !== 'approved' &&
+          !list[existingIdx].paidAmount &&
+          creditTopupIfNeeded(data, list[existingIdx], Number(list[existingIdx].price));
+
+        const updates = { orders: list.slice(0, ORDER_CONFIG.maxOrdersLimit) };
+        if (credited) updates.users = data.users;
+        await updateGist(updates);
         return { success: true, order: list[existingIdx] };
       });
 
@@ -330,7 +345,7 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true, order: updateResult.order });
     }
 
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    return res.status(405).json({ success: false, error: 'Method Not Allowed' });
   } catch (err) {
     console.error('Orders API Internal Error:', err);
     return res.status(500).json({ success: false, error: 'Lỗi hệ thống máy chủ. Vui lòng thử lại sau.' });

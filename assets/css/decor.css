@@ -257,3 +257,99 @@ body { background: var(--bg-base); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+
+/* ==========================================================================
+   QUOCVIET AURA — BRAND & LAYOUT POLISH
+   ========================================================================== */
+html, body { overflow-x: clip; }
+:root { --aura-grad: linear-gradient(90deg, #00f2fe, #a855f7 55%, #ec4899); }
+
+/* ---------- Brand ---------- */
+.brand-logo { gap: 12px; min-width: 0; flex-shrink: 0; }
+.brand-icon-img { width: 44px; height: 44px; padding: 2px; border-radius: 50%; background: var(--aura-grad); overflow: hidden; }
+.brand-icon-img img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; border: 2px solid var(--bg-base); filter: grayscale(1) contrast(1.1); }
+.brand-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; }
+.brand-text h1 { font-size: 18px; letter-spacing: 1px; background: none; -webkit-text-fill-color: #f8fafc; color: #f8fafc; }
+.brand-text h1 b { font-weight: 900; margin-left: 2px; background: var(--aura-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.brand-text span { font-size: 10px; letter-spacing: 2.5px; margin-top: 3px; }
+
+/* ---------- Header: no wrapping, compact ---------- */
+.header-inner { gap: 16px; }
+.nav-menu { gap: 2px; flex-wrap: nowrap; }
+.nav-link { white-space: nowrap; padding: 8px 12px; font-size: 13px; }
+.nav-link i { font-size: 12px; opacity: .85; }
+.header-right { flex-shrink: 0; gap: 10px; }
+.balance-pill, .btn-auth { white-space: nowrap; }
+.btn-auth { padding: 9px 18px; }
+
+@media (max-width: 1240px) {
+  .nav-link i { display: none; }
+  .nav-link { padding: 8px 10px; }
+}
+@media (max-width: 1100px) {
+  .menu-toggle-btn { display: block; }
+  .nav-menu {
+    position: fixed; top: var(--header-height); left: 0; width: 100%;
+    background: rgba(11, 15, 31, .97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-glass); flex-direction: column; align-items: stretch;
+    padding: 16px 20px 22px; gap: 6px; display: none; box-shadow: 0 20px 40px rgba(0,0,0,.6);
+  }
+  .nav-menu.is-open { display: flex; animation: nxDrop .25s ease; }
+  .nav-menu .nav-link { padding: 12px 16px; font-size: 14px; border-radius: 12px; }
+  .nav-menu .nav-link i { display: inline-block; width: 18px; }
+  .nav-link::after { display: none; }
+}
+@keyframes nxDrop { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@media (max-width: 560px) {
+  :root { --header-height: 64px; }
+  .brand-text span { display: none; }
+  .brand-text h1 { font-size: 15px; }
+  .brand-icon-img { width: 38px; height: 38px; }
+  .balance-pill { padding: 6px 10px; font-size: 12px; }
+  #headerAuthText { display: none; }
+  .btn-auth { padding: 10px 12px; }
+  .header-right { gap: 6px; }
+}
+@media (max-width: 380px) { .balance-pill i { display: none; } }
+
+/* ---------- Hero logo ---------- */
+.hero-logo-wrap { position: relative; width: 112px; height: 112px; margin: 0 auto 22px; }
+.hero-logo-ring {
+  position: absolute; inset: -6px; border-radius: 50%;
+  background: conic-gradient(from 0deg, #00f2fe, #a855f7, #ec4899, #00f2fe);
+  animation: nxRingSpin 6s linear infinite; filter: drop-shadow(0 0 18px rgba(168,85,247,.55));
+}
+.hero-logo-ring::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: var(--bg-base); }
+@keyframes nxRingSpin { to { transform: rotate(360deg); } }
+.hero-logo-img { position: relative; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.1); }
+.hero-logo-verified {
+  position: absolute; right: 2px; bottom: 4px; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 13px; color: #fff;
+  background: linear-gradient(135deg, #00f2fe, #3b82f6); border: 3px solid var(--bg-base);
+}
+.nexus-hero { padding-top: 64px; }
+.hero-title { font-size: clamp(32px, 6vw, 64px); }
+.hero-title .title-accent { letter-spacing: 1px; }
+
+/* ---------- Hero on mobile ---------- */
+@media (max-width: 768px) {
+  .hd-float, .hd-chip { display: none; }
+  .hero-status-pill { font-size: 10.5px; padding: 6px 12px; max-width: 100%; white-space: normal; text-align: left; }
+  .hero-description { font-size: 14px; padding: 0 4px; }
+  .hero-badges-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hero-badge-item { justify-content: center; font-size: 11px; padding: 8px 10px; }
+  .hero-logo-wrap { width: 92px; height: 92px; }
+  .nx-marquee-track span { font-size: 12px; }
+}
+
+/* ---------- Product cards ---------- */
+.card-banner-box { aspect-ratio: 16 / 9; overflow: hidden; }
+.card-banner-box img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.product-glass-card:hover .card-banner-box img { transform: scale(1.06); }
+.card-product-title { font-size: 17px; line-height: 1.3; }
+.price-value { background: var(--aura-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
+.modal-thumb-box { flex-basis: 240px; }
+
+/* ---------- Footer brand ---------- */
+.footer-col-about .brand-logo { margin-bottom: 14px; }

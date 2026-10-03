@@ -1,14 +1,14 @@
 /**
- * DATA STORE - NEXUS GAMING STORE (DEMO DATABASE)
+ * DATA STORE - QUOCVIET AURA (DEMO DATABASE)
  * Strictly strictly zero gambling/lucky draw. Pure digital gaming storefront.
  */
 
 const NEXUS_CONFIG = {
-  STORE_NAME: "NEXUS STORE",
+  STORE_NAME: "QuocvietAura",
   SLOGAN: "UY TÍN • CHẤT LƯỢNG • AN TOÀN • NHANH GỌN",
   HOTLINE: "0987.654.321",
-  DISCORD: "https://discord.gg/nexusgaming",
-  TELEGRAM: "https://t.me/nexusgamingshop",
+  DISCORD: "",
+  TELEGRAM: "",
   BANK_NAME: "MB BANK (Quân Đội)",
   BANK_ACC: "0327519223",
   BANK_HOLDER: "NGUYEN THANH DAT",
@@ -306,7 +306,7 @@ const INITIAL_PRODUCTS = [
 
 const INITIAL_COUPONS = [
   {
-    code: "NEXUS10",
+    code: "AURA10",
     type: "percent",
     discount: 10,
     minOrder: 50000,
@@ -503,7 +503,7 @@ const INITIAL_FEEDBACKS = [
 ];
 
 const INITIAL_MEMBERS = [
-  { id: 1001, username: "admin_viet", email: "tranquocviet@nexus.vn", balance: 5000000, role: "Owner", createdAt: "2026-01-01" },
+  { id: 1001, username: "admin_viet", email: "admin@quocvietaura.vn", balance: 5000000, role: "Owner", createdAt: "2026-01-01" },
   { id: 1002, username: "manager_nam", email: "namhoang@gmail.com", balance: 1250000, role: "Admin", createdAt: "2026-03-12" },
   { id: 1003, username: "seller_tuankiet", email: "kietpro@gmail.com", balance: 450000, role: "Seller", createdAt: "2026-05-20" },
   { id: 1004, username: "khachhang_01", email: "player01@gmail.com", balance: 200000, role: "Member", createdAt: "2026-09-10" }

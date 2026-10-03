@@ -1,11 +1,10 @@
 const crypto = require('crypto');
 const { promisify } = require('util');
 const { getGist, updateGist } = require('./db');
-const { signUserToken, verifyUserToken, checkApiDdos, verifyAdminToken } = require('./_security');
-const { Mutex } = require('./_mutex');
+const { signUserToken, verifyUserToken, checkApiDdos, verifyAdminToken, isJwtConfigured, checkRateLimit, recordFailedLogin, resetFailedLogin, parseBody } = require('./_security');
+const { storeMutex: userMutex } = require('./_mutex');
 
 const scryptAsync = promisify(crypto.scrypt);
-const userMutex = new Mutex();
 
 // Dynamic dummy credentials to prevent timing side-channel
 const DUMMY_SALT = crypto.randomBytes(16).toString('hex');
@@ -18,7 +17,7 @@ const AUTH_CONFIG = Object.freeze({
   maxUsernameLength: 30,
   minPasswordLength: 6,
   maxPasswordLength: 100,
-  maxUsersLimit: 500
+  maxUsersLimit: 5000
 });
 
 function maskPhone(phone) {
@@ -62,6 +61,11 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  if (!isJwtConfigured()) {
+    console.error('CRITICAL: JWT_SECRET is not configured.');
+    return res.status(500).json({ success: false, error: 'Máy chủ chưa cấu hình bảo mật (JWT_SECRET).' });
   }
 
   // Anti-DDoS Rate Limit (30 req / 1 min for auth)
@@ -117,15 +121,8 @@ module.exports = async function handler(req, res) {
 
     // ════════ POST: ĐĂNG KÝ / ĐĂNG NHẬP ════════
     if (req.method === 'POST') {
-      let body = req.body;
-      if (typeof body === 'string') {
-        try {
-          body = JSON.parse(body);
-        } catch(e) {
-          return res.status(400).json({ success: false, error: 'Dữ liệu JSON không hợp lệ.' });
-        }
-      }
-      if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      const body = await parseBody(req);
+      if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).length === 0) {
         return res.status(400).json({ success: false, error: 'Dữ liệu yêu cầu không hợp lệ.' });
       }
 
@@ -176,8 +173,13 @@ module.exports = async function handler(req, res) {
             createdAt: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
           };
 
+          // Không cắt danh sách (trước đây slice() làm MẤT tài khoản cũ và số dư của họ)
+          if (userList.length >= AUTH_CONFIG.maxUsersLimit) {
+            return { error: 'Hệ thống tạm ngừng nhận đăng ký mới. Vui lòng liên hệ Admin.', code: 503 };
+          }
+
           userList.unshift(newUser);
-          await updateGist({ users: userList.slice(0, AUTH_CONFIG.maxUsersLimit) });
+          await updateGist({ users: userList });
           return { success: true, user: newUser };
         });
 
@@ -196,6 +198,11 @@ module.exports = async function handler(req, res) {
 
       // ──────────────── XỬ LÝ ĐĂNG NHẬP (LOGIN) ────────────────
       if (action === 'login') {
+        const rateCheck = checkRateLimit(req, 'user');
+        if (!rateCheck.allowed) {
+          return res.status(429).json({ success: false, error: `Bạn đã đăng nhập sai quá nhiều lần. Vui lòng thử lại sau ${rateCheck.retryAfterSeconds} giây!` });
+        }
+
         const { users } = await getGist();
         const userList = Array.isArray(users) ? users : [];
         const user = userList.find(u => u && u.username && u.username.toLowerCase() === username.toLowerCase());
@@ -203,21 +210,24 @@ module.exports = async function handler(req, res) {
         // Dummy hash execution to prevent timing enumeration
         if (!user) {
           await verifyPassword(password, `${DUMMY_SALT}:${DUMMY_KEY}`);
+          recordFailedLogin(req, 'user');
           return res.status(401).json({ success: false, error: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
         }
 
         const isMatch = await verifyPassword(password, user.password || '');
         if (!isMatch) {
+          recordFailedLogin(req, 'user');
           return res.status(401).json({ success: false, error: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
         }
+        resetFailedLogin(req, 'user');
 
         // Tự động nâng cấp hash scrypt cho mật khẩu legacy (chưa có :)
         if (user.password && !user.password.includes(':')) {
-          userMutex.run(async () => {
+          await userMutex.run(async () => {
             const freshGist = await getGist();
             const freshUsers = Array.isArray(freshGist.users) ? freshGist.users : [];
             const idx = freshUsers.findIndex(u => u && u.username && u.username.toLowerCase() === username.toLowerCase());
-            if (idx >= 0 && !freshUsers[idx].password.includes(':')) {
+            if (idx >= 0 && !String(freshUsers[idx].password || '').includes(':')) {
               freshUsers[idx].password = await hashPassword(password);
               await updateGist({ users: freshUsers });
             }

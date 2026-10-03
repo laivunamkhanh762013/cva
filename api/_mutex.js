@@ -1,5 +1,10 @@
 /**
  * In-process Mutex Lock Utility for Serializing Storage Writes
+ *
+ * Lưu ý: chỉ tuần tự hóa trong CÙNG một instance Node. Mọi handler phải dùng
+ * chung `storeMutex` để create/approve/register không ghi đè lẫn nhau.
+ * Giữa các instance serverless khác nhau vẫn có thể xảy ra race (Gist không
+ * hỗ trợ ghi có điều kiện).
  */
 class Mutex {
   constructor() {
@@ -21,4 +26,7 @@ class Mutex {
   }
 }
 
-module.exports = { Mutex };
+// Một khóa dùng chung cho toàn bộ dữ liệu Gist (orders + users + processed)
+const storeMutex = new Mutex();
+
+module.exports = { Mutex, storeMutex };

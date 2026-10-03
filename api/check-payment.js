@@ -26,12 +26,14 @@ function cleanToken(str) {
 
 function fetchSePay(path) {
   return new Promise((resolve, reject) => {
-    const apiKey = process.env.SEPAY_API_KEY || 'YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV';
+    const apiKey = process.env.SEPAY_API_KEY;
+    if (!apiKey) {
+      return reject(new Error('SEPAY_API_KEY is not configured.'));
+    }
     const options = {
       hostname: 'userapi.sepay.vn',
       path: path,
       method: 'GET',
-      rejectUnauthorized: false,
       headers: {
         'Authorization': 'Bearer ' + apiKey,
         'Content-Type': 'application/json',

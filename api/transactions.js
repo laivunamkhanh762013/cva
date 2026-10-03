@@ -1,17 +1,18 @@
 const https = require('https');
 const { verifyAdminToken } = require('./_security');
 
-const SEPAY_API_KEY = process.env.SEPAY_API_KEY || 'YG0WPAOZFIXMRWGGRUDHJGPSBZ9TWJPUYIOLK3O8N1CEKQ6NLI0VJRALXUCJYHMV';
-
 function fetchSePay(path) {
   return new Promise((resolve, reject) => {
+    const apiKey = process.env.SEPAY_API_KEY;
+    if (!apiKey) {
+      return reject(new Error('SEPAY_API_KEY is not configured.'));
+    }
     const options = {
       hostname: 'userapi.sepay.vn',
       path: path,
       method: 'GET',
-      rejectUnauthorized: false,
       headers: {
-        'Authorization': 'Bearer ' + SEPAY_API_KEY,
+        'Authorization': 'Bearer ' + apiKey,
         'User-Agent': 'curl/7.88.1'
       }
     };
