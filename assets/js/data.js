@@ -307,7 +307,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire iOS",
     rating: 5,
     date: "10 phút trước",
-    image: "assets/uploads/feedbacks/fb-real-1.jpg",
+    image: "assets/uploads/products/fb-real-1.jpg",
     content: "Shop uy tín số 1! Mua file cài qua Filza vào game sấy tâm đỏ chót, không rung lắc mà an toàn tài khoản tuyệt đối.",
     product: "Aimlock Free Fire V2 PRO"
   },
@@ -318,7 +318,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire Android",
     rating: 5,
     date: "30 phút trước",
-    image: "assets/uploads/feedbacks/fb-real-2.jpg",
+    image: "assets/uploads/products/fb-real-2.jpg",
     content: "Chuyển khoản MBBank quét mã VietQR tự động cộng số dư trong 3 giây. Key gửi tự động dùng cực mượt!",
     product: "AimLock Forget 2.0"
   },
@@ -329,7 +329,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire OB44",
     rating: 5,
     date: "1 giờ trước",
-    image: "assets/uploads/feedbacks/fb-real-3.jpg",
+    image: "assets/uploads/products/fb-real-3.jpg",
     content: "DPI 100% cảm ứng lia tâm shotgun nhấc nhẹ ngón tay là gõ đầu, leo Thách Đấu bao mượt không lo tụt rank.",
     product: "Gói Tinh Chỉnh DPI 100%"
   },
@@ -340,7 +340,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire PC",
     rating: 5,
     date: "2 giờ trước",
-    image: "assets/uploads/feedbacks/fb-real-4.jpg",
+    image: "assets/uploads/products/fb-real-4.jpg",
     content: "Admin hỗ trợ nhiệt tình đêm hôm vẫn trả lời ngay. Đã ủng hộ shop 3 lần rồi lần nào cũng ưng ý 100%.",
     product: "TrollModz (Adr · iOS · PC)"
   },
@@ -351,7 +351,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire iOS",
     rating: 5,
     date: "3 giờ trước",
-    image: "assets/uploads/feedbacks/fb-real-5.jpg",
+    image: "assets/uploads/products/fb-real-5.jpg",
     content: "Key cấp tức thì, giao diện web xịn sò mượt mà. Test vào trận kéo tâm MP40 đỏ lòe cả bảng đấu.",
     product: "Aimlock Head Filza"
   },
@@ -362,7 +362,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire Mobile",
     rating: 5,
     date: "Hôm nay, 11:20",
-    image: "assets/uploads/feedbacks/fb-real-6.jpg",
+    image: "assets/uploads/products/fb-real-6.jpg",
     content: "Cảm ơn shop đã tư vấn gói chuẩn cho máy yếu. Cài config FPS 120Hz mượt ru không nóng máy.",
     product: "Config Tối Ưu Máy Yếu 120FPS"
   },
@@ -373,7 +373,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire",
     rating: 5,
     date: "Hôm nay, 09:45",
-    image: "assets/uploads/feedbacks/fb-real-7.jpg",
+    image: "assets/uploads/products/fb-real-7.jpg",
     content: "Bắn trận nào ăn MVP trận đó, bạn bè rủ nhau mua cùng luôn. Đáng đồng tiền bát gạo!",
     product: "Forget Hex V5"
   },
@@ -384,7 +384,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire Rank",
     rating: 5,
     date: "Hôm qua, 22:15",
-    image: "assets/uploads/feedbacks/fb-real-8.jpg",
+    image: "assets/uploads/products/fb-real-8.jpg",
     content: "Quá đỉnh luôn shop ơi, bắn giải phong trào team win liền 5 trận liên tiếp. Sẽ giới thiệu cho anh em clan!",
     product: "Menu Filza-3105"
   },
@@ -395,7 +395,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire iOS",
     rating: 5,
     date: "Hôm qua, 18:30",
-    image: "assets/uploads/feedbacks/fb-real-9.jpg",
+    image: "assets/uploads/products/fb-real-9.jpg",
     content: "Hệ thống nạp tự động nhanh như chớp. Vừa chuyển tiền MBBank xong quay lại web là đã có tiền.",
     product: "Aimlock 3105"
   },
@@ -406,7 +406,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire",
     rating: 5,
     date: "Hôm qua, 15:00",
-    image: "assets/uploads/feedbacks/fb-real-10.jpg",
+    image: "assets/uploads/products/fb-real-10.jpg",
     content: "Feedback chuẩn cho shop 10 điểm uy tín. Không bao giờ lo bị lừa đảo hay mất acc.",
     product: "Aimneck 3105"
   },
@@ -417,7 +417,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire Android",
     rating: 5,
     date: "02/10/2026",
-    image: "assets/uploads/feedbacks/fb-real-11.jpg",
+    image: "assets/uploads/products/fb-real-11.jpg",
     content: "Gói VIP cài đặt siêu dễ, chỉ mất 1 phút là xong. Bắn sấy tầm xa tâm dính chặt vào đối phương.",
     product: "Aimlock Free Fire V1"
   },
@@ -428,7 +428,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire iOS",
     rating: 5,
     date: "01/10/2026",
-    image: "assets/uploads/feedbacks/fb-real-12.jpg",
+    image: "assets/uploads/products/fb-real-12.jpg",
     content: "Test thử gói 1 ngày ưng quá nâng cấp luôn gói vĩnh viễn, shop bảo hành trách nhiệm tuyệt vời.",
     product: "Menu Migul Pro"
   },
@@ -439,7 +439,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire OB44",
     rating: 5,
     date: "30/09/2026",
-    image: "assets/uploads/feedbacks/fb-real-13.jpg",
+    image: "assets/uploads/products/fb-real-13.jpg",
     content: "Cực kỳ ưng ý! Chăm sóc khách hàng siêu có tâm, hướng dẫn từ A-Z đến khi vào game bắn được mới thôi.",
     product: "Aimbody Filza"
   },
@@ -450,7 +450,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire Tournament",
     rating: 5,
     date: "29/09/2026",
-    image: "assets/uploads/feedbacks/fb-real-14.jpg",
+    image: "assets/uploads/products/fb-real-14.jpg",
     content: "Bắn giải trường ẵm luôn giải nhất, cảm ứng mượt không delay, cảm ơn shop rất nhiều!",
     product: "Aimlock V5 Siêu Cấp"
   },
@@ -461,7 +461,7 @@ const INITIAL_FEEDBACKS = [
     game: "Free Fire iOS",
     rating: 5,
     date: "28/09/2026",
-    image: "assets/uploads/feedbacks/fb-real-15.jpg",
+    image: "assets/uploads/products/fb-real-15.jpg",
     content: "Shop làm ăn uy tín, nạp thẻ cào hay quét QR đều xử lý tự động trong tích tắc.",
     product: "Auto Guideline Free Fire"
   }
