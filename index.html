@@ -14,8 +14,17 @@
   
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/decor.css">
 </head>
 <body>
+  <div class="nx-bg" aria-hidden="true">
+    <div class="nx-bg-grid"></div>
+    <div class="nx-aurora a1"></div>
+    <div class="nx-aurora a2"></div>
+    <div class="nx-aurora a3"></div>
+    <canvas id="nxParticles"></canvas>
+  </div>
+  <div class="nx-scroll-progress" id="nxScrollProgress"></div>
 
   <!-- STICKY HEADER -->
   <header class="nexus-header" id="mainHeader">
@@ -75,6 +84,18 @@
     <!-- HERO SECTION -->
     <section class="nexus-hero" id="home">
       <div class="hero-glow-blob"></div>
+      <div class="hero-decor" aria-hidden="true">
+        <div class="hd-ring hd-ring-1"></div>
+        <div class="hd-ring hd-ring-2"></div>
+        <div class="hd-float hd-f1"><i class="fas fa-crosshairs"></i></div>
+        <div class="hd-float hd-f2"><i class="fas fa-gamepad"></i></div>
+        <div class="hd-float hd-f3"><i class="fas fa-key"></i></div>
+        <div class="hd-float hd-f4"><i class="fas fa-trophy"></i></div>
+        <div class="hd-float hd-f5"><i class="fas fa-fire"></i></div>
+        <div class="hd-float hd-f6"><i class="fas fa-gem"></i></div>
+        <div class="hd-chip hd-c1"><i class="fas fa-circle-check"></i> Đơn hàng đã giao key</div>
+        <div class="hd-chip hd-c2"><i class="fas fa-bolt"></i> +50.000đ nạp thành công</div>
+      </div>
       <div class="nexus-container hero-content">
         <div class="hero-status-pill">
           <span class="status-dot-pulse"></span>
@@ -106,6 +127,24 @@
         </div>
       </div>
     </section>
+
+    <!-- STATS STRIP -->
+    <section class="nx-stats-strip reveal">
+      <div class="nexus-container nx-stats-grid">
+        <div class="nx-stat"><i class="fas fa-users"></i><strong data-count="12500">0</strong><span>Khách hàng tin dùng</span></div>
+        <div class="nx-stat"><i class="fas fa-key"></i><strong data-count="48000">0</strong><span>Key đã giao tự động</span></div>
+        <div class="nx-stat"><i class="fas fa-star"></i><strong data-count="99" data-suffix="%">0</strong><span>Đánh giá hài lòng</span></div>
+        <div class="nx-stat"><i class="fas fa-stopwatch"></i><strong data-count="3" data-suffix="s">0</strong><span>Thời gian cấp key</span></div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="nx-marquee" aria-hidden="true">
+      <div class="nx-marquee-track">
+        <span><i class="fas fa-fire"></i> FREE FIRE</span><span><i class="fas fa-crosshairs"></i> PUBG MOBILE</span><span><i class="fas fa-circle"></i> 8 BALL POOL</span><span><i class="fas fa-sliders"></i> CONFIG FPS</span><span><i class="fas fa-download"></i> FILE TẢI XUỐNG</span><span><i class="fas fa-shield-halved"></i> AN TOÀN 100%</span><span><i class="fas fa-bolt"></i> AUTO 24/7</span>
+        <span><i class="fas fa-fire"></i> FREE FIRE</span><span><i class="fas fa-crosshairs"></i> PUBG MOBILE</span><span><i class="fas fa-circle"></i> 8 BALL POOL</span><span><i class="fas fa-sliders"></i> CONFIG FPS</span><span><i class="fas fa-download"></i> FILE TẢI XUỐNG</span><span><i class="fas fa-shield-halved"></i> AN TOÀN 100%</span><span><i class="fas fa-bolt"></i> AUTO 24/7</span>
+      </div>
+    </div>
 
     <!-- PRODUCTS SECTION -->
     <section class="nexus-products-section" id="products">
@@ -152,6 +191,37 @@
       </div>
     </section>
 
+    <!-- WHY US -->
+    <section class="nx-why-section reveal">
+      <div class="nexus-container">
+        <div class="nx-section-head">
+          <span class="nx-eyebrow"><i class="fas fa-gem"></i> VÌ SAO CHỌN CHÚNG TÔI</span>
+          <h2>Trải nghiệm mua sắm <span class="nx-grad-text">chuẩn game thủ</span></h2>
+        </div>
+        <div class="nx-why-grid">
+          <div class="nx-why-card"><div class="nx-why-icon c1"><i class="fas fa-bolt"></i></div><h3>Giao key tức thì</h3><p>Thanh toán xong, hệ thống tự động cấp key trong vài giây, không cần chờ admin.</p></div>
+          <div class="nx-why-card"><div class="nx-why-icon c2"><i class="fas fa-shield-halved"></i></div><h3>Bảo mật tuyệt đối</h3><p>Thông tin được mã hóa, giao dịch qua VietQR ngân hàng chính chủ an toàn.</p></div>
+          <div class="nx-why-card"><div class="nx-why-icon c3"><i class="fas fa-headset"></i></div><h3>Hỗ trợ 24/7</h3><p>Đội ngũ kỹ thuật luôn sẵn sàng hướng dẫn cài đặt từ A đến Z.</p></div>
+          <div class="nx-why-card"><div class="nx-why-icon c4"><i class="fas fa-rotate"></i></div><h3>Bảo hành rõ ràng</h3><p>Lỗi key được đổi mới hoặc hoàn tiền vào số dư nhanh chóng.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TO BUY -->
+    <section class="nx-steps-section reveal">
+      <div class="nexus-container">
+        <div class="nx-section-head">
+          <span class="nx-eyebrow"><i class="fas fa-route"></i> QUY TRÌNH</span>
+          <h2>Mua hàng chỉ với <span class="nx-grad-text">3 bước</span></h2>
+        </div>
+        <div class="nx-steps-grid">
+          <div class="nx-step"><span class="nx-step-num">01</span><i class="fas fa-user-plus"></i><h3>Tạo tài khoản</h3><p>Đăng ký miễn phí trong 10 giây.</p></div>
+          <div class="nx-step"><span class="nx-step-num">02</span><i class="fas fa-qrcode"></i><h3>Nạp tiền QR</h3><p>Quét mã MB Bank, số dư cộng tự động.</p></div>
+          <div class="nx-step"><span class="nx-step-num">03</span><i class="fas fa-key"></i><h3>Nhận key</h3><p>Chọn sản phẩm, mua và nhận key ngay.</p></div>
+        </div>
+      </div>
+    </section>
+
     <!-- FEEDBACK SECTION -->
     <section class="nexus-feedback-section" id="feedback">
       <div class="nexus-container">
@@ -165,6 +235,33 @@
 
         <div class="feedback-grid" id="feedbackGrid">
           <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="nx-faq-section reveal">
+      <div class="nexus-container nx-faq-wrap">
+        <div class="nx-section-head">
+          <span class="nx-eyebrow"><i class="fas fa-circle-question"></i> CÂU HỎI THƯỜNG GẶP</span>
+          <h2>Giải đáp <span class="nx-grad-text">nhanh</span></h2>
+        </div>
+        <details class="nx-faq"><summary>Bao lâu tôi nhận được key sau khi thanh toán?</summary><p>Hệ thống tự động xác nhận giao dịch MB Bank và cấp key trong khoảng 3–30 giây.</p></details>
+        <details class="nx-faq"><summary>Chuyển khoản sai nội dung thì sao?</summary><p>Liên hệ hỗ trợ kèm ảnh bill, admin sẽ cộng số dư thủ công cho bạn.</p></details>
+        <details class="nx-faq"><summary>Key bị lỗi có được bảo hành không?</summary><p>Có. Key lỗi sẽ được đổi mới hoặc hoàn tiền vào số dư tài khoản.</p></details>
+        <details class="nx-faq"><summary>Có hỗ trợ cài đặt không?</summary><p>Đội ngũ hỗ trợ 24/7 sẽ hướng dẫn chi tiết qua Zalo / Telegram.</p></details>
+      </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="nx-cta-banner reveal">
+      <div class="nexus-container">
+        <div class="nx-cta-inner">
+          <div>
+            <h2>Sẵn sàng <span class="nx-grad-text">leo rank</span> chưa?</h2>
+            <p>Nạp tiền 1 lần, mua key tức thì, hỗ trợ trọn đời.</p>
+          </div>
+          <a href="#products" class="btn-cta-primary"><i class="fas fa-rocket"></i> MUA NGAY</a>
         </div>
       </div>
     </section>
@@ -562,5 +659,12 @@
   <!-- SCRIPT FILES -->
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>
+
+  <div class="nx-fab-stack">
+    <a class="nx-fab zalo" href="#" aria-label="Zalo hỗ trợ" title="Zalo hỗ trợ"><i class="fas fa-comment-dots"></i></a>
+    <a class="nx-fab tele" href="#" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
+    <button class="nx-fab top" id="nxBackTop" type="button" aria-label="Lên đầu trang"><i class="fas fa-arrow-up"></i></button>
+  </div>
+  <script src="assets/js/decor.js" defer></script>
 </body>
 </html>
