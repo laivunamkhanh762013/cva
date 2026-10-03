@@ -1,8 +1,8 @@
-(function () {
+﻿(function () {
   'use strict';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ══ GAMING SPLASH SCREEN CONTROLLER ══
+  // â•â• GAMING SPLASH SCREEN CONTROLLER â•â•
   let introTimeoutId = null;
   function skipIntro(e) {
     if (e && e.stopPropagation) e.stopPropagation();
@@ -29,7 +29,7 @@
       skipIntro();
     } else {
       document.body.style.overflow = 'hidden';
-      introTimeoutId = setTimeout(skipIntro, 1850);
+      introTimeoutId = setTimeout(skipIntro, 2650);
     }
   }
 
