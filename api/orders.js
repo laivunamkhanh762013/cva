@@ -8,8 +8,8 @@ const orderMutex = new Mutex();
 
 const BANK_CONFIG = Object.freeze({
   bankId: process.env.VIETQR_BANK_ID || 'MB',
-  accountNo: process.env.VIETQR_ACCOUNT_NO || '0941414448',
-  accountName: process.env.VIETQR_ACCOUNT_NAME || 'BUI VAN CAO'
+  accountNo: process.env.VIETQR_ACCOUNT_NO || '0327519223',
+  accountName: process.env.VIETQR_ACCOUNT_NAME || 'NGUYEN THANH DAT'
 });
 
 const ORDER_CONFIG = Object.freeze({

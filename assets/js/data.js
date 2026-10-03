@@ -10,8 +10,8 @@ const NEXUS_CONFIG = {
   DISCORD: "https://discord.gg/nexusgaming",
   TELEGRAM: "https://t.me/nexusgamingshop",
   BANK_NAME: "MB BANK (Quân Đội)",
-  BANK_ACC: "0987654321098",
-  BANK_HOLDER: "TRAN QUOC VIET",
+  BANK_ACC: "0327519223",
+  BANK_HOLDER: "NGUYEN THANH DAT",
   QR_TEMPLATE: "compact2"
 };
 
