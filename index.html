@@ -13,17 +13,15 @@
   <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
     :root {
       --bg-base: #060813;
-      --bg-card: rgba(15, 23, 42, 0.75);
-      --border-card: rgba(56, 189, 248, 0.22);
-      --border-glow: rgba(56, 189, 248, 0.5);
+      --bg-card: rgba(15, 23, 42, 0.85);
+      --border-card: rgba(56, 189, 248, 0.25);
       --cyan: #00f2fe;
-      --cyan-glow: rgba(0, 242, 254, 0.4);
       --purple: #a855f7;
       --pink: #ec4899;
       --text-main: #f8fafc;
@@ -58,53 +56,33 @@
       position: relative;
     }
 
-    /* Cyber Background & Aurora */
+    /* Static Cyber Background (Zero Lag, Zero CPU) */
     .bg-grid {
       position: fixed;
       inset: -50%;
       background-image:
-        linear-gradient(rgba(0, 242, 254, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 242, 254, 0.05) 1px, transparent 1px);
+        linear-gradient(rgba(0, 242, 254, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.04) 1px, transparent 1px);
       background-size: 50px 50px;
       transform: perspective(600px) rotateX(55deg) translateY(-10%);
       mask-image: radial-gradient(ellipse at center 40%, #000 20%, transparent 70%);
       -webkit-mask-image: radial-gradient(ellipse at center 40%, #000 20%, transparent 70%);
-      animation: gridMove 20s linear infinite;
       z-index: 0;
       pointer-events: none;
-    }
-
-    @keyframes gridMove {
-      to { background-position: 0 50px, 50px 0; }
     }
 
     .aurora {
       position: fixed;
       border-radius: 50%;
-      filter: blur(100px);
+      filter: blur(90px);
       pointer-events: none;
       z-index: 0;
-      opacity: 0.35;
-      animation: floatAurora 18s ease-in-out infinite alternate;
+      opacity: 0.25;
     }
 
-    .aurora.a1 { width: 550px; height: 550px; background: #00f2fe; top: -150px; left: -100px; opacity: 0.22; }
-    .aurora.a2 { width: 650px; height: 650px; background: #a855f7; top: 40%; right: -200px; opacity: 0.25; animation-delay: -5s; }
-    .aurora.a3 { width: 500px; height: 500px; background: #ef4444; bottom: -150px; left: 20%; opacity: 0.18; animation-delay: -10s; }
-
-    @keyframes floatAurora {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(60px, 50px) scale(1.15); }
-    }
-
-    #particles {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
+    .aurora.a1 { width: 500px; height: 500px; background: #00f2fe; top: -120px; left: -80px; opacity: 0.18; }
+    .aurora.a2 { width: 600px; height: 600px; background: #a855f7; top: 35%; right: -150px; opacity: 0.18; }
+    .aurora.a3 { width: 450px; height: 450px; background: #ef4444; bottom: -120px; left: 15%; opacity: 0.14; }
 
     /* Main Container */
     .closure-wrap {
@@ -120,7 +98,7 @@
       text-align: center;
     }
 
-    /* Status Pill */
+    /* Status Pill (Static) */
     .status-pill {
       display: inline-flex;
       align-items: center;
@@ -134,9 +112,8 @@
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: #fca5a5;
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.25);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
       margin-bottom: 26px;
-      animation: pulsePill 2.5s ease-in-out infinite;
     }
 
     .pulse-dot {
@@ -144,25 +121,14 @@
       height: 9px;
       border-radius: 50%;
       background: #ef4444;
-      box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
-      animation: blinkDot 1.4s infinite;
+      box-shadow: 0 0 8px #ef4444;
     }
 
-    @keyframes blinkDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(0.7); }
-    }
-
-    @keyframes pulsePill {
-      0%, 100% { transform: translateY(0); box-shadow: 0 0 20px rgba(239, 68, 68, 0.25); }
-      50% { transform: translateY(-3px); box-shadow: 0 0 35px rgba(239, 68, 68, 0.45); }
-    }
-
-    /* Icon Lock Cyber Frame */
+    /* Icon Lock Cyber Frame - 100% STATIC (No rotation, No bounce, No lag) */
     .icon-lock-wrapper {
       position: relative;
-      width: 104px;
-      height: 104px;
+      width: 100px;
+      height: 100px;
       margin-bottom: 26px;
     }
 
@@ -170,53 +136,41 @@
       position: absolute;
       inset: -8px;
       border-radius: 50%;
-      border: 2px dashed rgba(0, 242, 254, 0.4);
-      animation: spinRing 20s linear infinite;
+      border: 2px dashed rgba(0, 242, 254, 0.45);
     }
 
     .icon-lock-ring-2 {
       position: absolute;
       inset: -18px;
       border-radius: 50%;
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      animation: spinRing 30s linear infinite reverse;
-    }
-
-    @keyframes spinRing {
-      to { transform: rotate(360deg); }
+      border: 1px solid rgba(168, 85, 247, 0.35);
     }
 
     .icon-lock-box {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(11, 15, 31, 0.95));
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(11, 15, 31, 0.98));
       border: 2px solid rgba(0, 242, 254, 0.6);
-      box-shadow: 0 0 35px rgba(0, 242, 254, 0.35), inset 0 0 20px rgba(0, 242, 254, 0.15);
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.3), inset 0 0 20px rgba(0, 242, 254, 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 42px;
+      font-size: 40px;
       color: #ef4444;
-      text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
-      animation: bounceIcon 3s ease-in-out infinite;
-    }
-
-    @keyframes bounceIcon {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+      text-shadow: 0 0 16px rgba(239, 68, 68, 0.7);
     }
 
     /* Main Title */
     .main-title {
-      font-size: clamp(28px, 5.5vw, 48px);
+      font-size: clamp(28px, 5.5vw, 46px);
       font-weight: 900;
       line-height: 1.2;
       letter-spacing: -0.5px;
       text-transform: uppercase;
       margin-bottom: 16px;
       color: #ffffff;
-      text-shadow: 0 0 40px rgba(0, 242, 254, 0.2);
+      text-shadow: 0 0 35px rgba(0, 242, 254, 0.18);
     }
 
     .title-highlight {
@@ -224,7 +178,7 @@
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.4));
+      filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.35));
     }
 
     .sub-desc {
@@ -232,7 +186,7 @@
       color: var(--text-muted);
       line-height: 1.7;
       max-width: 680px;
-      margin-bottom: 36px;
+      margin-bottom: 34px;
     }
 
     .sub-desc strong {
@@ -247,12 +201,12 @@
       border: 1px solid var(--border-card);
       border-radius: 24px;
       padding: 32px 28px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 242, 254, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
       position: relative;
       overflow: hidden;
-      margin-bottom: 30px;
+      margin-bottom: 28px;
       text-align: left;
     }
 
@@ -281,7 +235,7 @@
       border-radius: 18px;
       background: linear-gradient(135deg, #00f2fe, #a855f7);
       padding: 2px;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      box-shadow: 0 0 16px rgba(0, 242, 254, 0.35);
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -389,15 +343,15 @@
       gap: 10px;
       background: linear-gradient(135deg, #0068ff 0%, #00a2ff 100%);
       color: #ffffff;
-      box-shadow: 0 8px 25px rgba(0, 104, 255, 0.45);
-      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0, 104, 255, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       cursor: pointer;
       border: none;
     }
 
     .btn-contact-zalo:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 35px rgba(0, 104, 255, 0.65);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(0, 104, 255, 0.55);
       color: #ffffff;
     }
 
@@ -416,15 +370,15 @@
       gap: 10px;
       background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
       color: #ffffff;
-      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       cursor: pointer;
       border: none;
     }
 
     .btn-contact-call:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 35px rgba(16, 185, 129, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(16, 185, 129, 0.55);
       color: #ffffff;
     }
 
@@ -467,16 +421,15 @@
   <div class="aurora a1" aria-hidden="true"></div>
   <div class="aurora a2" aria-hidden="true"></div>
   <div class="aurora a3" aria-hidden="true"></div>
-  <canvas id="particles" aria-hidden="true"></canvas>
 
   <main class="closure-wrap">
-    <!-- Status Pill -->
+    <!-- Status Pill (Static) -->
     <div class="status-pill">
       <span class="pulse-dot"></span>
       <span>HỆ THỐNG ĐÃ NGỪNG HOẠT ĐỘNG HOÀN TOÀN</span>
     </div>
 
-    <!-- Icon Lock Shield -->
+    <!-- Icon Lock Shield (100% Static & Crisp) -->
     <div class="icon-lock-wrapper">
       <div class="icon-lock-ring"></div>
       <div class="icon-lock-ring-2"></div>
@@ -562,18 +515,18 @@
     </footer>
   </main>
 
-  <!-- Anti-DevTools & Anti-F12 Protection Script -->
+  <!-- Lightweight Anti-F12 Protection Script (Zero CPU Lag) -->
   <script>
     (function () {
       'use strict';
 
-      // 1. Disable Right-Click
+      // 1. Disable Right-Click Context Menu
       document.addEventListener('contextmenu', function (e) {
         e.preventDefault();
         return false;
       }, { capture: true });
 
-      // 2. Disable Keyboard Shortcuts (F12, Ctrl+Shift+I/J/C/K, Ctrl+U, Ctrl+S, Ctrl+P, Ctrl+A)
+      // 2. Disable DevTools & Source Inspection Keys
       window.addEventListener('keydown', function (e) {
         // F12
         if (e.keyCode === 123 || e.key === 'F12') {
@@ -593,7 +546,7 @@
           e.stopPropagation();
           return false;
         }
-        // Ctrl + S (Save page)
+        // Ctrl + S (Save Page)
         if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
           e.preventDefault();
           e.stopPropagation();
@@ -607,75 +560,13 @@
         }
       }, { capture: true });
 
-      // 3. Clear and neutralise console methods
+      // 3. Disable console outputs
       try {
-        const noop = function () {};
-        ['log', 'debug', 'info', 'warn', 'error', 'table', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'profile', 'profileEnd'].forEach(function (method) {
-          console[method] = noop;
+        var noop = function () {};
+        ['log', 'debug', 'info', 'warn', 'error', 'table', 'trace', 'dir'].forEach(function (m) {
+          console[m] = noop;
         });
       } catch (e) {}
-
-      // 4. Anti-DevTools runtime loop
-      setInterval(function () {
-        const start = performance.now();
-        debugger;
-        const end = performance.now();
-        if (end - start > 100) {
-          // DevTools detected open
-          document.body.innerHTML = '<div style="background:#060813;color:#00f2fe;font-family:sans-serif;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;">' +
-            '<h1 style="color:#ef4444;font-size:32px;margin-bottom:12px;">CẢNH BÁO TRUY CẬP BỊ TỪ CHỐI</h1>' +
-            '<p style="color:#94a3b8;font-size:16px;max-width:500px;line-height:1.6;">Mã nguồn trang web này được bảo vệ bản quyền bởi <strong>Dev Khánhh</strong>. Vui lòng đóng DevTools để tiếp tục.</p>' +
-            '<p style="color:#38bdf8;margin-top:16px;font-weight:bold;">Liên hệ Zalo / Hotline: 0964 976 083</p>' +
-          '</div>';
-        }
-      }, 500);
-
-      // 5. Lightweight Canvas Particles
-      const cv = document.getElementById('particles');
-      if (cv) {
-        const ctx = cv.getContext('2d');
-        let w, h, pts = [];
-        const colors = ['0,242,254', '168,85,247', '239,68,68'];
-
-        function resize() {
-          w = cv.width = window.innerWidth;
-          h = cv.height = window.innerHeight;
-          const count = Math.min(50, Math.floor((w * h) / 25000));
-          pts = Array.from({ length: count }, function () {
-            return {
-              x: Math.random() * w,
-              y: Math.random() * h,
-              vx: (Math.random() - 0.5) * 0.35,
-              vy: (Math.random() - 0.5) * 0.35,
-              r: Math.random() * 1.8 + 0.5,
-              c: colors[Math.floor(Math.random() * colors.length)]
-            };
-          });
-        }
-
-        function draw() {
-          ctx.clearRect(0, 0, w, h);
-          for (let i = 0; i < pts.length; i++) {
-            const p = pts[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.x < 0) p.x = w;
-            if (p.x > w) p.x = 0;
-            if (p.y < 0) p.y = h;
-            if (p.y > h) p.y = 0;
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(' + p.c + ', 0.6)';
-            ctx.fill();
-          }
-          requestAnimationFrame(draw);
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-        requestAnimationFrame(draw);
-      }
     })();
   </script>
 </body>
